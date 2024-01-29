@@ -1,6 +1,6 @@
 # botlib
 
-C++ core library for Robotics.
+C++ core library for Robotics... for now.  Library might become a general support library for all of C.S. at snider.
 
 ## Building with meson.
 
