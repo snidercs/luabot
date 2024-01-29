@@ -14,9 +14,9 @@
     ClassName& operator= (const ClassName&&) = delete;
 // clang-format on
 
-namespace lvtk {
+namespace snider {
 template <typename... T>
 inline static void ignore (T&&...) noexcept {}
-} // namespace lvtk
+} // namespace snider
 
 #endif // __cplusplus
