@@ -1,6 +1,5 @@
 # snidermm
-
-C++ core library.  Library might become a general support library for all of C.S. at snider.
+C++ core library for Snider CS.
 
 ## Building with meson.
 
