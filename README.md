@@ -1,14 +1,12 @@
-# snidermm
-C++ core library for Snider CS.
+# LuaBOT
+A system for running LuaJIT powered FRC robots.
 
-## Building with meson.
+## Building
 
 ### Dependencies
-* [Boost](https://boost.org) - test suite headers for tests.
 * [Meson](https://mesonbuild.com) - Build system.
 * [Python](https://www.python.org/) - Required by meson.
-
-This at the moment is a header only library. Some of the future API might itself depend on FRC libraries and therefore the unit tests only check non-FRC dependent code.
+* [Boost](https://boost.org) - test suite headers for tests.
 
 ### Build and Run Tests
 The steps here are for a Linux system but should work on any platform with C++ and boost available.

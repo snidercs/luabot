@@ -10,22 +10,22 @@
 if boost_dep.found()
 
 ## Unit Tests
-botlib_unit_test_sources = '''
+luabot_unit_test_sources = '''
     basics.cpp
     testmain.cpp
 '''.split()
 
-unit = executable ('test-botlib',
-    botlib_unit_test_sources,
-    dependencies : [ botlib_internal_dep ],
+unit = executable ('test-luabot',
+    luabot_unit_test_sources,
+    dependencies : [ luabot_internal_dep ],
     gnu_symbol_visibility : 'hidden',
     cpp_args : [])
 
-botlib_unit_tests = '''
+luabot_unit_tests = '''
     Basics
 '''.split()
 
-foreach t : botlib_unit_tests
+foreach t : luabot_unit_tests
     test (t, unit, args : [ '-t', t ])
 endforeach
 

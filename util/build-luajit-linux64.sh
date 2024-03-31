@@ -1,7 +1,7 @@
 
 prefix="$1"
 if [ -z "$1" ]; then
-    prefix="$HOME/SDKs/botlib/linux64"
+    prefix="$HOME/SDKs/luabot/linux64"
 fi
 
 cd luajit
