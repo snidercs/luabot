@@ -1,21 +1,30 @@
-from cxxheaderparser.simple import parse_file
 from cxxheaderparser.simple import parse_string
-from pcpp import Preprocessor
-import io, re
-import os
+from cxxheaderparser.simple import ParsedData
+from cxxheaderparser.simple import Method
 
+from pcpp import Preprocessor
+
+import io, re, os
 from os.path import join
 from os.path import expanduser
+
+def find_include_file (inc, path):
+    for root, dirs, files in os.walk(path):
+        for f in files:
+            fpath = join (root, f)
+            if fpath.endswith (inc):
+                return fpath
+    return None
 
 def luabot_include_path():
     return expanduser ("~/SDKs/luabot/linux64/include")
 
 def linux64_cpp_includes():
     incs = '''
-        /usr/include/c++/11
-        /usr/include/x86_64-linux-gnu/c++/11
-        /usr/include/c++/11/backward
-        /usr/lib/gcc/x86_64-linux-gnu/11/include
+        /usr/include/c++/12
+        /usr/include/x86_64-linux-gnu/c++/12
+        /usr/include/c++/12/backward
+        /usr/lib/gcc/x86_64-linux-gnu/12/include
         /usr/local/include
         /usr/include/x86_64-linux-gnu
         /usr/include
@@ -44,16 +53,13 @@ def linux64_cpp_includes():
     
     return incs
 
-def test_file():
-     return expanduser ('~/SDKs/luabot/linux64/include/wpilibc/frc/GenericHID.h')
-
-def process():
-    file = open (test_file(), 'r')
+def process (inc: str):
+    file = open (find_include_file (inc, luabot_include_path()), 'r')
 
     p = Preprocessor()
 
     for inc in linux64_cpp_includes():
-        p.add_path (inc)  
+        p.add_path (inc)
     
     p.line_directive = None
     p.include_depth = 0
@@ -69,13 +75,13 @@ def process():
 #     print("Should be:\n" + self.output, file = sys.stderr)
 #     print("\n\nWas:\n" + oh.getvalue(), file = sys.stderr)
 
-def first_class(data):
+def first_class(data: ParsedData):
     return data.namespace.namespaces["frc"].classes[0]
-def first_class_name(data):
+
+def first_class_name(data: ParsedData):
     return first_class(data).class_decl.typename.segments[0].name
 
-
-def cdeclare (cxxtype, ctype, method):
+def cdeclare (cxxtype: str, ctype: str, method: Method):
     name = m.name.segments[0].name
     out = '%s frc%s%s (' % (method.return_type.format(), cxxtype, name)
     
@@ -91,8 +97,8 @@ def cdeclare (cxxtype, ctype, method):
     out += ')'
     return out
 
-data = parse_string (process())
-name = first_class_name (data)
+data  = parse_string (process ('frc/geometry/Pose2d.h'))
+name  = first_class_name (data)
 klass = first_class (data)
 
 # parsed_data = parse_file ("out.h")

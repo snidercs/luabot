@@ -7,17 +7,19 @@
 #     suite: 'metadata')
 # endif
 
+luabot_env = [
+    'LD_LIBRARY_PATH=@0@'.format(meson.project_build_root() / 'bindings')
+]
+
+foreach t : [ 'CoordinateAxis', 'Pose2d', 'Rotation2d']
+    test (t, luabot_exe,
+        args : files(t + '_test.lua'),
+        workdir : meson.project_source_root() / 'bindings',
+        suite : 'frc',
+        env: luabot_env)
+endforeach
+
 if boost_dep.found()
-
-## Simple FFI test
-simple = shared_module ('simple', '''
-    Simple.cpp
-'''.split(),
-    install: false)
-
-test ('Simple FFI', find_program('luajit'), 
-    args : files('Simple_test.lua'),
-    workdir : meson.current_source_dir())
 
 ## Unit Tests
 luabot_unit_test_sources = '''

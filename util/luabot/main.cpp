@@ -185,11 +185,11 @@ static int docall (lua_State* L, int narg, int nres) {
 }
 
 static void print_version (void) {
-    fputs(LUAJIT_VERSION " -- " LUAJIT_COPYRIGHT ". " LUAJIT_URL "\n", stdout);
+    fputs (LUAJIT_VERSION " -- " LUAJIT_COPYRIGHT ". " LUAJIT_URL "\n", stdout);
 #if 0
     lua_writestring (LUA_COPYRIGHT, strlen (LUA_COPYRIGHT));
     lua_writeline();
-    #endif
+#endif
 }
 
 static void print_jit_status (lua_State* L) {
@@ -685,7 +685,7 @@ static int pmain (lua_State* L) {
     else if (script < 1 && ! (args & (has_e | has_v))) { /* no active option? */
         if (lua_stdin_is_tty()) {                        /* running in interactive mode? */
             print_version();
-            print_jit_status(L);
+            print_jit_status (L);
             doREPL (L); /* do read-eval-print loop */
         } else
             dofile (L, NULL); /* executes stdin as a file */

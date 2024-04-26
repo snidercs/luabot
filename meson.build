@@ -10,6 +10,8 @@ project ('luabot', ['cpp', 'c'],
     ])
 
 fs = import ('fs')
+luajit_exe = find_program ('luajit')
+
 c = meson.get_compiler ('c')
 cpp = meson.get_compiler ('cpp')
 boost_dep = dependency ('boost', required : false)
@@ -57,7 +59,15 @@ wpilibc_dep = declare_dependency (
 )
 
 libwpilibNewCommands = cpp.find_library ('wpilibNewCommands', dirs: [ luabot_sdk_libdirs ], required : true)
+
 libwpimath = cpp.find_library ('wpimath', dirs: [ luabot_sdk_libdirs ], required : true)
+wpimath_dep = declare_dependency (
+    include_directories: [
+        fs.expanduser ('~/SDKs/luabot/linux64/include/wpiutil'),
+        fs.expanduser ('~/SDKs/luabot/linux64/include/wpimath')],
+    dependencies: [libwpimath]
+)
+
 libwpinet = cpp.find_library ('wpinet', dirs: [ luabot_sdk_libdirs ], required : true)
 libwpiutil = cpp.find_library ('wpiutil', dirs: [ luabot_sdk_libdirs ], required : true)
 
@@ -84,4 +94,5 @@ luabot_exe = executable ('luabot', [
     cpp_args: ['-DLUA_USE_READLINE=1'],
     dependencies: [luabot_dep, libluajit, readline_dep])
 
+subdir ('bindings')
 subdir ('test')

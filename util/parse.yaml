@@ -1,0 +1,6 @@
+header: frc/geometry/Pose2d.h
+destructor: true
+methods:
+  X:
+    - returns: void
+  Y:
