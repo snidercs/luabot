@@ -32,13 +32,20 @@ FrcPose2d* frcPose2dExp (const FrcPose2d* self, const FrcTwist2d* twist);
 FrcTwist2d* frcPose2dLog (const FrcPose2d* self, const FrcPose2d* other);
 ]]
 
-local lib = ffi.load('luabot-wpimath')
+local lib
+pcall(function()
+    lib = ffi.load('luabot-wpimath')
+end)
+
+if lib == nil then
+    lib = ffi.C
+end
 
 ---Represents a 2D pose containing translational and rotational elements.
 ---@class Pose2d
 local Pose2d = {}
 
----Free unused objects.
+---Free unused objects ().
 function Pose2d.collect()
     lib.frcPose2dCollect()
 end

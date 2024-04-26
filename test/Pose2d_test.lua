@@ -1,4 +1,4 @@
-local Pose2d = require('wpimath.geometry.Pose2d')
+local Pose2d = require('frc.Pose2d')
 local gc = collectgarbage
 
 collectgarbage = function(...)
