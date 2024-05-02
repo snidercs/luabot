@@ -7,24 +7,35 @@
 #     suite: 'metadata')
 # endif
 
+bindings_root = meson.project_build_root() / 'bindings'
+bindings_src_root = meson.project_source_root() / 'bindings'
+lua_path_pat = '@0@/?.lua'
+
+lua_path = 'LUA_PATH=@0@'.format (lua_path_pat.format (bindings_root / 'lua'))
+lua_path += ';' + lua_path_pat.format (bindings_root / 'lua')
+
 luabot_env = [
-    'LD_LIBRARY_PATH=@0@'.format(meson.project_build_root() / 'bindings')
+    'LD_LIBRARY_PATH=@0@;@1@'.format(bindings_root, luabot_sdk_libdir),
+    lua_path
 ]
 
-foreach t : [ 'CoordinateAxis', 'Pose2d', 'Rotation2d']
+foreach t : [ 'requireall' ]
     test (t, luabot_exe,
-        args : files(t + '_test.lua'),
+        args : files(t + '.lua'),
         workdir : meson.project_source_root() / 'bindings',
         suite : 'frc',
         env: luabot_env)
 endforeach
+
+subdir('wpi')
+subdir('frc')
 
 if boost_dep.found()
 
 ## Unit Tests
 luabot_unit_test_sources = '''
     basics.cpp
-    testmain.cpp
+    main.cpp
 '''.split()
 
 unit = executable ('test-luabot',

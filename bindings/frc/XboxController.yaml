@@ -1,0 +1,153 @@
+typename: XboxController
+header: frc/XboxController.h
+namespace: frc
+
+templates:
+  Constructor: &Constructor
+    return_type: cptr
+    factory: true
+    static: false
+  GetInt: &GetInt
+    return_type: int
+    const: true
+  SetInt: &SetInt
+    params:
+      channel: int
+    return_type: void
+  GetDouble: &GetDouble
+    return_type: double
+    const: true
+  GetBool: &GetBool
+    return_type: bool
+    const: true
+
+methods:
+  New:
+    <<: *Constructor
+    params:
+      port: int
+
+  GetLeftX:
+    <<: *GetDouble
+  GetRightX:
+    <<: *GetDouble
+  GetLeftY:
+    <<: *GetDouble
+  GetRightY:
+    <<: *GetDouble
+  
+  GetLeftTriggerAxis:
+    <<: *GetDouble
+  GetRightTriggerAxis:
+    <<: *GetDouble
+
+  GetLeftBumper:
+    <<: *GetBool
+  GetRightBumper:
+    <<: *GetBool
+  GetLeftBumperPressed:
+    <<: *GetBool
+    const: false
+  GetRightBumperPressed:
+    <<: *GetBool
+    const: false
+  GetLeftBumperReleased:
+    <<: *GetBool
+    const: false
+  GetRightBumperReleased:
+    <<: *GetBool
+    const: false
+  # LeftBumper:
+  # RightBumper:
+
+  GetLeftStickButton:
+    <<: *GetBool
+  GetLeftStickButton:
+    <<: *GetBool
+  GetLeftStickButtonPressed:
+    <<: *GetBool
+    const: false
+  GetRightStickButtonPressed:
+    <<: *GetBool
+    const: false
+  GetLeftStickButtonReleased:
+    <<: *GetBool
+    const: false
+  GetRightStickButtonReleased:
+    <<: *GetBool
+    const: false
+  # LeftStick:
+  # RightStick:
+
+  GetAButton:
+    <<: *GetBool
+  GetAButtonPressed:
+    <<: *GetBool
+    const: false
+  GetAButtonReleased:
+    <<: *GetBool
+    const: false
+  # A:
+
+  GetBButton:
+    <<: *GetBool
+  GetBButtonPressed:
+    <<: *GetBool
+    const: false
+  GetBButtonReleased:
+    <<: *GetBool
+    const: false
+  # B:
+
+  GetXButton:
+    <<: *GetBool
+  GetXButtonPressed:
+    <<: *GetBool
+    const: false
+  GetXButtonReleased:
+    <<: *GetBool
+    const: false
+  # X:
+
+  GetYButton:
+    <<: *GetBool
+  GetYButtonPressed:
+    <<: *GetBool
+    const: false
+  GetYButtonReleased:
+    <<: *GetBool
+    const: false
+  # Y:
+
+  GetBackButton:
+    <<: *GetBool
+  GetBackButtonPressed:
+    <<: *GetBool
+    const: false
+  GetBackButtonReleased:
+    <<: *GetBool
+    const: false
+  # Back:
+
+  GetStartButton:
+    <<: *GetBool
+  GetStartButtonPressed:
+    <<: *GetBool
+    const: false
+  GetStartButtonReleased:
+    <<: *GetBool
+    const: false
+  # Start:
+
+  GetYButton:
+    <<: *GetBool
+  GetYButtonPressed:
+    <<: *GetBool
+    const: false
+  GetYButtonReleased:
+    <<: *GetBool
+    const: false
+  # Y:
+
+  # LeftTrigger
+  # RightTrigger

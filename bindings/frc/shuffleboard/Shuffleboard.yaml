@@ -1,0 +1,30 @@
+typename: Shuffleboard
+namespace: frc
+header: frc/shuffleboard/Shuffleboard.h
+
+destructor: false
+
+methods:
+  Update:
+    return_type: void
+    static: true
+  
+  # GetTab
+  # SelectTab
+
+  EnableActuatorWidgets:
+    return_type: void
+    static: true
+  EnableActuatorWidgets:
+    return_type: void
+    static: true
+  StartRecording:
+    return_type: void
+    static: true
+  StopRecording:
+    return_type: void
+    static: true
+
+  # SetRecordingFileNameFormat:
+  # ClearRecordingFileNameFormat:
+  # AddEventMarker:

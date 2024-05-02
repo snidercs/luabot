@@ -1,0 +1,92 @@
+typename: GenericHID
+header: frc/GenericHID.h
+namespace: frc
+
+templates:
+  Constructor: &Constructor
+    return_type: cptr
+    factory: true
+    static: false
+
+  GetInt: &GetInt
+    return_type: int
+    const: true
+  SetInt: &SetInt
+    params:
+      channel: int
+    return_type: void
+  GetDouble: &GetDouble
+    return_type: double
+    const: true
+  GetBool: &GetBool
+    return_type: bool
+    const: true
+
+constructor: true
+destructor: true
+
+methods:
+  New:
+    <<: *Constructor
+    params:
+      port: int
+  
+  GetRawButton:
+    <<: *GetBool
+    params:
+      button: int
+  GetRawButtonPressed:
+    <<: *GetBool
+    const: false
+    params:
+      button: int
+  GetRawButtonReleased:
+    <<: *GetBool
+    const: false
+    params:
+      button: int
+
+  GetRawAxis:
+    <<: *GetDouble
+    params:
+      axis: int
+  
+  GetPOV:
+    <<: *GetInt
+    params:
+      pov: int
+
+  GetAxisCount:
+    <<: *GetInt
+  GetPOVCount:
+    <<: *GetInt
+  GetButtonCount:
+    <<: *GetInt
+
+  IsConnected:
+    <<: *GetBool
+
+  # GetType:
+  # GetName:
+  
+  GetAxisType:
+    <<: *GetInt
+    params:
+      axis: int
+  
+  GetPort:
+    <<: *GetInt
+
+  SetOutput:
+    return_type: void
+    params:
+      outputNumber: int
+      value: bool
+  
+  SetOutputs:
+    return_type: void
+    params:
+      value: int
+
+  # SetRumble:
+  

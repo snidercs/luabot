@@ -1,0 +1,39 @@
+typename: SmartDashboard
+namespace: frc
+header: frc/smartdashboard/SmartDashboard.h
+
+constructor: false
+destructor: false
+
+methods:
+  init:
+    return_type: void
+    static: true
+
+  ContainsKey:
+    static: true
+    return_type: bool
+    params:
+      key: const char*
+
+  # GetKeys:
+
+  SetPersistent:
+    static: true
+    params:
+      key: const char*
+  ClearPersistent:
+    static: true
+    params:
+      key: const char*
+  IsPersistent:
+    static: true
+    return_type: bool
+    params:
+      key: const char*
+  
+  # GetEntry:
+  # ...
+
+  UpdateValues:
+    static: true

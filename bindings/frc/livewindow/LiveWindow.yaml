@@ -1,0 +1,30 @@
+typename: LiveWindow
+header: frc/livewindow/LiveWindow.h
+namespace: frc
+
+constructor: false
+destructor: false
+
+methods:
+  # SetEnabledCallback:
+  # SetDisabledCallback:
+  # EnableTelemetry:
+  # DisableTelemetry:
+
+  DisableAllTelemetry:
+    return_type: void
+    static: true
+  EnableAllTelemetry:
+    return_type: void
+    static: true
+  IsEnabled:
+    return_type: bool
+    static: true
+  SetEnabled:
+    return_type: void
+    static: true
+    params:
+      enabled: bool
+  UpdateValues:
+    return_type: void
+    static: true

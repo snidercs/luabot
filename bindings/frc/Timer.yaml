@@ -1,0 +1,10 @@
+typename: Timer
+namespace: frc
+header: frc/Timer.h
+
+methods:
+  GetFPGATimestamp:
+    static: true
+    return_type: double
+    c_body: |
+      return frc::Timer::GetFPGATimestamp().value();

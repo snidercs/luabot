@@ -1,0 +1,52 @@
+typename: 'Watchdog'
+header: frc/Watchdog.h
+namespace: frc
+
+methods:
+  New:
+    return_type: cptr
+    factory: true
+    params:
+      timeout: double
+    c_body: |
+      return (FrcWatchdog*) new frc::Watchdog (units::second_t {timeout}, {});
+
+  GetTime:
+    return_type: double
+    const: true
+    c_body: |
+      return ((frc::Watchdog*) self)->GetTime ().value();
+
+  SetTimeout:
+    return_type: void
+    params:
+      timeout: double
+    c_body:
+      ((frc::Watchdog*) self)->SetTimeout (units::second_t {timeout});
+  GetTimeout:
+    return_type: double
+    const: true
+    c_body:
+      return ((frc::Watchdog*) self)->GetTimeout().value();
+  
+  IsExpired:
+    return_type: bool
+    const: true
+
+  AddEpoch:
+    return_type: void
+    params:
+      epochName: const char*
+  PrintEpochs:
+    return_type: void
+
+  Reset:
+    return_type: void
+  Enable:
+    return_type: void
+  Disable:
+    return_type: void
+
+  SuppressTimeoutMessage:
+    params:
+      suppress: bool

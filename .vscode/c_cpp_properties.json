@@ -5,6 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/src/**",
                 "~/SDKs/luabot/linux64/include/**",
+                "~/SDKs/luabot/linux64/include/hal/**",
+                "~/SDKs/luabot/linux64/include/wpiutil/**",
                 "~/SDKs/luabot/linux64/include/wpilibc/**"
             ],
             "defines": [],

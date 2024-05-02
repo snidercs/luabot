@@ -1,0 +1,123 @@
+typename: DriverStation
+header: frc/DriverStation.h
+namespace: frc
+
+templates:
+  StaticVoid: &StaticVoid
+    static: true
+    return_type: void
+  
+  StaticGetInt: &StaticGetInt
+    static: true
+    return_type: int
+  StaticGetDouble: &StaticGetDouble
+    static: true
+    return_type: double
+  StaticGetBool: &StaticGetBool
+    static: true
+    return_type: bool
+
+methods:
+  GetStickButton:
+    <<: *StaticGetBool
+    params:
+      stick: int
+      button: int
+
+  GetStickButtonPressed:
+    <<: *StaticGetBool
+    params:
+      stick: int
+      button: int
+  GetStickButtonReleased:
+    <<: *StaticGetBool
+    params:
+      stick: int
+      button: int
+
+  GetStickAxis:
+    <<: *StaticGetDouble
+    params:
+      stick: int
+      axis: int
+  GetStickPOV:
+    <<: *StaticGetInt
+    params:
+      stick: int
+      pov: int
+  GetStickButtons:
+    <<: *StaticGetInt
+    params:
+      stick: int
+  
+  GetStickAxisCount:
+    <<: *StaticGetInt
+    params:
+      stick: int
+  GetStickPOVCount:
+    <<: *StaticGetInt
+    params:
+      stick: int
+  GetStickButtonCount:
+    <<: *StaticGetInt
+    params:
+      stick: int
+
+  # GetJoystickIsXbox:
+  # GetJoystickType:
+  # GetJoystickName:
+  # GetJoystickAxisType:
+  # IsJoystickConnected:
+
+  IsEnabled:
+    <<: *StaticGetBool
+  IsDisabled:
+    <<: *StaticGetBool
+  IsEStopped:
+    <<: *StaticGetBool
+  IsAutonomous:
+    <<: *StaticGetBool
+  IsAutonomousEnabled:
+    <<: *StaticGetBool
+  IsTeleop:
+    <<: *StaticGetBool
+  IsTeleopEnabled:
+    <<: *StaticGetBool
+  IsTest:
+    <<: *StaticGetBool
+  IsTestEnabled:
+    <<: *StaticGetBool
+  IsDSAttached:
+    <<: *StaticGetBool
+  IsFMSAttached:
+    <<: *StaticGetBool
+
+  # GetGameSpecificMessage:
+  # GetEventName:
+  # GetMatchType:
+
+  GetMatchNumber:
+    <<: *StaticGetInt
+  GetReplayNumber:
+    <<: *StaticGetInt
+
+  # GetAlliance
+  # GetLocation
+  # WaitForDsConnection
+  # GetMatchTime
+
+  GetBatteryVoltage:
+    <<: *StaticGetDouble
+  
+  RefreshData:
+    <<: *StaticVoid
+
+  # ProvideRefreshedDataEventHandle
+  SilenceJoystickConnectionWarning:
+    <<: *StaticVoid
+    params:
+      silence: bool
+  IsJoystickConnectionWarningSilenced:
+    <<: *StaticGetBool
+
+  # StartDataLog

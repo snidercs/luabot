@@ -1,0 +1,44 @@
+typename: AddressableLED
+header: frc/AddressableLED.h
+namespace: frc
+
+doxygen: https://github.wpilib.org/allwpilib/docs/release/cpp/classfrc_1_1_addressable_l_e_d.html
+
+constructor: true
+destructor: true
+
+templates:
+  Constructor: &Constructor
+    return_type: cptr
+    factory: true
+
+methods:
+  New:
+    <<: *Constructor
+    params:
+      port: int
+  
+  SetLength:
+    params:
+      length: int
+  
+  SetData:
+    stub: true
+
+  SetBitTiming:
+    stub: true
+    params:
+      highTime0: int
+      highTime1: int
+      highTime1: int
+      lowTime1: int
+  
+  SetSyncTime:
+    stub: true
+    params:
+      syncTime: int
+
+  Start:
+    return_type: void
+  Stop:
+    return_type: void
