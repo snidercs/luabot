@@ -34,4 +34,11 @@ bool frcRobotBaseIsReal() {
     return frc::RobotBase::IsReal();
 }
 
+int frcRunHalInitialization() {
+    return frc::RunHALInitialization();
+}
+
+void frcRobotBaseInit() {
+}
+
 }

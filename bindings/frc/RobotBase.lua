@@ -3,6 +3,9 @@
 local RobotBase = {}
 
 local ffi = require ('ffi')
+local hal = require ('wpi.hal')
+
+local DriverStation = require ('frc.DriverStation')
 
 ffi.cdef[[
 bool frcRobotBaseIsReal();
@@ -14,6 +17,13 @@ pcall(function()
     CC = ffi.load ('luabot', true)
 end)
 if CC == nil then CC = ffi.C end
+
+local std = {
+    puts = function (fmt, ...)
+        io.stdout:write (string.format (fmt, ...))
+        io.stdout:flush()
+    end
+}
 
 function RobotBase:startCompetition()
     error('mising implementation in frc.RobotBase: startCompetition')
@@ -43,8 +53,9 @@ function RobotBase.isSimulation()
     return CC.frcRobotBaseIsSimulation()
 end
 
-function RobotBase.init(base)
-    return base
+function RobotBase.init(instance)
+    CC.frcRobotBaseInit()
+    return instance
 end
 
 return RobotBase
