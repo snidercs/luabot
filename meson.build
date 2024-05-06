@@ -108,13 +108,13 @@ luabot_internal_dep = declare_dependency (
 
 readline_dep = dependency('readline')
 
+subdir ('src')
 luabot_exe = executable ('luabot', [
-        'util/luabot/main.cpp'
+        'src/luabot.cpp'
     ],
     cpp_args: ['-DLUA_USE_READLINE=1'],
     dependencies: [luabot_dep, libluajit, readline_dep],
     install: true)
 
-subdir ('src')
 subdir ('bindings')
 subdir ('test')
