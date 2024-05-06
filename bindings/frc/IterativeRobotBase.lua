@@ -90,7 +90,7 @@ function IterativeRobotBase.init (obj, seconds)
     local lastMode = 0
     local word = ffi.new('HAL_ControlWord')
     local period = tonumber(seconds) or kDefaultPeriod
-    local watchdog = Watchdog (period)
+    local watchdog = Watchdog.new (period)
 
     local C = hal.C
 

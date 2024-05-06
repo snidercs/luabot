@@ -17,9 +17,9 @@ local @TYPENAME@_mt = {
     __index = @TYPENAME@
 }
 
-@METHODS@
-
 @CTOR@
+
+@METHODS@
 
 ffi.metatype('@CTYPE@', @TYPENAME@_mt)
 return @TYPENAME@
@@ -131,13 +131,23 @@ def gen_ffi_cdef (obj):
     
     return out.strip()
 
-def gen_ffi_ctor (obj):
+def gen_ffi_ctor_metatable (obj):
     out = '''
 setmetatable(%s, {
     __call = function (T, ...)
         return lib.%s (...)
     end
 })
+''' % (obj['typename'], csymbol (obj, 'New'))
+
+    return out.strip()
+
+
+def gen_ffi_ctor (obj):
+    out = '''
+function %s.new(...)
+    return lib.%s (...)
+end
 ''' % (obj['typename'], csymbol (obj, 'New'))
 
     return out.strip()

@@ -6,5 +6,4 @@ methods:
   GetFPGATimestamp:
     static: true
     return_type: double
-    c_body: |
-      return frc::Timer::GetFPGATimestamp().value();
+    c_body: return frc::Timer::GetFPGATimestamp().value();
