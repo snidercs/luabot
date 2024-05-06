@@ -1,0 +1,43 @@
+typename: Pose3d
+header: frc/geometry/Pose3d.h
+namespace: frc
+
+constructor: true
+destructor: true
+
+methods:
+  New:
+    return_type: cptr
+    factory: true
+  
+  # Pose3d(Translation3d translation, Rotation3d rotation);
+  # Pose3d(units::meter_t x, units::meter_t y, units::meter_t z, Rotation3d rotation);
+  # explicit Pose3d(const Pose2d& pose);
+
+  # Pose3d operator+(const Transform3d& other) const;
+  # Transform3d operator-(const Pose3d& other) const;
+  # bool operator==(const Pose3d&) const = default;
+  # const Translation3d& Translation() const { return m_translation; }
+  
+  X:
+    return_type: double
+    const: true
+    c_body: return ((const frc::Pose3d*) self)->X().value();
+  Y:
+    return_type: double
+    const: true
+    c_body: return ((const frc::Pose3d*) self)->Y().value();
+  Z:
+    return_type: double
+    const: true
+    c_body: return ((const frc::Pose3d*) self)->Z().value();
+
+  # const Rotation3d& Rotation() const { return m_rotation; }
+  # Pose3d operator*(double scalar) const;
+  # Pose3d operator/(double scalar) const;
+  # Pose3d RotateBy(const Rotation3d& other) const;
+  # Pose3d TransformBy(const Transform3d& other) const;
+  # Pose3d RelativeTo(const Pose3d& other) const;
+  # Pose3d Exp(const Twist3d& twist) const;
+  # Twist3d Log(const Pose3d& end) const;
+  # Pose2d ToPose2d() const;
