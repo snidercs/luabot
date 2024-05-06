@@ -13,6 +13,7 @@ lua_path_pat = '@0@/?.lua'
 
 lua_path = 'LUA_PATH=@0@'.format (lua_path_pat.format (bindings_root / 'lua'))
 lua_path += ';' + lua_path_pat.format (bindings_root / 'lua')
+lua_path += ';' + lua_path_pat.format (meson.current_source_dir())
 
 luabot_env = [
     'LD_LIBRARY_PATH=@0@;@1@'.format(bindings_root, luabot_sdk_libdir),
@@ -28,7 +29,6 @@ foreach t : [ 'requireall' ]
 endforeach
 
 subdir('wpi')
-subdir('frc')
 
 if boost_dep.found()
 

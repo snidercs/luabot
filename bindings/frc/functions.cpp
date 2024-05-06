@@ -40,5 +40,4 @@ int frcRunHalInitialization() {
 
 void frcRobotBaseInit() {
 }
-
 }

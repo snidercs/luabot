@@ -1,8 +1,8 @@
-local hal = require ('wpi.hal')
-local TimedRobot = require ('frc.TimedRobot')
+local hal = require('wpi.hal')
+local TimedRobot = require('frc.TimedRobot')
 
-local function TimedRobotTest (dur, timeout)
-    local robot = TimedRobot.init (
+local function TimedRobotTest(dur, timeout)
+    local robot = TimedRobot.init(
         setmetatable({}, { __index = TimedRobot }),
         timeout)
 
@@ -10,6 +10,7 @@ local function TimedRobotTest (dur, timeout)
     local tick = 0
 
     function robot:tick() return tick end
+
     function robot:duration() return duration end
 
     function robot:robotPeriodic()
@@ -27,17 +28,17 @@ local function TimedRobotTest (dur, timeout)
     return robot
 end
 
-hal.initialize (500, 0)
+hal.initialize(500, 0)
 
 do
     local tick = 0
-    local robot = TimedRobotTest (100 * 1, 0.01)
-    
+    local robot = TimedRobotTest(100 * 1, 0.01)
+
     -- Test super class methods are present.
     assert(robot.isSimulation() == true)
 
     -- Half speed peridic callback
-    robot:addPeriodic (function()
+    robot:addPeriodic(function()
         tick = tick + 1
     end, 0.02)
 
@@ -45,7 +46,7 @@ do
 
     assert(robot:tick() == robot:duration())
     assert(robot:tick() == 100)
-    assert(tick == 50, 'tick ~= 50 (actual='..tick..')')
+    assert(tick == 50, 'tick ~= 50 (actual=' .. tick .. ')')
 end
 
 hal.shutdown()

@@ -1,92 +1,16 @@
-
 #include <frc/geometry/CoordinateAxis.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Transform2d.h>
 #include <frc/geometry/Twist2d.h>
 
-#include <iostream>
-
-#include "../../bindings.hpp"
-
-#define BOT_FRC_POSE2D_CACHE 0
-
 static_assert (sizeof (void*) == sizeof (frc::Pose2d*));
 
-class Pose2dCache {
-public:
-    Pose2dCache() {
-        _active.reserve (num_reserved);
-        _avail.reserve (num_reserved);
-        while (_avail.size() < num_reserved) {
-            _avail.push_back (new frc::Pose2d());
-        }
-    }
+template <typename Obj, typename Ctp>
+inline static Obj& toref (Ctp&& ptr) { return *((Obj*) ptr); }
 
-    ~Pose2dCache() {
-        for (auto ptr : _active)
-            delete ptr;
-        for (auto ptr : _avail)
-            delete ptr;
-        _active.clear();
-        _avail.clear();
-    }
-
-    void recycle (frc::Pose2d* obj) {
-        if (obj == nullptr)
-            return;
-
-        auto iter = std::find (_active.begin(), _active.end(), obj);
-        if (iter != _active.end()) {
-            _active.erase (iter);
-        }
-
-        _avail.push_back (obj);
-    }
-
-    /** Recycle an object. Must be a valid pointer. */
-    void recycle (void* cptr) {
-        recycle (static_cast<frc::Pose2d*> (cptr));
-    }
-
-    frc::Pose2d* construct() {
-        if (_avail.size() > 0) {
-            auto* ptr = _avail.back();
-            *ptr      = {};
-            _active.push_back (ptr);
-            _avail.pop_back();
-            return ptr;
-        }
-
-        _active.push_back (new frc::Pose2d());
-        return _active.back();
-    }
-
-    std::size_t num_active() const noexcept { return _active.size(); }
-    std::size_t num_available() const noexcept { return _avail.size(); }
-    std::size_t size() const noexcept { return _active.size() + _avail.size(); }
-
-    void free_unused() {
-        while (_avail.size() > num_reserved) {
-            auto ptr = _avail.back();
-            _avail.pop_back();
-            delete ptr;
-        }
-    }
-
-    void print_stats() {
-        std::cout
-            << "active: " << (int) num_active()
-            << "  avail: " << (int) num_available()
-            << "  total: " << (int) size() << std::endl;
-    }
-
-private:
-    enum { num_reserved = 512 };
-    std::vector<frc::Pose2d*> _active, _avail;
-};
-
-static Pose2dCache s_pose2d;
+template <typename Obj, typename Ctp>
+inline static const Obj& toref (const Ctp&& ptr) { return *((const Obj*) ptr); }
 
 extern "C" {
 
@@ -193,11 +117,7 @@ typedef void FrcPose2d;
 // constexpr Pose2d(Translation2d translation, Rotation2d rotation);
 // constexpr Pose2d(units::meter_t x, units::meter_t y, Rotation2d rotation);
 FrcPose2d* frcPose2dNew (double x, double y, double r) {
-#if BOT_FRC_POSE2D_CACHE
-    if (auto ptr = s_pose2d.construct()) {
-#else
     if (auto ptr = new frc::Pose2d()) {
-#endif
         frc::Rotation2d rot { units::angle::radian_t { r } };
         *ptr = { units::meter_t (x),
                  units::meter_t (y),
@@ -210,18 +130,7 @@ FrcPose2d* frcPose2dNew (double x, double y, double r) {
 
 // ~Pose2d()
 void frcPose2dFree (FrcPose2d* self) {
-#if BOT_FRC_POSE2D_CACHE
-    s_pose2d.recycle (self);
-#else
     delete static_cast<frc::Pose2d*> (self);
-#endif
-}
-
-// Extra
-void frcPose2dCollect() {
-#if BOT_FRC_POSE2D_CACHE
-    s_pose2d.free_unused();
-#endif
 }
 
 // constexpr Pose2d operator+(const Transform2d& other) const;

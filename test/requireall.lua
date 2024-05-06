@@ -38,6 +38,5 @@ local geometry = {
 
 for _,m in ipairs (geometry) do
     local mod = string.format ('%s.%s', geometry_package, m)
-    print(mod)
     local _ = require (mod)
 end

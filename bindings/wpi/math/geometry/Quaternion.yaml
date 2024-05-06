@@ -1,0 +1,53 @@
+typename: Quaternion
+header: frc/geometry/Quaternion.h
+namespace: frc
+
+constructor: false
+destructor: true
+
+methods:
+  # Quaternion() = default;
+  # Quaternion(double w, double x, double y, double z);
+  # Quaternion operator+(const Quaternion& other) const;
+  # Quaternion operator-(const Quaternion& other) const;
+  # Quaternion operator*(const double other) const;
+  # Quaternion operator/(const double other) const;
+  # Quaternion operator*(const Quaternion& other) const;
+  # bool operator==(const Quaternion& other) const;
+
+  Dot:
+    return_type: double
+    params:
+      other: const-cptr
+    const: true
+    c_body: return ((const frc::Quaternion*) self)->Dot (*(const frc::Quaternion*)other);
+  
+  # Quaternion Conjugate() const;
+  # Quaternion Inverse() const;
+  # Quaternion Normalize() const;
+
+  Norm:
+    return_type: double
+    const: true
+  
+  # Quaternion Pow(const double t) const;
+  # Quaternion Exp(const Quaternion& other) const;
+  # Quaternion Exp() const;
+  # Quaternion Log(const Quaternion& other) const;
+  # Quaternion Log() const;
+
+  W:
+    return_type: double
+    const: true
+  X:
+    return_type: double
+    const: true
+  Y:
+    return_type: double
+    const: true
+  Z:
+    return_type: double
+    const: true
+
+  # Eigen::Vector3d ToRotationVector() const;
+  # static Quaternion FromRotationVector(const Eigen::Vector3d& rvec);

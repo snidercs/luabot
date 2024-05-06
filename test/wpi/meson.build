@@ -1,7 +1,15 @@
 
-foreach t : [ 'AddressableLED', 'CoordinateAxis', 'Pose2d', 'Rotation2d' ]
+wpi_tests = '''
+    AddressableLED
+    Filesystem
+    Geometry
+    Robots
+    Timed
+'''.split()
+
+foreach t : wpi_tests
     test (t, luabot_exe,
-        args : files(t + '_test.lua'),
+        args : files('Test' + t + '.lua'),
         workdir : meson.project_source_root() / 'bindings',
         suite : 'wpi',
         env: luabot_env)

@@ -115,6 +115,6 @@ luabot_exe = executable ('luabot', [
     dependencies: [luabot_dep, libluajit, readline_dep],
     install: true)
 
-subdir ('bindings')
 subdir ('src')
+subdir ('bindings')
 subdir ('test')

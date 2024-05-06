@@ -56,7 +56,7 @@ foreach f : wpi_resources
 endforeach
 
 luabot_lib = library ('luabot',
-    [ frc_cpp_files, wpi_cpp_files, gen_cpp ],
+    [ luabot_src_cpp_files, frc_cpp_files, wpi_cpp_files, gen_cpp ],
     dependencies: [ wpilibc_dep, wpimath_dep ],
     install: true
 )

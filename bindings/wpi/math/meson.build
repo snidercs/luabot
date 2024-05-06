@@ -1,4 +1,4 @@
 
 wpi_cpp_files += files ('''
-    functions.cpp
+    geometry.cpp
 '''.split())

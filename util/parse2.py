@@ -85,9 +85,13 @@ def cparams (obj, method):
 
     n = 0
     for p in params:
+        t = params[p]
+        if t == 'const-cptr':
+            t = 'const %s*' % ctype(obj)
+        
         if (n == 0 and use_self) or n > 0:
             ps += ', '
-        ps += '%s %s' % (params[p], p)
+        ps += '%s %s' % (t, p)
         n += 1
 
     return ps
