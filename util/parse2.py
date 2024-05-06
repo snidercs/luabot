@@ -10,6 +10,8 @@ ffi.cdef[[
 
 local lib = ffi.load ('@CLIB@')
 
+---@TYPENAME@ wrapper
+---@class @TYPENAME@
 local @TYPENAME@ = {}
 local @TYPENAME@_mt = {
     __index = @TYPENAME@
@@ -97,7 +99,7 @@ def cparams (obj, method):
     return ps
 
 def csymbol (obj, ms):
-    return '%s%s%s' % (obj['namespace'], obj['typename'], ms)    
+    return '%s%s%s' % (obj['namespace'], obj['typename'], ms)
     
 def declare_opaque_ctype (obj):
     return 'typedef void %s' % ctype(obj)
