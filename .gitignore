@@ -31,4 +31,8 @@
 *.out
 *.app
 
+# Python
+*.pyc
+
+# VSCode
 /.vscode/settings.json
