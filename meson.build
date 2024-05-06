@@ -72,27 +72,33 @@ wpilibc_dep = declare_dependency (
                     libwpilibc ]
 )
 
-## WPI Misc...
 libapriltag = cpp.find_library ('apriltag', dirs: [ luabot_sdk_libdirs ], required : true)
-libcameraserver = cpp.find_library ('cameraserver', dirs: [ luabot_sdk_libdirs ], required : true)
-libcscore = cpp.find_library ('cscore', dirs: [ luabot_sdk_libdirs ], required : true)
+apriltag_dep = declare_dependency (
+    include_directories: [
+        fs.expanduser ('~/SDKs/luabot/linux64/include/apriltag')],
+    dependencies: [ wpiutil_dep, wpimath_dep ]
+)
 
-libglass = cpp.find_library ('glass', dirs: [ luabot_sdk_libdirs ], required : true)
-libglassnt = cpp.find_library ('glassnt', dirs: [ luabot_sdk_libdirs ], required : true)
+## WPI Misc...
+# libcameraserver = cpp.find_library ('cameraserver', dirs: [ luabot_sdk_libdirs ], required : true)
+# libcscore = cpp.find_library ('cscore', dirs: [ luabot_sdk_libdirs ], required : true)
 
-libhalsim_ds_socket = cpp.find_library ('halsim_ds_socket', dirs: [ luabot_sdk_libdirs ], required : true)
-libhalsim_gui = cpp.find_library ('halsim_gui', dirs: [ luabot_sdk_libdirs ], required : true)
-libhalsim_ws_client = cpp.find_library ('halsim_ws_client', dirs: [ luabot_sdk_libdirs ], required : true)
-libhalsim_ws_core = cpp.find_library ('halsim_ws_core', dirs: [ luabot_sdk_libdirs ], required : true)
-libhalsim_ws_server = cpp.find_library ('halsim_ws_server', dirs: [ luabot_sdk_libdirs ], required : true)
-libhalsim_xrp = cpp.find_library ('halsim_xrp', dirs: [ luabot_sdk_libdirs ], required : true)
+# libglass = cpp.find_library ('glass', dirs: [ luabot_sdk_libdirs ], required : true)
+# libglassnt = cpp.find_library ('glassnt', dirs: [ luabot_sdk_libdirs ], required : true)
 
-libwpigui = cpp.find_library ('wpigui', dirs: [ luabot_sdk_libdirs ], required : true)
+# libhalsim_ds_socket = cpp.find_library ('halsim_ds_socket', dirs: [ luabot_sdk_libdirs ], required : true)
+# libhalsim_gui = cpp.find_library ('halsim_gui', dirs: [ luabot_sdk_libdirs ], required : true)
+# libhalsim_ws_client = cpp.find_library ('halsim_ws_client', dirs: [ luabot_sdk_libdirs ], required : true)
+# libhalsim_ws_core = cpp.find_library ('halsim_ws_core', dirs: [ luabot_sdk_libdirs ], required : true)
+# libhalsim_ws_server = cpp.find_library ('halsim_ws_server', dirs: [ luabot_sdk_libdirs ], required : true)
+# libhalsim_xrp = cpp.find_library ('halsim_xrp', dirs: [ luabot_sdk_libdirs ], required : true)
 
-libwpilibNewCommands = cpp.find_library ('wpilibNewCommands', dirs: [ luabot_sdk_libdirs ], required : true)
-libwpinet = cpp.find_library ('wpinet', dirs: [ luabot_sdk_libdirs ], required : true)
-libromiVendordep = cpp.find_library ('romiVendordep', dirs: [ luabot_sdk_libdirs ], required : false)
-libxrpVendordep = cpp.find_library ('xrpVendordep', dirs: [ luabot_sdk_libdirs ], required : false)
+# libwpigui = cpp.find_library ('wpigui', dirs: [ luabot_sdk_libdirs ], required : true)
+
+# libwpilibNewCommands = cpp.find_library ('wpilibNewCommands', dirs: [ luabot_sdk_libdirs ], required : true)
+# libwpinet = cpp.find_library ('wpinet', dirs: [ luabot_sdk_libdirs ], required : true)
+# libromiVendordep = cpp.find_library ('romiVendordep', dirs: [ luabot_sdk_libdirs ], required : false)
+# libxrpVendordep = cpp.find_library ('xrpVendordep', dirs: [ luabot_sdk_libdirs ], required : false)
 
 luabot_dep = declare_dependency (
     link_with : [],

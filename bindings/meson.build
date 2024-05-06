@@ -57,6 +57,6 @@ endforeach
 
 luabot_lib = library ('luabot',
     [ luabot_src_cpp_files, frc_cpp_files, wpi_cpp_files, gen_cpp ],
-    dependencies: [ wpilibc_dep, wpimath_dep ],
+    dependencies: [ wpilibc_dep, wpimath_dep, apriltag_dep ],
     install: true
 )

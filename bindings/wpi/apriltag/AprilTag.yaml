@@ -1,0 +1,20 @@
+typename: AprilTag
+header: frc/apriltag/AprilTag.h
+namespace: frc
+
+destructor: true
+
+methods:
+  New:
+    return_type: cptr
+    factory: true
+    
+  Equals:
+    const: true
+    return_type: bool
+    params:
+      other: const-cptr
+    c_body: return (*(const frc::AprilTag*) self) == (*(const frc::AprilTag*) other); 
+    
+  # static bool Generate36h11AprilTagImage(wpi::RawFrame* frame, int id);
+  # static bool Generate16h5AprilTagImage(wpi::RawFrame* frame, int id);
