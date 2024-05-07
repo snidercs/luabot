@@ -8,12 +8,14 @@
 # endif
 
 bindings_root = meson.project_build_root() / 'bindings'
-bindings_src_root = meson.project_source_root() / 'bindings'
-lua_path_pat = '@0@/?.lua'
+lua_path_pat = '@0@/?.lua;@0@/?/init.lua'
 
-lua_path = 'LUA_PATH=@0@'.format (lua_path_pat.format (bindings_root / 'lua'))
-lua_path += ';' + lua_path_pat.format (bindings_root / 'lua')
+lua_path = 'LUA_PATH=?.lua;?/init.lua'
+lua_path += ';' + lua_path_pat.format ('bindings')
+lua_path += ';' + lua_path_pat.format (fs.stem(meson.project_build_root()) / 'bindings' / 'lua')
 lua_path += ';' + lua_path_pat.format (meson.current_source_dir())
+
+lua_workdir = meson.project_source_root()
 
 luabot_env = [
     'LD_LIBRARY_PATH=@0@;@1@'.format(bindings_root, '/usr/local/lib'),
@@ -23,7 +25,7 @@ luabot_env = [
 foreach t : [ 'requireall' ]
     test (t, luabot_exe,
         args : files(t + '.lua'),
-        workdir : meson.project_source_root() / 'bindings',
+        workdir : lua_workdir,
         suite : 'frc',
         env: luabot_env)
 endforeach

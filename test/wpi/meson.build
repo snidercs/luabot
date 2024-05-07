@@ -10,7 +10,7 @@ wpi_tests = '''
 foreach t : wpi_tests
     test (t, luabot_exe,
         args : files('Test' + t + '.lua'),
-        workdir : meson.project_source_root() / 'bindings',
+        workdir : lua_workdir,
         suite : 'wpi',
         env: luabot_env)
 endforeach
