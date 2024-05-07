@@ -13,7 +13,7 @@ project ('luabot', ['cpp', 'c'],
 fs = import ('fs')
 luajit_exe = find_program ('luajit')
 
-parse_py = files('util/parse2.py')
+parse_py = files ('util/parse2.py')
 
 c = meson.get_compiler ('c')
 cpp = meson.get_compiler ('cpp')
@@ -44,7 +44,7 @@ readline_dep = dependency('readline')
 
 subdir ('src')
 luabot_exe = executable ('luabot', [
-        'src/luabot.cpp'
+        'src/luabot.c'
     ],
     cpp_args: ['-DLUA_USE_READLINE=@0@'.format(readline_dep.found() ? 1 : 0)],
     dependencies: [luabot_dep, luajit_dep, readline_dep],
