@@ -390,8 +390,5 @@ def main():
 
     exit(0)
 
-if __name__ == '__main__':
-    import tocode
-    data = tocode.Data()
-    
+if __name__ == '__main__':    
     main()
