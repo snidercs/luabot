@@ -16,7 +16,7 @@ lua_path += ';' + lua_path_pat.format (bindings_root / 'lua')
 lua_path += ';' + lua_path_pat.format (meson.current_source_dir())
 
 luabot_env = [
-    'LD_LIBRARY_PATH=@0@;@1@'.format(bindings_root, luabot_sdk_libdir),
+    'LD_LIBRARY_PATH=@0@;@1@'.format(bindings_root, '/usr/local/lib'),
     lua_path
 ]
 
