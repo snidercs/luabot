@@ -361,6 +361,24 @@ def renderall (opts, defs = []):
                     os.remove (nf)
                 shutil.copy2 (af, nf)
 
+def print_modules (dir):
+    from pathlib import Path
+    if not os.path.isdir (dir):
+        raise NotADirectoryError(dir)
+    adir = os.path.abspath (dir)
+    out = []
+    for f in find_resources (adir):
+        f = os.path.relpath (f, adir)
+        out.append(f)
+    out.sort()
+    for f in out:
+        s = "'" + os.path.splitext (f)[0] + "'"
+        s = s.replace ('/', '.')
+        if f != out[-1]:
+            s += ','
+        print (s)
+    exit(0)
+
 def main():
     opts, args = parse_options()
     if (opts.list):
