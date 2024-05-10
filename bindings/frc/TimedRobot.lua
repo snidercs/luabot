@@ -34,7 +34,7 @@ end
 function TimedRobot.addPeriodic(callback, period)
 end
 
-function TimedRobot.init(instance, timeout)
+local function init(instance, timeout)
     local impl = IterativeRobotBase.init(instance)
 
     local status = ffi.new('int32_t[1]')
@@ -119,4 +119,13 @@ function TimedRobot.init(instance, timeout)
     return impl
 end
 
-return setmetatable(TimedRobot, { __index = TimedRobot })
+local function derive()
+    local T = {}
+    for k, v in pairs(TimedRobot) do T[k] = v end
+    return T
+end
+
+return {
+    derive = derive,
+    init = init
+}

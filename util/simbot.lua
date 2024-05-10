@@ -1,116 +1,62 @@
+-- A test program to try different ways of running an FRC robot in Lua.
+
 local lanes = require('lanes')
-local hal = require('wpi.hal')
+local RobotBase = require ('frc.RobotBase')
+require ('wpi.hal')
 local ffi = require('ffi')
-require('frc.RobotBase')
 
-local function run()
-    local ffi = require('ffi')
-    local ok, hal = pcall(require, 'hal')
-    if not ok then
-        print(tostring(hal))
-        return
-    end
-
-    local TimedRobot = require('frc.TimedRobot')
-
-    local function TimedRobotTest(dur, timeout)
-        local robot = TimedRobot.init(
-            setmetatable({}, { __index = TimedRobot }),
-            timeout)
-
-        local duration = tonumber(dur) or 100
-        local tick = 0
-        local initialized = false
-        local teleopCalled = false
-
-        function robot:tick() return tick end
-
-        function robot:initialized() return initialized end
-
-        function robot:duration() return duration end
-
-        function robot:robotInit()
-            print("robot:robotInit()")
-            initialized = true
-        end
-
-        function robot:simulationInit()
-            print("robot:simulationInit()")
-        end
-
-        function robot:disabledInit()
-            print("init disabled")
-        end
-
-        function robot:teleopInit()
-            print("robot:teleopInit()")
-        end
-
-        local telopRan = false
-        function robot:teleopPeriodic()
-            if not telopRan then
-                print("periodic")
-                telopRan = true
-            else
-            end
-        end
-
-        function robot:robotPeriodic()
-            -- print("robotPeriodic()")
-        end
-
-        return robot
-    end
-
-    local robot
-    local ok, err = pcall(function()
-        print("starting robot in thread")
-        robot = TimedRobotTest(100 * 2, 0.01)
-        local tick = 0
-
-        -- Test super class methods are present.
-        -- assert(robot.isSimulation() == true)
-
-        -- Half speed peridic callback
-        robot:addPeriodic(function()
-            tick = tick + 1
-            if tick >= 200 then robot:endCompetition() end
-        end, 0.02)
-
-        robot:startCompetition()
-
-        assert(robot:tick() == robot:duration())
-        assert(robot:tick() == 100)
-        assert(tick == 50, 'tick ~= 50 (actual=' .. tick .. ')')
-        assert(not robot:initialized())
-    end)
-
-    if not ok then
-        io.stdout:write(tostring(err) .. '\n')
-        io.stdout:flush()
-        robot:endCompetition()
-        hal.C.HAL_ExitMain()
-    end
+local robotModuleStr = 'MockRobot'
+if select('#',...) >= 1 then
+    -- use command-line specified robot module to run
+    robotModuleStr = tostring (select(1, ...))
 end
 
-local ok, CCC = pcall(ffi.load, 'luabot')
+local CCC, ok, err
+
+
+local console = {}
+function console.error (...)
+    io.stderr:write ('[simbot] error: ')
+    io.stderr:write(...)
+    io.stderr:write('\n')
+    io.stderr:flush()
+end
+
+ok, CCC = pcall (ffi.load, 'luabot', true)
 if not ok then
-    print("error starting bot")
-    os.exit(100)
+    console.error (tostring (CCC))
+    os.exit(-1)
 end
 
-CCC.frcRunHalInitialization()
-CCC.frcRobotBaseInit()
+local function startrobot (module)
+    local rok, e = pcall (function()
+        package.path = package.path..';util/?.lua'
+        require ('frc.RobotBase')
+        local tffi = require('ffi')
+        local _ = tffi.load ('luabot', true)
+        tffi.C.frcRobotBaseInit()
+        local T = require (module)
+        local robot = T.new()
+        robot:startCompetition()
+    end)
+    if not rok then
+        io.stdout:write (tostring(e))
+        io.stdout:flush()
+    end
+end
 
-local t = lanes.gen("*", run)()
+ffi.C.frcRunHalInitialization()
 
 if ffi.C.HAL_HasMain() then
+    local thrd = lanes.gen ("*", startrobot)(robotModuleStr)
     ffi.C.HAL_RunMain()
+    ok, err = thrd:join()
+    if not ok then
+        print(tostring(err))
+    end
+else
+    startrobot(robotModuleStr)
 end
 
-local ok, err = t:join()
-if not ok then
-    print(tostring(err))
-end
-
-hal.shutdown()
+CCC.HAL_Shutdown()
+os.exit(0)
