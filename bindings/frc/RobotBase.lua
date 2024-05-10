@@ -1,18 +1,23 @@
+local M = {}
+
 ---RobotBase
 ---@class RobotBase
 local RobotBase = {}
 
-local ffi = require ('ffi')
+local ffi = require('ffi')
 
-ffi.cdef[[
+ffi.cdef [[
 bool frcRobotBaseIsReal();
 bool frcRobotBaseIsSimulation();
 void frcRobotBaseInit();
+int frcRunHalInitialization();
+
+int HALSIM_InitExtension();
 ]]
 
 local CC
 pcall(function()
-    CC = ffi.load ('luabot', true)
+    CC = ffi.load('luabot', true)
 end)
 if CC == nil then CC = ffi.C end
 
@@ -40,13 +45,26 @@ function RobotBase.isReal()
     return CC.frcRobotBaseIsReal()
 end
 
+M.isReal = RobotBase.isReal
+
 function RobotBase.isSimulation()
     return CC.frcRobotBaseIsSimulation()
 end
 
-function RobotBase.init(instance)
-    CC.frcRobotBaseInit()
+M.isSimulation = RobotBase.isSimulation
+
+local function derive()
+    local T = {}
+    for k, v in pairs(RobotBase) do T[k] = v end
+    return T
+end
+M.derive = derive
+
+local function init(instance)
+    -- CC.frcRunHalInitialization()
+    -- CC.frcRobotBaseInit()
     return instance
 end
+M.init = init
 
-return RobotBase
+return M

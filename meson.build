@@ -13,7 +13,7 @@ project ('luabot', ['cpp', 'c'],
 fs = import ('fs')
 luajit_exe = find_program ('luajit')
 
-parse_py = files ('util/parse2.py')
+parse_py = files ('util/parse.py')
 
 c = meson.get_compiler ('c')
 cpp = meson.get_compiler ('cpp')
@@ -52,3 +52,8 @@ luabot_exe = executable ('luabot', [
 
 subdir ('bindings')
 subdir ('test')
+
+simbot_exe = executable ('simbot', [
+        'util/simbot.cpp'
+    ],
+    dependencies: [wpilibc_dep])

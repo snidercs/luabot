@@ -1,15 +1,13 @@
-
 local ffi = require('ffi')
 local hal = require('wpi.hal')
 
-local DriverStation = require ('frc.DriverStation')
-local LiveWindow = require ('frc.livewindow.LiveWindow')
-local RobotBase = require ('frc.RobotBase')
-local Shuffleboard = require ('frc.shuffleboard.Shuffleboard')
-local SmartDashboard = require ('frc.smartdashboard.SmartDashboard')
-local Watchdog = require ('frc.Watchdog')
+local DriverStation = require('frc.DriverStation')
+local LiveWindow = require('frc.livewindow.LiveWindow')
+local RobotBase = require('frc.RobotBase')
+local Shuffleboard = require('frc.shuffleboard.Shuffleboard')
+local SmartDashboard = require('frc.smartdashboard.SmartDashboard')
+local Watchdog = require('frc.Watchdog')
 
--- local nt = require ('wpi.nt')
 local nt = {}
 
 local kDefaultPeriod = 20.0
@@ -24,13 +22,8 @@ local isSimulation = RobotBase.isSimulation()
 
 ---
 ---@class IterativeRobotBase
-local IterativeRobotBase = {}
+local IterativeRobotBase = RobotBase.derive()
 local IterativeRobotBase_mt = { __index = IterativeRobotBase }
-
--- copy, 'inherrit', methods from iterative robot
-for k, v in pairs(RobotBase) do
-    IterativeRobotBase[k] = v
-end
 
 function IterativeRobotBase:robotInit() end
 
@@ -81,17 +74,20 @@ end
 function IterativeRobotBase:loopFunc()
 end
 
-function IterativeRobotBase.init (obj, seconds)
-    local impl = RobotBase.init (obj)
+local M = {}
+
+local function init(obj, seconds)
+    local impl = RobotBase.init(obj)
 
     local lwEnabledInTest = false
     local ntFlushEnabled = false
     local calledDsConnected = false
     local lastMode = 0
-    local word = ffi.new('HAL_ControlWord')
+    local word = ffi.new ('HAL_ControlWord')
     local period = tonumber(seconds) or kDefaultPeriod
-    local watchdog = Watchdog.new (period)
+    local watchdog = Watchdog.new(period)
 
+    print(ffi.typeof(word))
     local C = hal.C
 
     function impl:getPeriod() return period end
@@ -100,20 +96,21 @@ function IterativeRobotBase.init (obj, seconds)
         DriverStation.refreshData()
         watchdog:reset()
 
-        C.HAL_GetControlWord(word)
+        C.HAL_GetControlWord (word)
 
         local mode = kNone
-        if not (word.enabled and word.dsAttached) then
+        if not (word.enabled == 1 and word.dsAttached == 1) then
             mode = kDisabled;
-        elseif word.autonomous then
+        elseif word.autonomous == 1 then
             mode = kAutonomous
-        elseif not (word.autonomous or word.test) then
+        elseif not (word.autonomous == 1 or word.test == 1) then
             mode = kTeleop
-        elseif word.disabled then
+        elseif word.test == 1 then
             mode = kTest
         end
 
-        if not calledDsConnected and word.dsAttached then
+        if not calledDsConnected and word.dsAttached == 1 then
+            print ("self:driverStationConnected()")
             calledDsConnected = true
             self:driverStationConnected();
         end
@@ -129,7 +126,7 @@ function IterativeRobotBase.init (obj, seconds)
             elseif lastMode == kTest then
                 if lwEnabledInTest then
                     LiveWindow.setEnabled(false)
-                    Shuffleboard.disableActuatorWidgets()
+                    -- Shuffleboard.disableActuatorWidgets()
                 end
                 self:testExit()
             end
@@ -196,7 +193,7 @@ function IterativeRobotBase.init (obj, seconds)
         -- Flush NetworkTables
         if ntFlushEnabled then
             -- TODO: nt::NetworkTableInstance::GetDefault().FlushLocal();
-            nt.flushlocal()
+            -- nt.flushlocal()
         end
 
         -- Warn on loop time overruns
@@ -207,5 +204,13 @@ function IterativeRobotBase.init (obj, seconds)
 
     return impl
 end
+M.init = init
 
-return setmetatable(IterativeRobotBase, IterativeRobotBase_mt)
+local function derive()
+    local T = {}
+    for k, v in pairs(IterativeRobotBase) do T[k] = v end
+    return T
+end
+M.derive = derive
+
+return M

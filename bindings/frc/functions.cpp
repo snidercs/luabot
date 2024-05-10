@@ -39,5 +39,17 @@ int frcRunHalInitialization() {
 }
 
 void frcRobotBaseInit() {
+    static bool hasInit = false;
+    if (hasInit)
+        return;
+    hasInit = true;
+
+    class InitBot : public frc::RobotBase {
+    public:
+        InitBot() {}
+        ~InitBot() {}
+        void StartCompetition() override {}
+        void EndCompetition() override {}
+    } init;
 }
 }

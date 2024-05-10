@@ -14,6 +14,7 @@ lua_path = 'LUA_PATH=?.lua;?/init.lua'
 lua_path += ';' + lua_path_pat.format ('bindings')
 lua_path += ';' + lua_path_pat.format (fs.stem(meson.project_build_root()) / 'bindings' / 'lua')
 lua_path += ';' + lua_path_pat.format (meson.current_source_dir())
+lua_path += ';' + lua_path_pat.format ('/usr/local/share/lua/5.1')
 
 lua_workdir = meson.project_source_root()
 

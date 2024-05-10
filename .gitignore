@@ -36,3 +36,6 @@
 
 # VSCode
 /.vscode/settings.json
+
+simgui*.json
+networktables.json

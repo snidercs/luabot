@@ -8,7 +8,7 @@ local Timer = require('frc.Timer')
 local C = hal.C
 
 ---@class TimedRobot
-local TimedRobot = {}
+local TimedRobot = IterativeRobotBase.derive()
 
 local function FRC_ReportError(format, ...)
     print(format)
@@ -20,11 +20,6 @@ local function FRC_CheckErrorStatus(status, format)
     elseif status > 0 then
         FRC_ReportError(format)
     end
-end
-
--- copy, 'inherrit', methods from iterative robot
-for k, v in pairs(IterativeRobotBase) do
-    TimedRobot[k] = v
 end
 
 local function Callback(f, p)
@@ -124,4 +119,4 @@ function TimedRobot.init(instance, timeout)
     return impl
 end
 
-return setmetatable(TimedRobot, { __call = TimedRobot })
+return setmetatable(TimedRobot, { __index = TimedRobot })
