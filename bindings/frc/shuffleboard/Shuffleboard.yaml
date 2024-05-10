@@ -15,7 +15,7 @@ methods:
   EnableActuatorWidgets:
     return_type: void
     static: true
-  EnableActuatorWidgets:
+  DisableActuatorWidgets:
     return_type: void
     static: true
   StartRecording:

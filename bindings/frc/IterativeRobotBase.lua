@@ -23,7 +23,6 @@ local isSimulation = RobotBase.isSimulation()
 ---
 ---@class IterativeRobotBase
 local IterativeRobotBase = RobotBase.derive()
-local IterativeRobotBase_mt = { __index = IterativeRobotBase }
 
 function IterativeRobotBase:robotInit() end
 
@@ -87,7 +86,6 @@ local function init(obj, seconds)
     local period = tonumber(seconds) or kDefaultPeriod
     local watchdog = Watchdog.new(period)
 
-    print(ffi.typeof(word))
     local C = hal.C
 
     function impl:getPeriod() return period end
@@ -110,7 +108,6 @@ local function init(obj, seconds)
         end
 
         if not calledDsConnected and word.dsAttached == 1 then
-            print ("self:driverStationConnected()")
             calledDsConnected = true
             self:driverStationConnected();
         end
@@ -126,7 +123,7 @@ local function init(obj, seconds)
             elseif lastMode == kTest then
                 if lwEnabledInTest then
                     LiveWindow.setEnabled(false)
-                    -- Shuffleboard.disableActuatorWidgets()
+                    Shuffleboard.disableActuatorWidgets()
                 end
                 self:testExit()
             end
