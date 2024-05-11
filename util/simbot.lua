@@ -1,6 +1,6 @@
 -- A test program to try different ways of running an FRC robot in Lua.
 
-local lanes = require('lanes')
+local lanes = require('lanes').configure()
 local RobotBase = require ('frc.RobotBase')
 require ('wpi.hal')
 local ffi = require('ffi')
