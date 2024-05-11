@@ -1,18 +1,15 @@
 -- A test program to try different ways of running an FRC robot in Lua.
 
-local lanes = require('lanes').configure()
-local RobotBase = require ('frc.RobotBase')
-require ('wpi.hal')
 local ffi = require('ffi')
+local lanes = require('lanes').configure()
+require ('frc.RobotBase')
+require ('wpi.hal')
 
-local robotModuleStr = 'MockRobot'
+local robotModuleStr = 'robots.TestRobot'
 if select('#',...) >= 1 then
     -- use command-line specified robot module to run
     robotModuleStr = tostring (select(1, ...))
 end
-
-local CCC, ok, err
-
 
 local console = {}
 function console.error (...)
@@ -22,11 +19,15 @@ function console.error (...)
     io.stderr:flush()
 end
 
-ok, CCC = pcall (ffi.load, 'luabot', true)
-if not ok then
-    console.error (tostring (CCC))
-    os.exit(-1)
+do
+    local ok, ret = pcall (ffi.load, 'luabot', true)
+    if not ok then
+        console.error (tostring (ret))
+        os.exit(-1)
+    end
 end
+
+local C = ffi.C
 
 local function startrobot (module)
     local rok, e = pcall (function()
@@ -37,20 +38,24 @@ local function startrobot (module)
         tffi.C.frcRobotBaseInit()
         local T = require (module)
         local robot = T.new()
+        local jit = require ('jit')
+        jit.on(robot.startCompetition, true)
+
         robot:startCompetition()
     end)
     if not rok then
-        io.stdout:write (tostring(e))
+        console.error (tostring(e))
         io.stdout:flush()
     end
 end
 
-ffi.C.frcRunHalInitialization()
+C.frcRunHalInitialization()
 
-if ffi.C.HAL_HasMain() then
+if C.HAL_HasMain() then
     local thrd = lanes.gen ("*", startrobot)(robotModuleStr)
     ffi.C.HAL_RunMain()
-    ok, err = thrd:join()
+    C.HAL_Shutdown()
+    local ok, err = thrd:join()
     if not ok then
         print(tostring(err))
     end
@@ -58,5 +63,5 @@ else
     startrobot(robotModuleStr)
 end
 
-CCC.HAL_Shutdown()
+C.HAL_Shutdown()
 os.exit(0)

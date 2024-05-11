@@ -38,7 +38,11 @@ function MockRobot:teleopPeriodic()
     end
 end
 
+local jit = require ('jit')
 local hasReportedDisconnected = false
+
+local ticker = 0
+
 function MockRobot:robotPeriodic()
     local pad = self.pad
     local disconnected = not pad:isConnected()
@@ -51,6 +55,27 @@ function MockRobot:robotPeriodic()
         return
     end
 
+    local function pack (...)
+        local out = { n = 0}
+        if select('#', ...) > 0 then
+            for i = 1, select('#', ...) do
+                out[i] = select (i, ...)
+                out.n = i
+            end
+        end
+        return out
+    end
+
+    ticker = ticker + 1
+    if ticker >= 100 then
+        local res = pack (jit.status())
+        local ok = table.remove(res, 1)
+        local okstr = 'JIT: on'
+        if not ok then okstr = 'JIT: off' end
+        print(okstr, unpack(res))
+        if ok then  jit.off() else jit.on() end
+        ticker = 0
+    end
     if pad:getXButtonPressed() then
         print('pressed')
     elseif pad:getXButtonReleased() then
