@@ -29,8 +29,64 @@ methods:
   
   ## TODO: handle super class methods automatically
   ## from frc.GenericHID
+  GetRawButton:
+    <<: *GetBool
+    params:
+      button: int
+  GetRawButtonPressed:
+    <<: *GetBool
+    const: false
+    params:
+      button: int
+  GetRawButtonReleased:
+    <<: *GetBool
+    const: false
+    params:
+      button: int
+
+  GetRawAxis:
+    <<: *GetDouble
+    params:
+      axis: int
+  
+  GetPOV:
+    <<: *GetInt
+    params:
+      pov: int
+
+  GetAxisCount:
+    <<: *GetInt
+  GetPOVCount:
+    <<: *GetInt
+  GetButtonCount:
+    <<: *GetInt
+
   IsConnected:
     <<: *GetBool
+
+  # GetType:
+  # GetName:
+  
+  GetAxisType:
+    <<: *GetInt
+    params:
+      axis: int
+  
+  GetPort:
+    <<: *GetInt
+
+  SetOutput:
+    return_type: void
+    params:
+      outputNumber: int
+      value: bool
+  
+  SetOutputs:
+    return_type: void
+    params:
+      value: int
+
+  # SetRumble:
   ## end frc.generic HID
   
   GetLeftX:
@@ -157,3 +213,4 @@ methods:
 
   # LeftTrigger
   # RightTrigger
+  
