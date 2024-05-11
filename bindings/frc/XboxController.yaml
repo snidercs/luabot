@@ -26,7 +26,13 @@ methods:
     <<: *Constructor
     params:
       port: int
-
+  
+  ## TODO: handle super class methods automatically
+  ## from frc.GenericHID
+  IsConnected:
+    <<: *GetBool
+  ## end frc.generic HID
+  
   GetLeftX:
     <<: *GetDouble
   GetRightX:

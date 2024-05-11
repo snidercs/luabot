@@ -1,11 +1,12 @@
 
 local TimedRobot = require ('frc.TimedRobot')
+local XboxController = require ('frc.XboxController')
 
 ---@class MockRobot A mock robot to use in testing.
 local MockRobot = TimedRobot.derive()
 
 function MockRobot:robotInit()
-    print("MockRobot:robotInit()")
+    self.pad = XboxController.new (0)
 end
 
 function MockRobot:simulationInit()
@@ -37,8 +38,24 @@ function MockRobot:teleopPeriodic()
     end
 end
 
+local hasReportedDisconnected = false
 function MockRobot:robotPeriodic()
-    -- print("robotPeriodic()")
+    local pad = self.pad
+    local disconnected = not pad:isConnected()
+
+    if disconnected then
+        if not hasReportedDisconnected then
+            print("disconnected joystick")
+            hasReportedDisconnected = true
+        end
+        return
+    end
+
+    if pad:getXButtonPressed() then
+        print('pressed')
+    elseif pad:getXButtonReleased() then
+        print('released')
+    end
 end
 
 local function instantiate (timeout)
