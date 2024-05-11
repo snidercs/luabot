@@ -18,10 +18,17 @@ lua_path += ';' + lua_path_pat.format ('/usr/local/share/lua/5.1')
 
 lua_workdir = meson.project_source_root()
 
-luabot_env = [
-    'LD_LIBRARY_PATH=@0@;@1@'.format(bindings_root, '/usr/local/lib'),
-    lua_path
-]
+if host_machine.system() == 'darwin'
+    luabot_env = [
+        'DYLD_LIBRARY_PATH=@0@:@1@:@2@'.format(bindings_root, '/opt/homebrew/lib', '/usr/local/lib'),
+        lua_path
+    ]
+else
+    luabot_env = [
+        'LD_LIBRARY_PATH=@0@:@1@'.format(bindings_root, '/usr/local/lib'),
+        lua_path
+    ]
+endif
 
 foreach t : [ 'requireall' ]
     test (t, luabot_exe,

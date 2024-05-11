@@ -40,7 +40,11 @@ luabot_internal_dep = declare_dependency (
     include_directories : include_directories ('./include'),
     dependencies : [ boost_dep ])
 
-readline_dep = dependency('readline')
+## readline
+readline_dep = dependency('readline', required: false)
+if not readline_dep.found()
+    readline_dep = cpp.find_library ('readline', required: false)
+endif
 
 subdir ('src')
 luabot_exe = executable ('luabot', [

@@ -2,8 +2,9 @@ local hal = require('wpi.hal')
 local TimedRobot = require('frc.TimedRobot')
 
 local function TimedRobotTest(dur, timeout)
+    local Robot = TimedRobot.derive()
     local robot = TimedRobot.init(
-        setmetatable({}, { __index = TimedRobot }),
+        setmetatable({}, { __index = Robot }),
         timeout)
 
     local duration = tonumber(dur) or 100
@@ -39,7 +40,7 @@ hal.initialize(500, 0)
 
 do
     local tick = 0
-    local robot = TimedRobotTest(100 * 1, 0.01)
+    local robot = assert(TimedRobotTest(100 * 1, 0.01))
 
     -- Test super class methods are present.
     assert(robot.isSimulation() == true)
