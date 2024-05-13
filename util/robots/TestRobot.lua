@@ -81,6 +81,9 @@ function MockRobot:robotPeriodic()
     elseif pad:getXButtonReleased() then
         print('released')
     end
+
+    local val = pad:getRawAxis(0)
+    if math.abs(val) >= 0.052 then print (val) end
 end
 
 local function instantiate (timeout)
