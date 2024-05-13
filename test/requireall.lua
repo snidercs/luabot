@@ -1,5 +1,6 @@
 
 local mods = {
+    'ffi.cscore',
     'ffi.ntcore',
     'ffi.wpiHal',
 
