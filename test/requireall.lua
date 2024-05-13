@@ -1,8 +1,8 @@
 
 local mods = {
-    'ffi.cscore',
-    'ffi.ntcore',
-    'ffi.wpiHal',
+    'wpi.clib.cscore',
+    'wpi.clib.ntcore',
+    'wpi.clib.wpiHal',
 
     'frc.AddressableLED',
     'frc.DriverStation',

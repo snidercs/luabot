@@ -1,8 +1,10 @@
 local ffi = require ('ffi')
+
 local SONAME = 'cscore'
 local lib
 
 ffi.cdef[[
+// cscore_c.h
 /**
  * @defgroup cscore_c_api cscore C API
  *

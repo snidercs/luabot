@@ -1,6 +1,6 @@
 local ffi = require('ffi')
-local ntcore = require('ffi.ntcore')
-local wpiHal = require('ffi.wpiHal')
+local ntcore = require('wpi.clib.ntcore')
+local wpiHal = require('wpi.clib.wpiHal')
 
 local DriverStation = require('frc.DriverStation')
 local LiveWindow = require('frc.livewindow.LiveWindow')
@@ -207,7 +207,7 @@ local function init(obj, seconds)
             watchdog:addEpoch("simulationPeriodic()")
         end
 
-        watchdog:disable();
+        watchdog:disable()
 
         -- Flush NetworkTables
         if ntFlushEnabled then

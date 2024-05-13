@@ -1,4 +1,4 @@
-local wpiHal = require ('ffi.wpiHal')
+local wpiHal = require ('wpi.clib.wpiHal')
 local NS = wpiHal.load (false)
 
 ---

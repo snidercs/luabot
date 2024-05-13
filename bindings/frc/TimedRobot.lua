@@ -1,5 +1,5 @@
 local ffi = require('ffi')
-local C = require('ffi.wpiHal').load(false)
+local C = require('wpi.clib.wpiHal').load(false)
 
 local IterativeRobotBase = require('frc.IterativeRobotBase')
 local RobotBase = require('frc.RobotBase')
