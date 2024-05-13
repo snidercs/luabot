@@ -18,12 +18,13 @@ typedef NT_Handle NT_MultiSubscriber;
 typedef NT_Handle NT_Topic;
 typedef NT_Handle NT_Subscriber;
 typedef NT_Handle NT_Publisher;
-// #define NT_DEFAULT_PORT3 1735
-// #define NT_DEFAULT_PORT4 5810
+// define NT_DEFAULT_PORT3 1735
+// define NT_DEFAULT_PORT4 5810
 enum {
     NT_DEFAULT_PORT3 = 1735,
     NT_DEFAULT_PORT4 = 5810
-}
+};
+
 enum NT_Type {
   NT_UNASSIGNED = 0,
   NT_BOOLEAN = 0x01,
@@ -551,7 +552,7 @@ struct NT_TimestampedStringArray* NT_ReadQueueStringArray(NT_Handle subentry, si
 void NT_FreeQueueStringArray(struct NT_TimestampedStringArray* arr, size_t len);
 ]]
 
----Load the wpiHal shared library.
+---Load the ntcore shared library.
 ---@param global boolean? Set true to add to the `ffi.C` namespace
 ---@return ffi.namespace* clib The shared library ref
 local function load(global)
