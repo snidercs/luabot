@@ -20,6 +20,10 @@ typedef NT_Handle NT_Subscriber;
 typedef NT_Handle NT_Publisher;
 // #define NT_DEFAULT_PORT3 1735
 // #define NT_DEFAULT_PORT4 5810
+enum {
+    NT_DEFAULT_PORT3 = 1735,
+    NT_DEFAULT_PORT4 = 5810
+}
 enum NT_Type {
   NT_UNASSIGNED = 0,
   NT_BOOLEAN = 0x01,
