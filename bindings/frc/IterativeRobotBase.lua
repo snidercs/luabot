@@ -1,5 +1,6 @@
 local ffi = require('ffi')
-local hal = require('wpi.hal')
+local ntcore = require('ffi.ntcore')
+local wpiHal = require('ffi.wpiHal')
 
 local DriverStation = require('frc.DriverStation')
 local LiveWindow = require('frc.livewindow.LiveWindow')
@@ -8,9 +9,7 @@ local Shuffleboard = require('frc.shuffleboard.Shuffleboard')
 local SmartDashboard = require('frc.smartdashboard.SmartDashboard')
 local Watchdog = require('frc.Watchdog')
 
-local nt = {}
-
-local kDefaultPeriod = 20.0
+local kDefaultPeriod = 0.02 -- 20ms
 
 local kNone = 0
 local kDisabled = 1
@@ -73,7 +72,8 @@ end
 function IterativeRobotBase:loopFunc()
 end
 
-local M = {}
+local HC = wpiHal.load()
+local NC = ntcore.load()
 
 local function init(obj, seconds)
     local impl = RobotBase.init(obj)
@@ -82,19 +82,41 @@ local function init(obj, seconds)
     local ntFlushEnabled = false
     local calledDsConnected = false
     local lastMode = 0
-    local word = ffi.new ('HAL_ControlWord')
+    local word = ffi.new('HAL_ControlWord')
     local period = tonumber(seconds) or kDefaultPeriod
     local watchdog = Watchdog.new(period)
 
-    local C = hal.C
-
     function impl:getPeriod() return period end
+
+    function impl:setNetworkTablesFlushEnabled(enabled)
+        ntFlushEnabled = enabled and true or false
+    end
+
+    local hasReportedLWTest = false
+    function impl:enableLiveWindowInTest(testLW)
+        testLW = testLW and true or false
+
+        if impl:isTestEnabled() then
+            error("Can't configure test mode while in test mode!")
+        end
+
+        if not hasReportedLWTest and testLW then
+            -- HC.HAL_Report(HALUsageReporting::kResourceType_SmartDashboard,
+            --               HALUsageReporting::kSmartDashboard_LiveWindow)
+            HC.HAL_Report(43, 2, 0, nil)
+            hasReportedLWTest = true;
+        end
+
+        lwEnabledInTest = testLW
+    end
+
+    function impl:isLiveWindowEnabledInTest() return lwEnabledInTest end
 
     function impl:loopFunc()
         DriverStation.refreshData()
         watchdog:reset()
 
-        C.HAL_GetControlWord (word)
+        HC.HAL_GetControlWord(word)
 
         local mode = kNone
         if not (word.enabled == 1 and word.dsAttached == 1) then
@@ -150,19 +172,19 @@ local function init(obj, seconds)
 
         -- Call the appropriate function depending upon the current robot mode
         if (mode == kDisabled) then
-            C.HAL_ObserveUserProgramDisabled()
+            HC.HAL_ObserveUserProgramDisabled()
             self:disabledPeriodic()
             watchdog:addEpoch("DisabledPeriodic()")
         elseif mode == kAutonomous then
-            C.HAL_ObserveUserProgramAutonomous()
+            HC.HAL_ObserveUserProgramAutonomous()
             self:autonomousPeriodic()
             watchdog:addEpoch("AutonmousPeriodic()")
         elseif mode == kTeleop then
-            C.HAL_ObserveUserProgramTeleop()
+            HC.HAL_ObserveUserProgramTeleop()
             self:teleopPeriodic()
             watchdog:addEpoch("TeleopPeriodic()")
         elseif mode == kTest then
-            C.HAL_ObserveUserProgramTest()
+            HC.HAL_ObserveUserProgramTest()
             self:testPeriodic()
             watchdog:addEpoch("TestPeriodic()")
         end
@@ -179,9 +201,9 @@ local function init(obj, seconds)
         watchdog:addEpoch("Shuffleboard.update()")
 
         if isSimulation then
-            C.HAL_SimPeriodicBefore()
+            HC.HAL_SimPeriodicBefore()
             self:simulationPeriodic()
-            C.HAL_SimPeriodicAfter()
+            HC.HAL_SimPeriodicAfter()
             watchdog:addEpoch("simulationPeriodic()")
         end
 
@@ -189,8 +211,7 @@ local function init(obj, seconds)
 
         -- Flush NetworkTables
         if ntFlushEnabled then
-            -- TODO: nt::NetworkTableInstance::GetDefault().FlushLocal();
-            -- nt.flushlocal()
+            NC.NT_FlushLocal(NC.NT_GetDefaultInstance())
         end
 
         -- Warn on loop time overruns
@@ -201,13 +222,14 @@ local function init(obj, seconds)
 
     return impl
 end
-M.init = init
 
 local function derive()
     local T = {}
     for k, v in pairs(IterativeRobotBase) do T[k] = v end
     return T
 end
-M.derive = derive
 
-return M
+return {
+    init = init,
+    derive = derive
+}

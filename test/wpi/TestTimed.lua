@@ -19,6 +19,8 @@ local function TimedRobotTest(dur, timeout)
 
     function robot:robotInit()
         initialized = true
+        self:setNetworkTablesFlushEnabled(false)
+        self:enableLiveWindowInTest(false)
     end
 
     function robot:robotPeriodic()
@@ -27,6 +29,10 @@ local function TimedRobotTest(dur, timeout)
         end
 
         tick = tick + 1
+        if tick == duration / 2 then
+            robot:setNetworkTablesFlushEnabled(true)
+            robot:enableLiveWindowInTest(true)
+        end
 
         if tick >= duration then
             robot:endCompetition()
@@ -44,6 +50,16 @@ do
 
     -- Test super class methods are present.
     assert(robot.isSimulation() == true)
+    assert(robot:isEnabled() == false)
+    assert(robot:isDisabled() == true)
+    assert(robot:isTest() == false)
+    assert(robot:isTestEnabled() == false)
+    assert(robot:isAutonomous() == false)
+    assert(robot:isAutonomousEnabled() == false)
+    assert(robot:isTeleop() == true)
+    assert(robot:isTeleopEnabled() == false)
+    assert(robot:isTest() == false)
+    assert(robot:isTestEnabled() == false)
 
     -- Half speed peridic callback
     robot:addPeriodic(function()

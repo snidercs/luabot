@@ -1,18 +1,14 @@
-local M = {}
-
 ---RobotBase
 ---@class RobotBase
 local RobotBase = {}
 
 local ffi = require('ffi')
 
-ffi.cdef [[
+ffi.cdef[[
 bool frcRobotBaseIsReal();
 bool frcRobotBaseIsSimulation();
 void frcRobotBaseInit();
 int frcRunHalInitialization();
-
-int HALSIM_InitExtension();
 ]]
 
 local CC
@@ -41,30 +37,49 @@ function RobotBase:isAutonomous()
     return CC.frcDriverStationIsAutonomous()
 end
 
+function RobotBase:isAutonomousEnabled()
+    return CC.frcDriverStationIsAutonomousEnabled()
+end
+
+function RobotBase:isTeleop()
+    return CC.frcDriverStationIsTeleop()
+end
+
+function RobotBase:isTeleopEnabled()
+    return CC.frcDriverStationIsTeleopEnabled()
+end
+
+function RobotBase:isTest()
+    return CC.frcDriverStationIsTest()
+end
+
+function RobotBase:isTestEnabled()
+    return CC.frcDriverStationIsTestEnabled()
+end
+
 function RobotBase.isReal()
     return CC.frcRobotBaseIsReal()
 end
 
-M.isReal = RobotBase.isReal
-
 function RobotBase.isSimulation()
     return CC.frcRobotBaseIsSimulation()
 end
-
-M.isSimulation = RobotBase.isSimulation
 
 local function derive()
     local T = {}
     for k, v in pairs(RobotBase) do T[k] = v end
     return T
 end
-M.derive = derive
 
 local function init(instance)
     -- CC.frcRunHalInitialization()
     -- CC.frcRobotBaseInit()
     return instance
 end
-M.init = init
 
-return M
+return  {
+    init = init,
+    derive = derive,
+    isSimulation = RobotBase.isSimulation,
+    isReal = RobotBase.isReal
+}

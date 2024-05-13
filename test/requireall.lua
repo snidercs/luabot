@@ -1,5 +1,8 @@
 
 local mods = {
+    'ffi.ntcore',
+    'ffi.wpiHal',
+
     'frc.AddressableLED',
     'frc.DriverStation',
     'frc.Filesystem',
