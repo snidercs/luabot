@@ -9,6 +9,7 @@ project ('luabot', ['cpp', 'c'],
         'cpp_std=c++20',
     ])
 
+python_exe = import('python').find_installation ('python3', modules : [ 'yaml' ])
 
 fs = import ('fs')
 luajit_exe = find_program ('luajit')

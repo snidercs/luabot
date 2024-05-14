@@ -1,5 +1,4 @@
 
-python_exe = find_program ('python3')
 luabot_luadir = get_option ('datadir') / 'luabot' / '1.0'
 bindings_root = meson.project_source_root() / 'bindings'
 
