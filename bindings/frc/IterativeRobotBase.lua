@@ -69,12 +69,14 @@ end
 function IterativeRobotBase:getPeriod()
 end
 
+---Perform one iteration.
 function IterativeRobotBase:loopFunc()
 end
 
 local HC = wpiHal.load()
 local NC = ntcore.load()
 
+---@return table
 local function init(obj, seconds)
     local impl = RobotBase.init(obj)
 
@@ -223,6 +225,8 @@ local function init(obj, seconds)
     return impl
 end
 
+---Derive this robot type.
+---@return table
 local function derive()
     local T = {}
     for k, v in pairs(IterativeRobotBase) do T[k] = v end

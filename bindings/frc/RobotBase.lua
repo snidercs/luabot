@@ -71,6 +71,7 @@ local function derive()
     return T
 end
 
+---@return table instance An instance table
 local function init(instance)
     -- CC.frcRunHalInitialization()
     -- CC.frcRobotBaseInit()
