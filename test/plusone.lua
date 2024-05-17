@@ -1,4 +1,4 @@
-local iterations = 2000000 * 2
+local iterations = 2000000
 
 local IterativeRobotBase = require('frc.IterativeRobotBase')
 local ffi = require ('ffi')

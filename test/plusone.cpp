@@ -1,6 +1,6 @@
 #include <frc/IterativeRobotBase.h>
 
-static const int iterations = 2000000 * 2;
+static const int iterations = 2000000;
 
 class PlusOne : public frc::IterativeRobotBase {
 public:
