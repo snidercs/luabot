@@ -115,7 +115,7 @@ def gen_ffi_cdef (obj):
     out = declare_ffi_ctype (obj) + ';\n\n'
 
     if obj.get ('destructor', True):
-        out +=  'void %s%sFree (%s* self);' % (ns, typename, ct)
+        out +=  'void %s(%s* self);' % (csymbol (obj,'Free'), ct)
     
     out += '\n\n'
 
@@ -164,7 +164,7 @@ def gen_ffi_methods (obj):
         if m.get('static', False):
             sep = '.'
 
-        sym = '%s%s' % (lowerfirst (ctype (obj)), k)
+        sym = csymbol(obj, k)
         ps = lparams(m)
         out += 'function %s%s%s(%s)\n' % \
                 (obj['typename'], sep, lowerfirst (k), ps)
