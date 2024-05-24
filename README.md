@@ -13,11 +13,11 @@ The steps here are for a Linux system but should work on any platform with C++ a
 
 ```bash
 # run the setup/configure command. needs done once.
-# the "-C build" is specifying that a sub directory
 # called build is where binaries are produced.
-meson setup build -C build
+meson setup build
 
 # compile it
+# the "-C build" is specifying that a sub directory
 meson compile -C build
 
 # test it
