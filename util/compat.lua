@@ -13,7 +13,7 @@ if not table.pack then
     end
 end
 
-if not table.unpack then 
+if not table.unpack then
     print("table.unpack not available")
-    table.unpack = unpack 
+    table.unpack = unpack
 end
