@@ -2,7 +2,7 @@ local iterations = 2000000
 
 local IterativeRobotBase = require('frc.IterativeRobotBase')
 local ffi = require ('ffi')
-local _ = ffi.load ('luabot', true)
+local _ = ffi.load ('luabot-wpilibc', true)
 _ = ffi.load ('wpiHal', true)
 
 ---@class PlusOne A mock robot to use in testing.

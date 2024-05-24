@@ -4,7 +4,7 @@ ffi.cdef[[
 typedef struct FrcTwist3d FrcTwist3d;
 ]]
 
-local lib = ffi.load('luabot')
+local lib = ffi.load('luabot-wpilibc')
 
 ---Twist3d wrapper
 ---@class Twist3d

@@ -13,7 +13,7 @@ int frcRunHalInitialization();
 
 local CC
 pcall(function()
-    CC = ffi.load('luabot', true)
+    CC = ffi.load('luabot-wpilibc', true)
 end)
 if CC == nil then CC = ffi.C end
 

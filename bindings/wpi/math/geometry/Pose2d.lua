@@ -33,7 +33,7 @@ FrcTwist2d* frcPose2dLog (const FrcPose2d* self, const FrcPose2d* other);
 ]]
 
 pcall(function()
-    local _ = ffi.load('luabot', true)
+    local _ = ffi.load('luabot-wpilibc', true)
 end)
 
 local C = ffi.C

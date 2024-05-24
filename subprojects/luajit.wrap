@@ -1,0 +1,7 @@
+[wrap-git]
+url = https://github.com/mfisher31/luajit
+push-url = git@github.com/mfisher31/luajit.git
+revision = meson-xcflags
+
+[provide]
+luajit=luadep_dep

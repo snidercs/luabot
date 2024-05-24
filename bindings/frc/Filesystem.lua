@@ -7,7 +7,7 @@ char* frcFilesystemGetOperatingDirectory();
 char* frcFilesystemGetDeployDirectory();
 ]]
 
-pcall(ffi.load, 'luabot', true)
+pcall(ffi.load, 'luabot-wpilibc', true)
 
 local C = ffi.C
 

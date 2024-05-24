@@ -192,7 +192,7 @@ def gen_ffi_class (obj):
     return T_FRC_LUA_CLASS \
         .replace ('@CTYPE@', ctype(obj)) \
         .replace ('@TYPENAME@', obj['typename']) \
-        .replace ('@CLIB@', 'luabot') \
+        .replace ('@CLIB@', 'luabot-wpilibc') \
         .replace ('@CDEF@', gen_ffi_cdef (obj)) \
         .replace ('@CTOR@', gen_ffi_ctor (obj)) \
         .replace ('@METHODS@', gen_ffi_methods (obj))

@@ -6,7 +6,7 @@ void frcTwist2dFree (FrcTwist2d* self);
 bool frcTwist2dEquals (const FrcTwist2d* self, const FrcTwist2d* other);
 ]]
 
-local lib = ffi.load('luabot')
+local lib = ffi.load('luabot-wpilibc')
 
 ---Twist2d wrapper
 ---@class Twist2d

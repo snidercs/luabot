@@ -20,7 +20,7 @@ function console.error (...)
 end
 
 do
-    local ok, ret = pcall (ffi.load, 'luabot', true)
+    local ok, ret = pcall (ffi.load, 'luabot-wpilibc', true)
     if not ok then
         console.error (tostring (ret))
         os.exit(-1)
@@ -34,7 +34,7 @@ local function startrobot (module)
         package.path = package.path..';util/?.lua'
         require ('frc.RobotBase')
         local tffi = require('ffi')
-        local _ = tffi.load ('luabot', true)
+        local _ = tffi.load ('luabot-wpilibc', true)
         tffi.C.frcRobotBaseInit()
         local T = require (module)
         local robot = T.new()

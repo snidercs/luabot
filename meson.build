@@ -18,9 +18,18 @@ parse_py = files ('util/parse.py')
 
 c = meson.get_compiler ('c')
 cpp = meson.get_compiler ('cpp')
+
 boost_dep = dependency ('boost', required : false)
 
-luajit_dep   = dependency ('luajit', version: '>= 2.1', required: true)
+luajit_proj = subproject ('luajit', required: true,
+    default_options: [
+        'app=false',
+        'luaname=luabot',
+        'lua52compat=true',
+        'jit=true', 
+        'ffi=true'])
+luajit_dep = luajit_proj.get_variable ('lua_dep')
+luajit_h = luajit_proj.get_variable ('luajit_h')
 
 hal_dep      = dependency ('hal', method: 'cmake', required: true)
 ntcore_dep   = dependency ('ntcore', method: 'cmake', required: true)
@@ -34,7 +43,7 @@ cscore_dep   = dependency ('cscore', method: 'cmake', required: true)
 luabot_dep = declare_dependency (
     link_with : [],
     include_directories : [ include_directories ('./include') ],
-    dependencies : [])
+    dependencies : [ luajit_dep ])
 
 luabot_internal_dep = declare_dependency (
     link_with : [],
@@ -49,16 +58,19 @@ endif
 
 subdir ('src')
 luabot_exe = executable ('luabot', [
+        luajit_h, # ensure header gets generated
         'src/luabot.c'
     ],
     cpp_args: ['-DLUA_USE_READLINE=@0@'.format(readline_dep.found() ? 1 : 0)],
-    dependencies: [luabot_dep, luajit_dep, readline_dep],
+    dependencies: [ luajit_dep, luabot_dep, readline_dep], # ORDER
     install: true)
 
 subdir ('bindings')
 subdir ('test')
 
-simbot_exe = executable ('simbot', [
-        'util/simbot.cpp'
-    ],
-    dependencies: [wpilibc_dep])
+# simbot_exe = executable ('simbot', [
+#         'util/simbot.cpp'
+#     ],
+#     dependencies: [luajit_dep, wpilibc_dep],
+#     install: false
+# )
