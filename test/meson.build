@@ -38,15 +38,21 @@ foreach t : [ 'requireall' ]
         env: luabot_env)
 endforeach
 
-plusone_exe = executable ('plusone', [ 'plusone.cpp' ],
-                          dependencies: [wpilibc_dep])
-test ('PlusOne (native)', plusone_exe, env: luabot_env, suite: 'perf')
+perf_tests = '''
+    plusone
+    fib
+'''.split()
 
-test ('PlusOne (luajit)', luabot_exe,
-    args : meson.current_source_dir() / 'plusone.lua',
-    workdir : lua_workdir,
-    suite : 'perf',
-    env: luabot_env)
+foreach perf : perf_tests
+    plusone_exe = executable (perf, [ '@0@.cpp'.format(perf) ],
+                              dependencies: [ wpilibc_dep ])
+    test ('@0@ (native)'.format(perf), plusone_exe, env: luabot_env, suite: 'perf')
+    test ('@0@ (luajit)'.format(perf), luabot_exe,
+        args : meson.current_source_dir() / '@0@.lua'.format(perf),
+        workdir : lua_workdir,
+        suite : 'perf',
+        env: luabot_env)
+endforeach
 
 subdir('wpi')
 
