@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://github.com/mfisher31/lanes
+push-url = git@github.com:mfisher31/lanes.git
+revision = C-Meson

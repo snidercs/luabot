@@ -1,3 +1,6 @@
 [submodule "subprojects/luajit"]
 	path = subprojects/luajit
 	url = https://github.com/mfisher31/luajit
+[submodule "subprojects/lanes"]
+	path = subprojects/lanes
+	url = https://github.com/mfisher31/lanes
