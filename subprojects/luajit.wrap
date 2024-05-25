@@ -1,6 +1,6 @@
 [wrap-git]
 url = https://github.com/mfisher31/luajit
-push-url = git@github.com/mfisher31/luajit.git
+push-url = git@github.com:mfisher31/luajit.git
 revision = v2.1-meson
 
 [provide]
