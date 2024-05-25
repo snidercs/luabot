@@ -1,5 +1,5 @@
 # LuaBOT
-A system for running LuaJIT powered FRC robots.
+A system for running LuaJIT powered FRC and other robots.
 
 ## Building
 
@@ -22,21 +22,6 @@ meson compile -C build
 
 # test it
 meson test -C build
-```
-
-You can also `cd` in to the build directory and cut out the `-C build`
-
-```bash
-meson setup -C build
-# go inside the build directory
-cd build
-
-# same commands without -C
-meson compile
-
-meson test
-
-# ... and so on ...
 ```
 
 _Note: the steps above might need additional options on a OSX or Windows, but the general concept is the same_
