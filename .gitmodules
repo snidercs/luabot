@@ -4,3 +4,6 @@
 [submodule "subprojects/lanes"]
 	path = subprojects/lanes
 	url = https://github.com/mfisher31/lanes
+[submodule "subprojects/allwpilib"]
+	path = subprojects/allwpilib
+	url = https://github.com/wpilibsuite/allwpilib

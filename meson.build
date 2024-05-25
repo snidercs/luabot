@@ -31,14 +31,38 @@ luajit_proj = subproject ('luajit', required: true,
 luajit_dep = luajit_proj.get_variable ('lua_dep')
 luajit_h = luajit_proj.get_variable ('luajit_h')
 
-hal_dep      = dependency ('hal', method: 'cmake', required: true)
-ntcore_dep   = dependency ('ntcore', method: 'cmake', required: true)
-wpiutil_dep  = dependency ('wpiutil', method: 'cmake', required: true)
-wpimath_dep  = dependency ('wpimath', method: 'cmake', required: true)
-wpilibc_dep  = dependency ('wpilibc', method: 'cmake', required: true)
-apriltag_dep = dependency ('apriltag', method: 'cmake', required: true)
-cameraserver_dep = dependency ('cameraserver', method: 'cmake', required: true)
-cscore_dep   = dependency ('cscore', method: 'cmake', required: true)
+hal_dep      = dependency ('hal', method: 'cmake', required: false)
+if not hal_dep.found()
+    ntcore_dep   = dependency ('ntcore', method: 'cmake', required: true)
+    wpiutil_dep  = dependency ('wpiutil', method: 'cmake', required: true)
+    wpimath_dep  = dependency ('wpimath', method: 'cmake', required: true)
+    wpilibc_dep  = dependency ('wpilibc', method: 'cmake', required: true)
+    apriltag_dep = dependency ('apriltag', method: 'cmake', required: true)
+    cameraserver_dep = dependency ('cameraserver', method: 'cmake', required: true)
+    cscore_dep   = dependency ('cscore', method: 'cmake', required: true)
+else
+    opencv_dep = dependency ('opencv4', required: true)
+    protobuf_dep = dependency ('protobuf', version: '>=0.7.1', required: true)
+    cmake   = import('cmake')
+    opt_var = cmake.subproject_options()
+    opt_var.add_cmake_defines ({
+        'WITH_JAVA': false,
+        'WITH_EXAMPLES': false,
+        'WITH_JAVA_SOURCE': false,
+        'WITH_TESTS': false,
+        'NO_WERROR': false,
+        'CMAKE_CXX_VISIBILITY_PRESET': 'default'}
+    )
+    wpilib_proj = cmake.subproject ('allwpilib', options: opt_var)
+    fieldImages_dep = wpilib_proj.dependency('fieldImages')
+    ntcore_dep = wpilib_proj.dependency('ntcore')
+    wpimath_dep = wpilib_proj.dependency('wpimath')
+    apriltag_dep = wpilib_proj.dependency('apriltag')
+    cameraserver_dep = wpilib_proj.dependency('cameraserver')
+    cscore_dep = wpilib_proj.dependency('cscore')
+    hal_dep = wpilib_proj.dependency ('hal')
+    wpilibc_dep = wpilib_proj.dependency ('wpilibc')
+endif
 
 luabot_dep = declare_dependency (
     link_with : [],
