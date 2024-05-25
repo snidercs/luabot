@@ -50,12 +50,25 @@ else
         'WITH_EXAMPLES': false,
         'WITH_JAVA_SOURCE': false,
         'WITH_TESTS': false,
-        'NO_WERROR': false,
-        'CMAKE_CXX_VISIBILITY_PRESET': 'default'}
-    )
+        'NO_WERROR': false,       
+        'WITH_GUI': false, 
+        'CMAKE_BUILD_TYPE':                 'RelWithDebInfo',
+        'CMAKE_CXX_FLAGS_ASAN':             '-g -fsanitize=address -fno-omit-frame-pointer',
+        'CMAKE_CXX_FLAGS_TSAN':             '-g -fsanitize=thread -fno-omit-frame-pointer',
+        'CMAKE_CXX_FLAGS_UBSAN':            '-g -fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer',
+        'CMAKE_C_FLAGS_ASAN':               '-g -fsanitize=address -fno-omit-frame-pointer',
+        'CMAKE_C_FLAGS_TSAN':               '-g -fsanitize=thread -fno-omit-frame-pointer',
+        'CMAKE_C_FLAGS_UBSAN':              '-g -fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer',
+        'CMAKE_EXE_LINKER_FLAGS_ASAN':       '-fsanitize=address',
+        'CMAKE_EXE_LINKER_FLAGS_TSAN':       '-fsanitize=thread',
+        'CMAKE_EXE_LINKER_FLAGS_UBSAN':      '-fsanitize=undefined -fno-sanitize-recover=all',
+        'CMAKE_SHARED_LINKER_FLAGS_ASAN':    '-fsanitize=address',
+        'CMAKE_SHARED_LINKER_FLAGS_TSAN':   ' -fsanitize=thread',
+        'CMAKE_SHARED_LINKER_FLAGS_UBSA':    '-fsanitize=undefined'
+    })
     wpilib_proj = cmake.subproject ('allwpilib', options: opt_var)
-    fieldImages_dep = wpilib_proj.dependency('fieldImages')
     ntcore_dep = wpilib_proj.dependency('ntcore')
+    wpiutil_dep = wpilib_proj.dependency('wpiutil')
     wpimath_dep = wpilib_proj.dependency('wpimath')
     apriltag_dep = wpilib_proj.dependency('apriltag')
     cameraserver_dep = wpilib_proj.dependency('cameraserver')
