@@ -31,8 +31,6 @@ luajit_proj = subproject ('luajit', required: true,
 luajit_dep = luajit_proj.get_variable ('lua_dep')
 luajit_h = luajit_proj.get_variable ('luajit_h')
 
-subproject ('lanes', required: true)
-
 hal_dep      = dependency ('hal', method: 'cmake', required: true)
 ntcore_dep   = dependency ('ntcore', method: 'cmake', required: true)
 wpiutil_dep  = dependency ('wpiutil', method: 'cmake', required: true)
@@ -70,9 +68,4 @@ luabot_exe = executable ('luabot', [
 subdir ('bindings')
 subdir ('test')
 
-# simbot_exe = executable ('simbot', [
-#         'util/simbot.cpp'
-#     ],
-#     dependencies: [luajit_dep, wpilibc_dep],
-#     install: false
-# )
+subproject ('lanes', required: true)

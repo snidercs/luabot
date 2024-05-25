@@ -1,9 +1,13 @@
 #!/usr/bin/bash
 
-export LD_LIBRARY_PATH="$(pwd)/build/bindings"
+export LD_LIBRARY_PATH="$(pwd)/build/bindings;$(pwd)/build/subprojects/luajit/src"
 export DYLD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
 export LUA_PATH="$(pwd)/build/bindings/lua/?.lua"
 export LUA_PATH="$LUA_PATH;$(pwd)/build/bindings/lua/?/init.lua"
+
+export LUA_CPATH="$LUA_CPATH;build/subprojects/?.so"
+export LUA_PATH="$LUA_PATH;subprojects/lanes/src/?.lua"
+
 export LUA_PATH="$LUA_PATH;/usr/local/share/lua/5.1/?.lua"
 export LUA_PATH="$LUA_PATH;/usr/local/share/lua/5.1/?/init.lua"
 
