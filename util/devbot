@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 export LD_LIBRARY_PATH="$(pwd)/build/bindings;$(pwd)/build/subprojects/luajit/src"
 export DYLD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
