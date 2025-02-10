@@ -26,26 +26,26 @@ void frcCoordinateAxisFree (FrcCoordinateAxis* self) {
 }
 
 const FrcCoordinateAxis* frcCoordinateAxisN() {
-    return &frc::CoordinateAxis::N();
+    return new frc::CoordinateAxis (frc::CoordinateAxis::N());
 }
 
 const FrcCoordinateAxis* frcCoordinateAxisS() {
-    return &frc::CoordinateAxis::S();
+    return new frc::CoordinateAxis (frc::CoordinateAxis::S());
 }
 
 const FrcCoordinateAxis* frcCoordinateAxisE() {
-    return &frc::CoordinateAxis::E();
+    return new frc::CoordinateAxis (frc::CoordinateAxis::E());
 }
 
 const FrcCoordinateAxis* frcCoordinateAxisW() {
-    return &frc::CoordinateAxis::W();
+    return new frc::CoordinateAxis (frc::CoordinateAxis::W());
 }
 
 const FrcCoordinateAxis* frcCoordinateAxisU() {
-    return &frc::CoordinateAxis::U();
+    return new frc::CoordinateAxis (frc::CoordinateAxis::U());
 }
 const FrcCoordinateAxis* frcCoordinateAxisD() {
-    return &frc::CoordinateAxis::D();
+    return new frc::CoordinateAxis (frc::CoordinateAxis::D());
 }
 
 //==============================================================================
