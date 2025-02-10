@@ -1,4 +1,6 @@
 
-!*.wrap
+!allwpilib.wrap
+!lanes.wrap
+!luajit.wrap
 !.gitignore
 !.ignore

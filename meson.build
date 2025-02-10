@@ -8,6 +8,7 @@ project ('luabot', ['cpp', 'c'],
         'c_std=c99',
         'cpp_std=c++20',
     ])
+cmake = import ('cmake')
 
 python_exe = import('python').find_installation ('python3', modules : [ 'yaml' ])
 
@@ -31,14 +32,7 @@ luajit_proj = subproject ('luajit', required: true,
 luajit_dep = luajit_proj.get_variable ('lua_dep')
 luajit_h = luajit_proj.get_variable ('luajit_h')
 
-hal_dep      = dependency ('hal', method: 'cmake', required: true)
-ntcore_dep   = dependency ('ntcore', method: 'cmake', required: true)
-wpiutil_dep  = dependency ('wpiutil', method: 'cmake', required: true)
-wpimath_dep  = dependency ('wpimath', method: 'cmake', required: true)
-wpilibc_dep  = dependency ('wpilibc', method: 'cmake', required: true)
-apriltag_dep = dependency ('apriltag', method: 'cmake', required: true)
-cameraserver_dep = dependency ('cameraserver', method: 'cmake', required: true)
-cscore_dep   = dependency ('cscore', method: 'cmake', required: true)
+subdir ('meson/allwpilib')
 
 luabot_dep = declare_dependency (
     link_with : [],
