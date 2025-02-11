@@ -103,20 +103,20 @@ methods:
   GetRightTriggerAxis:
     <<: *GetDouble
 
-  GetLeftBumper:
+  GetLeftBumperButton:
     <<: *GetBool
-  GetRightBumper:
+  GetRightBumperButton:
     <<: *GetBool
-  GetLeftBumperPressed:
-    <<: *GetBool
-    const: false
-  GetRightBumperPressed:
+  GetLeftBumperButtonPressed:
     <<: *GetBool
     const: false
-  GetLeftBumperReleased:
+  GetRightBumperButtonPressed:
     <<: *GetBool
     const: false
-  GetRightBumperReleased:
+  GetLeftBumperButtonReleased:
+    <<: *GetBool
+    const: false
+  GetRightBumperButtonReleased:
     <<: *GetBool
     const: false
   # LeftBumper:
