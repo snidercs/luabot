@@ -1,3 +1,5 @@
+if not meson.is_cross_build()
+
 # Check if wpilib is installed, if not build it as a subproject.
 wpilibc_dep  = dependency ('wpilibc', method: 'cmake', required: false)
 if wpilibc_dep.found()
@@ -41,3 +43,8 @@ wpilib_deps = [ wpilibc_dep,
     hal_dep, 
     newcommands_dep
 ]
+
+else
+wpilibc_dep = []
+wpilib_deps = []
+endif

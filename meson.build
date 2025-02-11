@@ -25,10 +25,11 @@ boost_dep = dependency ('boost', required : false)
 luajit_proj = subproject ('luajit', required: true,
     default_options: [
         'app=false',
-        'luaname=luabot',
-        'lua52compat=true',
-        'jit=true', 
-        'ffi=true'])
+        # 'luaname=luabot',
+        # 'lua52compat=true',
+        # 'jit=true',
+        # 'ffi=true'
+    ])
 luajit_dep = luajit_proj.get_variable ('lua_dep')
 luajit_h = luajit_proj.get_variable ('luajit_h')
 
@@ -51,15 +52,20 @@ if not readline_dep.found()
 endif
 
 subdir ('src')
+subdir ('bindings')
+
 luabot_exe = executable ('luabot', [
         luajit_h, # ensure header gets generated
         'src/luabot.c'
     ],
     cpp_args: ['-DLUA_USE_READLINE=@0@'.format(readline_dep.found() ? 1 : 0)],
-    dependencies: [ luajit_dep, luabot_dep, readline_dep], # ORDER
+    dependencies: [ wpilib_deps, luajit_dep, luabot_dep, readline_dep ], # ORDER
+    link_with: [ luabot_lib ],
+    cpp_args: [],
+    link_args: [ '-Wl,--export-dynamic' ],
     install: true)
 
-subdir ('bindings')
+
 subdir ('test')
 
-subproject ('lanes', required: true)
+# subproject ('lanes', required: true)
