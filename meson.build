@@ -5,7 +5,6 @@ project ('luabot', ['cpp', 'c'],
     default_options: [
         'b_ndebug=if-release',
         'buildtype=release',
-        'c_std=c99',
         'cpp_std=c++20',
     ])
 cmake = import ('cmake')
@@ -58,10 +57,10 @@ luabot_exe = executable ('luabot', [
         luajit_h, # ensure header gets generated
         'src/luabot.c'
     ],
+    c_args: [ '-std=c99' ],
     cpp_args: ['-DLUA_USE_READLINE=@0@'.format(readline_dep.found() ? 1 : 0)],
     dependencies: [ wpilib_deps, luajit_dep, luabot_dep, readline_dep ], # ORDER
     link_with: [ luabot_lib ],
-    cpp_args: [],
     link_args: [ '-Wl,--export-dynamic' ],
     install: true)
 
