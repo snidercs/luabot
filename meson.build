@@ -23,6 +23,7 @@ boost_dep = dependency ('boost', required : false)
 
 luajit_proj = subproject ('luajit', required: true,
     default_options: [
+        'default_library=static',
         'app=false',
         # 'luaname=luabot',
         # 'lua52compat=true',
@@ -60,10 +61,9 @@ luabot_exe = executable ('luabot', [
     c_args: [ '-std=c99' ],
     cpp_args: ['-DLUA_USE_READLINE=@0@'.format(readline_dep.found() ? 1 : 0)],
     dependencies: [ wpilib_deps, luajit_dep, luabot_dep, readline_dep ], # ORDER
-    link_with: [ luabot_lib ],
-    link_args: [ '-Wl,--export-dynamic' ],
+    link_with: [ ],
+    # link_args: [ '-Wl,--export-dynamic' ], # needed to export ffi bindings.
     install: true)
-
 
 subdir ('test')
 

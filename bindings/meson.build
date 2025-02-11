@@ -54,9 +54,12 @@ foreach f : wpi_resources
     )
 endforeach
 
-luabot_lib = static_library ('luabot-wpilibc',
-    [ luabot_src_cpp_files, frc_cpp_files, wpi_cpp_files, gen_cpp ],
+luabot_ffi_sources = [ luabot_src_cpp_files, frc_cpp_files, wpi_cpp_files, gen_cpp ]
+
+luabot_lib = shared_library ('luabot-wpilibc',
+    luabot_ffi_sources,
     dependencies: wpilib_deps,
     gnu_symbol_visibility: 'default',
+    link_args: [],
     install: true
 )
