@@ -23,12 +23,10 @@ boost_dep = dependency ('boost', required : false)
 
 luajit_proj = subproject ('luajit', required: true,
     default_options: [
-        'default_library=static',
-        'app=false',
-        # 'luaname=luabot',
-        # 'lua52compat=true',
-        # 'jit=true',
-        # 'ffi=true'
+        'app=true',
+        'lua52compat=false',
+        'jit=true',
+        'ffi=true'
     ])
 luajit_dep = luajit_proj.get_variable ('lua_dep')
 luajit_h = luajit_proj.get_variable ('luajit_h')
