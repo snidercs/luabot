@@ -67,4 +67,4 @@ luabot_exe = executable ('luabot', [
 
 subdir ('test')
 
-# subproject ('lanes', required: true)
+subproject ('lanes', required: true)
