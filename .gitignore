@@ -1,3 +1,6 @@
+# Meson
+.meson-subproject*
+
 # Prerequisites
 *.d
 
