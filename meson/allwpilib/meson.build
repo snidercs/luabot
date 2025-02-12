@@ -44,7 +44,33 @@ wpilib_deps = [ wpilibc_dep,
     newcommands_dep
 ]
 
-else
+else # Cross compiling
+
 wpilibc_dep = []
-wpilib_deps = []
+wpilib_sonames = '''
+        cameraserver
+        cscore
+        wpimathjni
+        wpiHal
+        wpiutil
+        ntcorejni
+        wpiHaljni
+        ntcore
+        wpilibc
+        wpimath
+        cscorejni
+        wpinet
+        wpilibNewCommands
+        apriltagjni
+        wpinetjni
+        apriltag
+        wpiutiljni
+        opencv_java4100
+        pthread
+    '''.split()
+    wpilib_deps = []
+
+    foreach lib: wpilib_sonames
+        wpilib_deps += cpp.find_library (lib, dirs: [ get_option('frc-libs')], required: true)
+    endforeach
 endif

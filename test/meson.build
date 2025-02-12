@@ -45,7 +45,7 @@ perf_tests = '''
 
 foreach perf : perf_tests
     plusone_exe = executable (perf, [ '@0@.cpp'.format(perf) ],
-                              dependencies: [ wpilibc_dep ])
+                              dependencies: [ wpilib_deps ])
     test ('@0@ (native)'.format(perf), plusone_exe, env: luabot_env, suite: 'perf')
     test ('@0@ (luajit)'.format(perf), luabot_exe,
         args : meson.current_source_dir() / '@0@.lua'.format(perf),
@@ -56,7 +56,7 @@ endforeach
 
 subdir('wpi')
 
-if boost_dep.found()
+if false and boost_dep.found()
 
 ## Unit Tests
 luabot_unit_test_sources = '''

@@ -63,6 +63,11 @@ luabot_exe = executable ('luabot', [
     # link_args: [ '-Wl,--export-dynamic' ], # needed to export ffi bindings.
     install: true)
 
-subdir ('test')
+if not get_option('test').disabled()
+    subdir ('test')
+endif
 
-subproject ('lanes', required: true)
+if not meson.is_cross_build()
+    # lanes not yet supported when cross compiling.
+    subproject ('lanes', required: true)
+endif
