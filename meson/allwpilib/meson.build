@@ -45,32 +45,26 @@ wpilib_deps = [ wpilibc_dep,
 ]
 
 else # Cross compiling
-
-wpilibc_dep = []
-wpilib_sonames = '''
+    wpilibc_dep = []
+    wpilib_sonames = '''
         cameraserver
         cscore
-        wpimathjni
         wpiHal
         wpiutil
-        ntcorejni
-        wpiHaljni
         ntcore
         wpilibc
         wpimath
-        cscorejni
         wpinet
         wpilibNewCommands
-        apriltagjni
-        wpinetjni
         apriltag
-        wpiutiljni
-        opencv_java4100
         pthread
+        dl
     '''.split()
+    
     wpilib_deps = []
-
     foreach lib: wpilib_sonames
-        wpilib_deps += cpp.find_library (lib, dirs: [ get_option('frc-libs')], required: true)
+        wpilib_deps += cpp.find_library (lib, dirs: roborio_libdirs, required: true)
     endforeach
+
+    wpilib_deps += declare_dependency (include_directories: roborio_incdirs)
 endif

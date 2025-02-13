@@ -1,4 +1,2 @@
 option ('test', type: 'feature', value: 'auto',
     description: 'Build tests [default: auto]')
-option ('frc-libs', type: 'string', value: '',
-    description: 'Use an explicit path for frc libraries')

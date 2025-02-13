@@ -21,18 +21,40 @@ cpp = meson.get_compiler ('cpp')
 
 boost_dep = dependency ('boost', required : false)
 
-luajit_proj = subproject ('luajit', required: true,
-    default_options: [
-        'app=true',
-        'lua52compat=false',
-        'jit=true',
-        'ffi=true'
-    ])
-luajit_dep = luajit_proj.get_variable ('lua_dep')
-luajit_h = luajit_proj.get_variable ('luajit_h')
+roborio_root = fs.expanduser ('~/wpilib/2025/luabot/linuxathena')
+roborio_libdirs = [ roborio_root / 'lib' ]
+roborio_incdirs = include_directories (roborio_root / 'include')
 
+# LuaJIT
+if not meson.is_cross_build()
+    # A meson-enabled LuaJIT is ok for the simulator ...
+    luajit_proj = subproject ('luajit', required: true,
+        default_options: [
+            'app=true',
+            'lua52compat=false',
+            'jit=true',
+            'ffi=true'
+        ])
+    luajit_dep = luajit_proj.get_variable ('lua_dep')
+    luajit_h = luajit_proj.get_variable ('luajit_h')
+else
+    # but not trustworthy yet when cross-compiling. Therefore roborio uses an 
+    # upstream LuatJIT installation.
+    luajit_incdirs = include_directories (roborio_root / 'include' / 'luajit-2.1')
+    luajit_libdirs = [ roborio_root / 'lib' ]
+    c.check_header ('luajit.h', include_directories: luajit_incdirs, required: true)
+    luajit_h = files(roborio_root / 'include' / 'luajit-2.1' / 'luajit.h')
+    libluajit = cpp.find_library ('luajit-5.1', dirs: luajit_libdirs, required: true)
+    luajit_dep = declare_dependency (
+        include_directories: luajit_incdirs,
+        dependencies: [ libluajit ]
+    )
+endif
+
+# WPIlib
 subdir ('meson/allwpilib')
 
+# luabot deps
 luabot_dep = declare_dependency (
     link_with : [],
     include_directories : [ include_directories ('./include') ],
@@ -52,9 +74,10 @@ endif
 subdir ('src')
 subdir ('bindings')
 
+# luabot program
 luabot_exe = executable ('luabot', [
-        luajit_h, # ensure header gets generated
-        'src/luabot.c'
+        'src/luabot.c',
+        luajit_h
     ],
     c_args: [ '-std=c99' ],
     cpp_args: ['-DLUA_USE_READLINE=@0@'.format(readline_dep.found() ? 1 : 0)],
