@@ -2,7 +2,10 @@
 frc_is_sim = not meson.is_cross_build()
 frc_platform = frc_is_sim ? 'linuxx86-64' : 'linuxathena'
 frc_buildtype = 'release'
-frc_libdir = get_option ('frc-libs')
+frc_libdir = get_option ('frc-libs').strip()
+if frc_libdir == ''
+    frc_libdir = '~/wpilib/2025/luabot/lib/@0@'.format(frc_platform)
+endif
 frc_libdir = fs.expanduser (frc_libdir)
 
 wpilibc_dep = []
