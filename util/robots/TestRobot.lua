@@ -56,8 +56,8 @@ end
 
 local function instantiate (timeout)
     timeout = tonumber(timeout) or 0.02
-    local robot = TimedRobot.init({}, timeout)
-    setmetatable(robot, { __index = MockRobot })
+    local robot = TimedRobot.init ({}, timeout)
+    setmetatable (robot, { __index = MockRobot })
 
     -- private member variables are possible in lua with a ctor as a closure.
     local tick = 0

@@ -1,4 +1,14 @@
-if not meson.is_cross_build()
+
+frc_is_sim = not meson.is_cross_build()
+frc_platform = frc_is_sim ? 'linuxx86-64' : 'linuxathena'
+frc_buildtype = 'release'
+frc_libdir = get_option ('frc-libs')
+luabot_wpilibdir = frc_libdir.strip()
+
+# if luabot_wpilibdir == '':
+#     luabot_wpilibdir = fs.expanduser('~/wpilib/2025/luabot/lib/@0@').format (frc_platform)
+
+if false # luabot_wpilibdir == '' or not meson.is_cross_build()
 
 # Check if wpilib is installed, if not build it as a subproject.
 wpilibc_dep  = dependency ('wpilibc', method: 'cmake', required: false)
@@ -66,5 +76,7 @@ else # Cross compiling
         wpilib_deps += cpp.find_library (lib, dirs: roborio_libdirs, required: true)
     endforeach
 
-    wpilib_deps += declare_dependency (include_directories: roborio_incdirs)
+    wpilib_deps += [declare_dependency (
+        include_directories: fs.expanduser ('~/wpilib/2025/luabot/include')
+    )]
 endif

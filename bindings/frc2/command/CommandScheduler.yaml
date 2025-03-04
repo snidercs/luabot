@@ -1,0 +1,20 @@
+typename: CommandScheduler
+header: frc2/command/CommandScheduler.h
+namespace: frc2
+constructor: false
+destructor: false
+
+templates:
+  Void: &Void
+    static: false
+    return_type: void
+
+methods:
+  GetInstance:
+    static: true
+    return_type: cptr
+    c_body: return (Frc2CommandScheduler*) &frc2::CommandScheduler::GetInstance();
+
+  Run:
+    static: false
+    return_type: void
