@@ -21,9 +21,7 @@ cpp = meson.get_compiler ('cpp')
 
 boost_dep = dependency ('boost', required : false)
 
-roborio_root = fs.expanduser ('~/wpilib/2025/luabot/linuxathena')
-roborio_libdirs = [ roborio_root / 'lib' ]
-roborio_incdirs = include_directories (roborio_root / 'include')
+
 
 # LuaJIT
 if not meson.is_cross_build()
@@ -40,6 +38,9 @@ if not meson.is_cross_build()
 else
     # but not trustworthy yet when cross-compiling. Therefore roborio uses an 
     # upstream LuatJIT installation.
+    roborio_root = fs.expanduser ('~/wpilib/2025/luabot')
+    roborio_libdirs = [ roborio_root / 'lib' / 'linuxathena' ]
+    roborio_incdirs = include_directories (roborio_root / 'include')
     luajit_incdirs = include_directories (roborio_root / 'include' / 'luajit-2.1')
     luajit_libdirs = [ roborio_root / 'lib' ]
     c.check_header ('luajit.h', include_directories: luajit_incdirs, required: true)
