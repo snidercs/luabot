@@ -1,6 +1,6 @@
 project ('luabot', ['cpp', 'c'], 
     version : '0.1.0',
-    meson_version : '>= 1.4.0',
+    meson_version : '>= 1.3.2',
     license : 'MIT',
     default_options: [
         'b_ndebug=if-release',
