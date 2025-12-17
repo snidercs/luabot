@@ -1,0 +1,3 @@
+[submodule "deps/allwpilib"]
+	path = deps/allwpilib
+	url = https://github.com/wpilibsuite/allwpilib.git
