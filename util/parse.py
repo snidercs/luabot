@@ -382,9 +382,10 @@ def print_modules (dir):
 def main():
     opts, args = parse_options()
     if (opts.list):
-        if not os.path.isdir (args[0]):
-            raise NotADirectoryError(args[0])
-        adir = os.path.abspath (args[0])
+        d = args[0] if len(args) > 0 else opts.bindings_dir
+        if not os.path.isdir (d):
+            raise NotADirectoryError(d)
+        adir = os.path.abspath (d)
         out = []
         for f in find_resources (adir):
             f = os.path.relpath (f, adir)
