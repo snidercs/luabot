@@ -566,7 +566,7 @@ static int pmain(lua_State *L)
   return 0;
 }
 
-int main(int argc, char **argv)
+int console_main(int argc, char **argv)
 {
   int status;
   lua_State *L;
