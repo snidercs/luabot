@@ -1,4 +1,4 @@
-extern "C" int console_main(int argc, char* argv[]);
+extern "C" int luabot_console (int argc, char* argv[]);
 int main(int argc, char* argv[]) {
-    return console_main (argc, argv);
+    return luabot_console (argc, argv);
 }

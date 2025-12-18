@@ -566,7 +566,7 @@ static int pmain(lua_State *L)
   return 0;
 }
 
-int console_main(int argc, char **argv)
+int luabot_console (int argc, char **argv)
 {
   int status;
   lua_State *L;
