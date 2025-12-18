@@ -1,3 +1,7 @@
+# Build benchmark executables
+add_executable(plusone plusone.cpp)
+target_link_libraries(plusone PRIVATE wpilibc hal wpiutil)
+
 # Set common environment for all tests
 set(TEST_LUA_PATH "LUA_PATH=${CMAKE_BINARY_DIR}/lua/?.lua\;${CMAKE_BINARY_DIR}/lua/?/init.lua\;${CMAKE_SOURCE_DIR}/test/?.lua\;${CMAKE_SOURCE_DIR}/test/?/init.lua\;\;")
 
