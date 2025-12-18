@@ -59,12 +59,10 @@ target_include_directories(luabot-ffi PUBLIC
 
 add_dependencies(luabot-ffi generate_bindings)
 
+add_executable(luabot
+    src/console.c
+    src/luabot.cpp)
 
-
-# add_executable(luabot
-#     src/console.c
-#     src/luabot.cpp)
-
-# target_link_libraries(luabot PRIVATE ${LuaJIT})
-# target_include_directories(luabot PRIVATE 
-#     ${LuaJIT_INCLUDE_DIR})
+target_link_libraries(luabot PRIVATE ${LuaJIT} luabot-ffi)
+target_include_directories(luabot PRIVATE 
+    ${LuaJIT_INCLUDE_DIR})
