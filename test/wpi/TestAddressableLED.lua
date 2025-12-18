@@ -1,4 +1,4 @@
-local AddressableLED = require ('frc.AddressableLED')
+local AddressableLED = require ('wpi.frc.AddressableLED')
 
 do
     local led1 = AddressableLED.new(1)

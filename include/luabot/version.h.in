@@ -1,0 +1,9 @@
+// Copyright (c) 2025 Michael Fisher @mfisher31
+// SPDX-License-Identifier: MIT
+
+#pragma once
+
+#define LUABOT_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define LUABOT_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define LUABOT_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define LUABOT_VERSION "@PROJECT_VERSION@"

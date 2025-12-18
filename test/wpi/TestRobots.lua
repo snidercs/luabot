@@ -1,8 +1,8 @@
 local hal = require('wpi.hal')
 
-local Joystick = require('frc.Joystick')
-local DriverStation = require('frc.DriverStation')
-local RobotBase = require('frc.RobotBase')
+local Joystick = require('wpi.frc.Joystick')
+local DriverStation = require('wpi.frc.DriverStation')
+local RobotBase = require('wpi.frc.RobotBase')
 
 hal.initialize(500, 1)
 DriverStation.silenceJoystickConnectionWarning(true)
@@ -38,7 +38,7 @@ do
 end
 
 do -- no construction
-    local IterativeRobotBase = require ('frc.IterativeRobotBase')
+    local IterativeRobotBase = require ('wpi.frc.IterativeRobotBase')
     local ok, err = pcall(function() 
         local _ = IterativeRobotBase.new (20)
     end)
@@ -46,7 +46,7 @@ do -- no construction
 end
 
 do -- no construction
-    local TimedRobot = require ('frc.TimedRobot')
+    local TimedRobot = require ('wpi.frc.TimedRobot')
     local ok, err = pcall(function()
         local _ = TimedRobot.new (20)
     end)

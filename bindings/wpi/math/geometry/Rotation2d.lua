@@ -15,7 +15,8 @@ double frcRotation2dDegrees (const FrcRotation2d* self);
 ]]
 
 -- FIXME: lib path shouldn't be hardcoded.
-local lib = ffi.load('luabot-wpilibc')
+pcall(ffi.load, 'luabot-ffi', true)
+local lib = ffi.C
 
 ---2d rotation.
 ---@class Rotation2d

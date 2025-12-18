@@ -2,12 +2,12 @@ local ffi = require('ffi')
 local ntcore = require('wpi.clib.ntcore')
 local wpiHal = require('wpi.clib.wpiHal')
 
-local DriverStation = require('frc.DriverStation')
-local LiveWindow = require('frc.livewindow.LiveWindow')
-local RobotBase = require('frc.RobotBase')
-local Shuffleboard = require('frc.shuffleboard.Shuffleboard')
-local SmartDashboard = require('frc.smartdashboard.SmartDashboard')
-local Watchdog = require('frc.Watchdog')
+local DriverStation = require('wpi.frc.DriverStation')
+local LiveWindow = require('wpi.frc.livewindow.LiveWindow')
+local RobotBase = require('wpi.frc.RobotBase')
+local Shuffleboard = require('wpi.frc.shuffleboard.Shuffleboard')
+local SmartDashboard = require('wpi.frc.smartdashboard.SmartDashboard')
+local Watchdog = require('wpi.frc.Watchdog')
 
 local kDefaultPeriod = 0.02 -- 20ms
 

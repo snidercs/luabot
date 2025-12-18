@@ -18,7 +18,8 @@ const FrcCoordinateAxis* frcCoordinateAxisU();
 const FrcCoordinateAxis* frcCoordinateAxisD();
 ]]
 
-local lib = ffi.load ('luabot-wpilibc')
+pcall(ffi.load, 'luabot-ffi', true)
+local lib = ffi.C
 
 function CoordinateAxis.N() return lib.frcCoordinateAxisN() end
 function CoordinateAxis.S() return lib.frcCoordinateAxisS() end

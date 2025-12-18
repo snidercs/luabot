@@ -5,6 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Generate version header
+configure_file(
+    ${CMAKE_SOURCE_DIR}/include/luabot/version.h.in
+    ${CMAKE_BINARY_DIR}/include/luabot/version.h
+    @ONLY
+)
+
 set(WITH_JAVA OFF)
 set(WITH_CSCORE OFF)
 set(WITH_PROTOBUF OFF)
@@ -50,12 +57,14 @@ target_include_directories(luabot-ffi PUBLIC
     ${LuaJIT_INCLUDE_DIR}
     ${WPILIB_INCLUDES})
 
-# target_link_libraries(luabot-ffi PUBLIC
-#     ${LuaJIT}
-#     wpilibc
-#     hal
-#     ntcore
-#     wpiutil)
+target_link_libraries(luabot-ffi PUBLIC
+    wpilibc
+    wpilibNewCommands
+    hal
+    ntcore
+    wpiutil
+    wpimath
+    apriltag)
 
 add_dependencies(luabot-ffi generate_bindings)
 
@@ -63,6 +72,48 @@ add_executable(luabot
     src/console.c
     src/luabot.cpp)
 
-target_link_libraries(luabot PRIVATE ${LuaJIT} luabot-ffi)
+target_link_libraries(luabot PRIVATE 
+    ${LuaJIT}
+    wpilibc
+    wpilibNewCommands
+    hal
+    ntcore
+    wpiutil
+    wpimath
+    apriltag)
+
+# Force load all symbols from static library for FFI dlsym lookup
+if(APPLE)
+    target_link_options(luabot PRIVATE -Wl,-force_load,$<TARGET_FILE:luabot-ffi>)
+    target_link_options(luabot PRIVATE -Wl,-export_dynamic)
+elseif(UNIX)
+    target_link_options(luabot PRIVATE -Wl,--whole-archive $<TARGET_FILE:luabot-ffi> -Wl,--no-whole-archive)
+    target_link_options(luabot PRIVATE -Wl,--export-dynamic)
+else()
+    target_link_libraries(luabot PRIVATE luabot-ffi)
+endif()
+
+add_dependencies(luabot luabot-ffi)
+
+# Set RPATH for finding shared libraries
+set_target_properties(luabot PROPERTIES
+    INSTALL_RPATH "@executable_path/../lib"
+    BUILD_WITH_INSTALL_RPATH FALSE
+    MACOSX_RPATH TRUE)
+
 target_include_directories(luabot PRIVATE 
+    ${CMAKE_BINARY_DIR}/include
     ${LuaJIT_INCLUDE_DIR})
+
+install(TARGETS luabot
+    RUNTIME DESTINATION bin)
+
+install(TARGETS wpilibc wpilibNewCommands hal ntcore wpiutil wpinet wpimath apriltag
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin)
+
+# Enable testing
+enable_testing()
+add_subdirectory(test)
+

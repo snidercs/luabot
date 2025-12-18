@@ -1,9 +1,9 @@
 local ffi = require('ffi')
 local C = require('wpi.clib.wpiHal').load(false)
 
-local IterativeRobotBase = require('frc.IterativeRobotBase')
-local RobotBase = require('frc.RobotBase')
-local Timer = require('frc.Timer')
+local IterativeRobotBase = require('wpi.frc.IterativeRobotBase')
+local RobotBase = require('wpi.frc.RobotBase')
+local Timer = require('wpi.frc.Timer')
 
 ---@class TimedRobot
 local TimedRobot = IterativeRobotBase.derive()

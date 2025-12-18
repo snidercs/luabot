@@ -1,5 +1,5 @@
 local hal = require('wpi.hal')
-local TimedRobot = require('frc.TimedRobot')
+local TimedRobot = require('wpi.frc.TimedRobot')
 
 local function TimedRobotTest(dur, timeout)
     local Robot = TimedRobot.derive()

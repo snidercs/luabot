@@ -8,7 +8,8 @@ ffi.cdef[[
 @CDEF@
 ]]
 
-local lib = ffi.load ('@CLIB@')
+pcall(ffi.load, 'luabot-ffi', true)
+local lib = ffi.C
 
 ---@TYPENAME@ wrapper
 ---@class @TYPENAME@
