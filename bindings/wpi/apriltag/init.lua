@@ -1,5 +1,5 @@
 local M = {
-    AprilTag = require ('frc.apriltag.AprilTag')
+    AprilTag = require ('wpi.apriltag.AprilTag')
 }
 
 return M
