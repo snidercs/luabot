@@ -4,24 +4,32 @@ A system for running LuaJIT powered FRC and other robots.
 ## Building
 
 ### Dependencies
-* [Meson](https://mesonbuild.com) - Build system.
-* [Python](https://www.python.org/) - Required by meson.
-* [Boost](https://boost.org) - test suite headers for tests.
+* [CMake](https://cmake.org) - Build system.
+* [Python](https://www.python.org/) - Required for yaml parsing and benchmarking.
+* [Ninja](https://ninja-build.org/) - Recommended. The build instructions assume you have it.
 
-### Build and Run Tests
-The steps here are for a Linux system but should work on any platform with C++ and boost available.
-
+### Get the Code
+This projected includes various dependencies as submodules. Make sure to either clone with submodules.
 ```bash
-# run the setup/configure command. needs done once.
-# called build is where binaries are produced.
-meson setup build
-
-# compile it
-# the "-C build" is specifying that a sub directory
-meson compile -C build
-
-# test it
-meson test -C build
+git clone https://github.com/snidercs/luabot --recurse-submodules
 ```
 
-_Note: the steps above might need additional options on a OSX or Windows, but the general concept is the same_
+Or if you did a normal clone, initialize them
+
+```bash
+git submodule update --init --recursive
+```
+
+### Build and Run Tests
+The steps here are for a Unix based system but should work on any platform with C++.
+
+```bash
+# Configure the build directory
+cmake -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Release
+
+# Compile it
+cmake --build build --config=Release
+
+# Test it
+ctest --test-dir=build
+```
