@@ -129,6 +129,7 @@ if(LUABOT_BUILD_CONSOLE)
 
     target_include_directories(luabot PRIVATE 
         ${CMAKE_BINARY_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${LuaJIT_INCLUDE_DIR})
 
     install(TARGETS luabot
