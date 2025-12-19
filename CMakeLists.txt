@@ -18,7 +18,13 @@ set(WITH_JAVA OFF)
 set(WITH_CSCORE OFF)
 set(WITH_PROTOBUF OFF)
 set(WITH_TESTS OFF)
-add_subdirectory(deps/allwpilib EXCLUDE_FROM_ALL)
+set(WITH_GUI ON)
+
+if(LUABOT_BUILD_CONSOLE)
+    add_subdirectory(deps/allwpilib)
+else()
+    add_subdirectory(deps/allwpilib EXCLUDE_FROM_ALL)
+endif()
 
 get_target_property(wpilibc_INCLUDE_DIRS wpilibc INTERFACE_INCLUDE_DIRECTORIES)
 get_target_property(wpiutil_INCLUDE_DIRS wpiutil INTERFACE_INCLUDE_DIRECTORIES)
@@ -36,12 +42,6 @@ list(APPEND WPILIB_INCLUDES
     ${wpimath_INCLUDE_DIRS}
     ${apriltag_INCLUDE_DIRS}
     ${wpilibNewCommands_INCLUDE_DIRS})
-
-find_library(LuaJIT NAMES luajit-5.1 PATHS /opt/luabot/lib REQUIRED)
-find_path(LuaJIT_INCLUDE_DIR
-    NAMES luajit.h lua.h lua.hpp
-    PATHS /opt/luabot/include/luajit-2.1
-    REQUIRED)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 set(PARSE_PY ${CMAKE_SOURCE_DIR}/util/parse.py)
@@ -65,6 +65,12 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/lua/wpi
     FILES_MATCHING PATTERN "*.lua")
 
 if(LUABOT_BUILD_CONSOLE)
+    find_library(LuaJIT NAMES luajit-5.1 PATHS /opt/luabot/lib REQUIRED)
+    find_path(LuaJIT_INCLUDE_DIR
+        NAMES luajit.h lua.h lua.hpp
+        PATHS /opt/luabot/include/luajit-2.1
+        REQUIRED)
+
     add_library(luabot-ffi STATIC
         src/ffi.cpp)
 
@@ -126,11 +132,6 @@ if(LUABOT_BUILD_CONSOLE)
         ${LuaJIT_INCLUDE_DIR})
 
     install(TARGETS luabot
-        RUNTIME DESTINATION bin)
-
-    install(TARGETS wpilibc wpilibNewCommands hal ntcore wpiutil wpinet wpimath apriltag
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin)
 
     # Enable testing
