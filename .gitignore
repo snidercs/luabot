@@ -1,6 +1,7 @@
 /build/
 /Testing/
 /dist/
+/3rdparty/
 
 # Meson
 .meson-subproject*
