@@ -1,4 +1,0 @@
-#!/bin/bash
-export HALSIM_EXTENSIONS="halsim_ds_socket:halsim_gui" # :halsim_ws_client:halsim_ws_core:halsim_ws_server"
-util/devbot util/simbot.lua $*
-exit $?
