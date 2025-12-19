@@ -1,6 +1,6 @@
 
-local TimedRobot = require ('frc.TimedRobot')
-local XboxController = require ('frc.XboxController')
+local TimedRobot = require ('wpi.frc.TimedRobot')
+local XboxController = require ('wpi.frc.XboxController')
 
 ---@class MockRobot A mock robot to use in testing.
 local MockRobot = TimedRobot.derive()
