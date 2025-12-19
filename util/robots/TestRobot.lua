@@ -38,8 +38,6 @@ function MockRobot:teleopPeriodic()
     end
 end
 
-dofile ('util/compat.lua')
-
 function MockRobot:robotPeriodic()
     local pad = self.pad
     if not pad:isConnected() then return end

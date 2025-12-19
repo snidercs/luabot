@@ -55,17 +55,18 @@ void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
         // Load and execute the Lua file as a module
         if (luaL_loadfile (L, lua_file) != 0) {
             const char* err = lua_tostring (L, -1);
-            std::cerr << "Error loading Lua file: " << err << std::endl;
+            std::string err_msg = err ? err : "unknown error";
             lua_close (L);
-            throw std::runtime_error (err);
+            throw std::runtime_error (err_msg);
         }
 
         // Execute the file - should return a table
         if (lua_pcall (L, 0, 1, 0) != 0) {
             const char* err = lua_tostring (L, -1);
-            std::cerr << "Error running Lua file: " << err << std::endl;
+            std::string err_msg = err ? err : "unknown error";
+            // std::cerr << "[luabot]: " << err_msg << std::endl;
             lua_close (L);
-            throw std::runtime_error (err);
+            throw std::runtime_error (err_msg);// ("failed to create module");
         }
 
         // The module should return a table
@@ -78,7 +79,7 @@ void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
         // Get the 'new' function from the returned table
         lua_getfield (L, -1, "new");
         if (! lua_isfunction (L, -1)) {
-            std::cerr << "Error: Module table must have a 'new' function" << std::endl;
+            // std::cerr << "Error: Module table must have a 'new' function" << std::endl;
             lua_close (L);
             throw std::runtime_error ("Module table missing 'new' function");
         }
@@ -86,9 +87,10 @@ void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
         // Call module.new() to create the robot instance
         if (lua_pcall (L, 0, 1, 0) != 0) {
             const char* err = lua_tostring (L, -1);
-            std::cerr << "Error calling new(): " << err << std::endl;
+            std::string err_msg = err ? err : "unknown error";
+            // std::cerr << "Error calling new(): " << err_msg << std::endl;
             lua_close (L);
-            throw std::runtime_error (err);
+            throw std::runtime_error (err_msg);
         }
 
         // Store the robot instance in the registry to keep it alive
@@ -99,7 +101,7 @@ void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
         // Get the startCompetition method
         lua_getfield (L, -1, "startCompetition");
         if (! lua_isfunction (L, -1)) {
-            std::cerr << "Error: Robot instance must have a startCompetition method" << std::endl;
+            // std::cerr << "Error: Robot instance must have a startCompetition method" << std::endl;
             lua_close (L);
             throw std::runtime_error ("Robot missing startCompetition method");
         }
@@ -110,15 +112,17 @@ void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
         // Call instance:startCompetition()
         if (lua_pcall (L, 1, 0, 0) != 0) {
             const char* err = lua_tostring (L, -1);
-            std::cerr << "Error in startCompetition: " << err << std::endl;
+            std::string err_msg = err ? err : "unknown error";
+            // std::cerr << "Error in startCompetition: " << err << std::endl;
             lua_close (L);
-            throw std::runtime_error (err);
+            throw std::runtime_error (err_msg);
         }
 
         // Don't close L here - keep it alive for endCompetition
 
     } catch (const std::exception& e) {
-        HAL_SendError (1, frc::err::Error, 0, e.what(), "", "", 1);
+        auto hal_msg = std::string("[luabot]: ") + std::string (e.what());
+        HAL_SendError (1, frc::err::Error, 0, hal_msg.c_str(), "", "", 1);
         throw;
     }
 }
@@ -245,7 +249,11 @@ int main (int argc, char* argv[]) {
             return 1;
         }
         detail::init_simulation();
-        return luabot::start_robot (opts.lua_file);
+        try {
+            return luabot::start_robot (opts.lua_file);
+        } catch (const std::exception&) {
+            return 1;
+        }
     }
 
     return luabot_console (argc, argv);
