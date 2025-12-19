@@ -65,10 +65,10 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/lua/wpi
     FILES_MATCHING PATTERN "*.lua")
 
 if(LUABOT_BUILD_CONSOLE)
-    find_library(LuaJIT NAMES luajit-5.1 PATHS /opt/luabot/lib REQUIRED)
+    find_library(LuaJIT NAMES luajit-5.1 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED)
     find_path(LuaJIT_INCLUDE_DIR
         NAMES luajit.h lua.h lua.hpp
-        PATHS /opt/luabot/include/luajit-2.1
+        PATHS "${CMAKE_SOURCE_DIR}/3rdparty/include/luajit-2.1"
         REQUIRED)
 
     add_library(luabot-ffi STATIC
