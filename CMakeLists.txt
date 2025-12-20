@@ -71,33 +71,12 @@ if(LUABOT_BUILD_CONSOLE)
         PATHS "${CMAKE_SOURCE_DIR}/3rdparty/include/luajit-2.1"
         REQUIRED)
 
-    add_library(luabot-ffi STATIC
-        src/ffi.cpp)
-
-    if(NOT WITH_CSCORE)
-        target_compile_definitions(luabot-ffi PRIVATE DYNAMIC_CAMERA_SERVER)
-    endif()
-
-    target_include_directories(luabot-ffi PUBLIC
-        ${CMAKE_BINARY_DIR}/include
-        ${LuaJIT_INCLUDE_DIR}
-        ${WPILIB_INCLUDES})
-
-    target_link_libraries(luabot-ffi PUBLIC
-        wpilibc
-        wpilibNewCommands
-        hal
-        ntcore
-        wpiutil
-        wpimath
-        apriltag)
-
-    add_dependencies(luabot-ffi generate_bindings)
+    
 
     add_executable(luabot
         src/console.c
         src/luabot.cpp)
-
+    add_dependencies(luabot generate_bindings)
     target_link_libraries(luabot PRIVATE 
         ${LuaJIT}
         wpilibc
@@ -107,25 +86,28 @@ if(LUABOT_BUILD_CONSOLE)
         wpiutil
         wpimath
         apriltag)
-
-    # Force load all symbols from static library for FFI dlsym lookup
-    if(APPLE)
-        target_link_options(luabot PRIVATE -Wl,-force_load,$<TARGET_FILE:luabot-ffi>)
-        target_link_options(luabot PRIVATE -Wl,-export_dynamic)
-    elseif(UNIX)
-        target_link_options(luabot PRIVATE -Wl,--whole-archive $<TARGET_FILE:luabot-ffi> -Wl,--no-whole-archive)
-        target_link_options(luabot PRIVATE -Wl,--export-dynamic)
-    else()
-        target_link_libraries(luabot PRIVATE luabot-ffi)
+    if(NOT WITH_CSCORE)
+        target_compile_definitions(luabot PRIVATE DYNAMIC_CAMERA_SERVER)
     endif()
 
-    add_dependencies(luabot luabot-ffi)
+    # Force load all symbols from static library for FFI dlsym lookup
+    # if(APPLE)
+    #     target_link_options(luabot PRIVATE -Wl,-force_load,$<TARGET_FILE:luabot-ffi>)
+    #     target_link_options(luabot PRIVATE -Wl,-export_dynamic)
+    # elseif(UNIX)
+    #     target_link_options(luabot PRIVATE -Wl,--whole-archive $<TARGET_FILE:luabot-ffi> -Wl,--no-whole-archive)
+    #     target_link_options(luabot PRIVATE -Wl,--export-dynamic)
+    # else()
+    #     target_link_libraries(luabot PRIVATE luabot-ffi)
+    # endif()
+
+    # add_dependencies(luabot luabot-ffi)
 
     # Set RPATH for finding shared libraries
-    set_target_properties(luabot PROPERTIES
-        INSTALL_RPATH "@executable_path/../lib"
-        BUILD_WITH_INSTALL_RPATH FALSE
-        MACOSX_RPATH TRUE)
+    # set_target_properties(luabot PROPERTIES
+    #     INSTALL_RPATH "@executable_path/../lib"
+    #     BUILD_WITH_INSTALL_RPATH FALSE
+    #     MACOSX_RPATH TRUE)
 
     target_include_directories(luabot PRIVATE 
         ${CMAKE_BINARY_DIR}/include
