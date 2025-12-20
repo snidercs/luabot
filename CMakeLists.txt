@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20.0)
 project('luabot' VERSION 0.0.1)
 
 option(LUABOT_BUILD_CONSOLE "Build the luabot console application" ON)
+option(LUABOT_BUILD_TESTS "Build the unit tests" ON)
 
 # Enable ccache if available
 find_program(CCACHE_PROGRAM ccache)
@@ -74,6 +75,29 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/lua/wpi
     DESTINATION "${LUABOT_LUA_DIR}"
     FILES_MATCHING PATTERN "*.lua")
 
+# Install 3rdparty resources (wpilib and luajit)
+
+# 3rdparty/bin/* goes to cmake bin dir
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/bin/
+    DESTINATION bin
+    USE_SOURCE_PERMISSIONS)
+
+# 3rdparty/lib/* goes to cmake lib dir
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/lib/
+    DESTINATION lib)
+
+# 3rdparty/include/* goes to cmake include dir
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/include/
+    DESTINATION include)
+
+# 3rdparty/share/* goes to cmake share dir
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/share/
+    DESTINATION share)
+
+# 3rdparty/linuxathena/* goes to cmake prefix slash linuxathena
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/linuxathena/
+    DESTINATION linuxathena)
+
 if(LUABOT_BUILD_CONSOLE)
     find_library(LuaJIT NAMES luajit-5.1 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED)
     find_path(LuaJIT_INCLUDE_DIR
@@ -110,10 +134,16 @@ if(LUABOT_BUILD_CONSOLE)
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${LuaJIT_INCLUDE_DIR})
 
+    # Set RPATH for installed binary to match wpilib libraries
+    set_target_properties(luabot PROPERTIES
+        INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+
     install(TARGETS luabot
         RUNTIME DESTINATION bin)
-
+    
     # Enable testing
-    enable_testing()
-    add_subdirectory(test)
+    if(LUABOT_BUILD_TESTS)
+        enable_testing()
+        add_subdirectory(test)
+    endif()
 endif()
