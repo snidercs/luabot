@@ -39,6 +39,18 @@ endif()
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 set(PARSE_PY ${CMAKE_SOURCE_DIR}/util/parse.py)
+
+# Check if Python yaml module is available
+execute_process(
+    COMMAND ${Python3_EXECUTABLE} -c "import yaml"
+    RESULT_VARIABLE YAML_CHECK_RESULT
+    OUTPUT_QUIET
+    ERROR_QUIET
+)
+if(NOT YAML_CHECK_RESULT EQUAL 0)
+    message(FATAL_ERROR "Python yaml module not found. Please install 'pyyaml' with pip")
+endif()
+
 add_subdirectory(bindings)
 
 # Install generated C++ binding headers
@@ -57,8 +69,6 @@ set(LUABOT_LUA_DIR "share/luajit-2.1" CACHE STRING "Sub path to install lua file
 install(DIRECTORY ${CMAKE_BINARY_DIR}/lua/wpi
     DESTINATION "${LUABOT_LUA_DIR}"
     FILES_MATCHING PATTERN "*.lua")
-
-# Install 3rdparty resources (wpilib and luajit)
 
 # 3rdparty/bin/* goes to cmake bin dir
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/bin/
@@ -82,11 +92,11 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/linuxathena/
     DESTINATION linuxathena)
 
 if(LUABOT_BUILD_CONSOLE)
-    find_library(LuaJIT NAMES luajit-5.1 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED)
+    find_library(LuaJIT NAMES luajit-5.1 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED NO_DEFAULT_PATH)
     find_path(LuaJIT_INCLUDE_DIR
         NAMES luajit.h lua.h lua.hpp
         PATHS "${CMAKE_SOURCE_DIR}/3rdparty/include/luajit-2.1"
-        REQUIRED)
+        REQUIRED NO_DEFAULT_PATH)
 
     add_executable(luabot
         src/console.c
