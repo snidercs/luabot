@@ -36,3 +36,4 @@ luabot_add_bad_robot_test(BadSyntaxRobot BadSyntaxRobot.lua "<name> or '...' exp
 luabot_add_bad_robot_test(InitCrashRobot InitCrashRobot.lua "attempt to index global")
 luabot_add_bad_robot_test(NoNewRobot NoNewRobot.lua "table missing 'new' function")
 luabot_add_bad_robot_test(NotATableRobot NotATableRobot.lua "did not return a table")
+luabot_add_bad_robot_test(NoLoadRobot NoLoadRobot.lua "<name> or '...' expected near 'return'")
