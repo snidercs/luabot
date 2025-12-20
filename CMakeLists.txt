@@ -25,8 +25,16 @@ configure_file(
     @ONLY
 )
 
+find_package(OpenCV QUIET)
+
 set(WITH_JAVA OFF)
-set(WITH_CSCORE OFF)
+if(OpenCV_FOUND)
+    set(WITH_CSCORE ON)
+    message(STATUS "OpenCV found: enabling cscore")
+else()
+    set(WITH_CSCORE OFF)
+    message(STATUS "OpenCV not found: disabling cscore")
+endif()
 set(WITH_PROTOBUF OFF)
 set(WITH_TESTS OFF)
 set(WITH_GUI ON)

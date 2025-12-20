@@ -7,7 +7,9 @@ local wpiHal = require('wpi.clib.wpiHal')
 -- Test cscore load function
 do
     local lib = cscore.load(false)
-    lu.assertIsNil(lib, "cscore.load() should fail - library not supported yet")
+    if lib then
+        lu.assertNotNil(lib.CS_EnumerateUsbCameras, "cscore should load c functions")
+    end
 end
 
 collectgarbage()
