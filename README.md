@@ -1,4 +1,4 @@
-# LuaBOT
+# LuaBot
 A system for running LuaJIT powered FRC and other robots.
 
 ## Building
@@ -7,6 +7,8 @@ A system for running LuaJIT powered FRC and other robots.
 * [CMake](https://cmake.org) - Build system.
 * [Python](https://www.python.org/) - Required for yaml parsing and benchmarking.
 * [Ninja](https://ninja-build.org/) - Recommended. The build instructions assume you have it.
+* [Docker](https://docker.com) - Required to cross-compile LuaJIT for roboRIO
+* [CCache](https://ccache.dev/) - Recommended for faster rebuilds.
 
 ### Get the Code
 This projected includes various dependencies as submodules. Make sure to either clone with submodules.
@@ -19,6 +21,21 @@ Or if you did a normal clone, initialize them
 ```bash
 git submodule update --init --recursive
 ```
+### LuaJIT
+LuaJIT needs built outside of cmake. We have scripting for that.
+**Linux**
+```bash
+sh util/build-luajit-linux.sh
+```
+**macOS**
+```bash
+sh util/build-luajit-macos.sh
+```
+**Windows**
+_TODO: coming soon..._
+
+### YAML Python
+Your system might not have the yaml library for Python.
 
 ### Build and Run Tests
 The steps here are for a Unix based system but should work on any platform with C++.
@@ -28,8 +45,8 @@ The steps here are for a Unix based system but should work on any platform with 
 cmake -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Release
 
 # Compile it
-cmake --build build --config=Release
+ninja -C build
 
 # Test it
-ctest --test-dir=build
+ninja -C build test
 ```
