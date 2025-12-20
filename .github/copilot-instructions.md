@@ -48,6 +48,10 @@ LuaBot is a Lua scripting environment for FRC (FIRST Robotics Competition) robot
 - Use `---@class` annotations for type hints
 - Implement classes using the `derive()` pattern from base classes
 - Store instance data in `self` table
+- **Constructor patterns**: Inconsistent across modules (will be standardized later)
+  - Some classes use `ClassName.new(...)` (e.g., `AddressableLED.new(1)`)
+  - Others use direct call via `__call` metamethod (e.g., `Pose2d(1, 2, 3)`)
+  - Check existing usage in `build/lua/wpi/` when writing tests
 
 ## Common Patterns
 
@@ -119,10 +123,17 @@ lua_getfield(L, LUA_REGISTRYINDEX, "robot_instance");
 - Clean shutdown: `HAL_Shutdown()`, `HAL_ExitMain()`
 
 ## Testing
-- Lua unit tests: Use `luaunit.lua` framework
+- Lua unit tests: Use `luaunit.lua` framework in `test/wpi/` directory
 - C++ tests: Standard CMake test framework
 - Purposefully test error conditions (missing modules, invalid robot files)
 - Always verify clean error handling and shutdown
+- **Per-class API testing**:
+  - Create one test file per class: `test/wpi/TestClassName.lua`
+  - Test construction, methods, edge cases, garbage collection
+  - Use `lu.assertTrue()`, `lu.assertEquals()`, etc. for assertions
+  - Call `collectgarbage()` between test blocks to verify cleanup
+  - **Always add new test files to `test/CMakeLists.txt`** using `luabot_add_api_test(TestName wpi/TestFileName.lua)`
+  - Example: `luabot_add_api_test(TestPose2d wpi/TestPose2d.lua)`
 
 ## Best Practices
 - Never leak `lua_State*` - always close on error paths

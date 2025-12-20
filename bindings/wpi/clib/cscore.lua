@@ -491,10 +491,12 @@ ffi.cdef[[
 
 ---Load the cscore shared library.
 ---@param global boolean? Set true to add to the `ffi.C` namespace
----@return ffi.namespace* clib The shared library ref
+---@return ffi.namespace*|nil clib The shared library ref or nil
 local function load(global)
     if not lib then
-        lib = ffi.load(SONAME, global)
+        local ok = false
+        ok, lib = pcall(ffi.load, SONAME, global)
+        if not ok then lib = nil end
     end
     return lib
 end

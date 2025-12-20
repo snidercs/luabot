@@ -16,8 +16,10 @@ endfunction()
 # Add tests
 luabot_add_api_test(RequireAll requireall.lua)
 luabot_add_api_test(TestAddressableLED wpi/TestAddressableLED.lua)
+luabot_add_api_test(TestClib wpi/TestClib.lua)
 luabot_add_api_test(TestFilesystem wpi/TestFilesystem.lua)
 luabot_add_api_test(TestGeometry wpi/TestGeometry.lua)
+luabot_add_api_test(TestPose2d wpi/TestPose2d.lua)
 luabot_add_api_test(TestRobots wpi/TestRobots.lua)
 luabot_add_api_test(TestTimed wpi/TestTimed.lua)
 
