@@ -7,15 +7,6 @@
 #include <lua.hpp>
 #include <luabot/luabot.hpp>
 
-// #include <frc/Errors.h>
-// #include <frc/RobotBase.h>
-// #include <hal/DriverStation.h>
-// #include <hal/Extensions.h>
-// #include <hal/HALBase.h>
-// #include <hal/Main.h>
-// #include <wpi/condition_variable.h>
-// #include <wpi/mutex.h>
-
 extern "C" int luabot_console (int argc, char* argv[]);
 
 namespace luabot {
@@ -41,7 +32,6 @@ inline static void init_simulation() {
     if (nullptr != extensions)
         std::free (extensions);
 }
-
 
 inline static const luabot::Options parse_options (int argc, char* argv[]) {
     luabot::Options opts;
@@ -69,7 +59,6 @@ inline static void print_version() {
 } // namespace luabot
 
 int main (int argc, char* argv[]) {
-    try {
     using namespace luabot;
 
     const auto opts = parse_options (argc, argv);
@@ -94,13 +83,9 @@ int main (int argc, char* argv[]) {
     }
 
     return luabot_console (argc, argv);
-} catch (const std::exception& e) {
-    std::cout << "unhandled: " << e.what() << std::endl;
-    return 1;
-}
 }
 
-#include <luabot/math.ipp>
+#include <luabot/apriltag.ipp>
 #include <luabot/command.ipp>
 #include <luabot/frc.ipp>
-#include <luabot/apriltag.ipp>
+#include <luabot/math.ipp>

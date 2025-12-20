@@ -8,9 +8,9 @@
 #include <string>
 #include <string_view>
 
-#include <lua.hpp>
 #include <frc/RobotBase.h>
 #include <hal/Main.h>
+#include <lua.hpp>
 
 #if defined(__GNUC__) || defined(__clang__)
 #    define LUABOT_FUNCTION __PRETTY_FUNCTION__
@@ -20,13 +20,29 @@
 #    define LUABOT_FUNCTION __func__
 #endif
 
+#ifndef LUABOT_DEVELOPMENT
+#    define LUABOT_DEVELOPMENT 0
+#endif
+
 namespace luabot {
 namespace detail {
 
-    void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
+void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
+    lua_State* L = luaL_newstate();
+    luaL_openlibs (L);
+
     try {
-        lua_State* L = luaL_newstate();
-        luaL_openlibs (L);
+#if LUABOT_DEVELOPMENT
+        // Set LUA_PATH to include build/lua directory
+        lua_getglobal (L, "package");
+        lua_getfield (L, -1, "path");
+        std::string current_path { lua_tostring (L, -1) };
+        lua_pop (L, 1);
+        std::string new_path = "./build/lua/?.lua;./build/lua/?/init.lua;" + current_path;
+        lua_pushstring (L, new_path.c_str());
+        lua_setfield (L, -2, "path");
+        lua_pop (L, 1);
+#endif
 
         {
             std::scoped_lock lock { m };
@@ -35,42 +51,34 @@ namespace detail {
 
         // Load and execute the Lua file as a module
         if (luaL_loadfile (L, lua_file) != 0) {
-            const char* err = lua_tostring (L, -1);
+            const char* err     = lua_tostring (L, -1);
             std::string err_msg = err ? err : "unknown error";
-            lua_close (L);
             throw std::runtime_error (err_msg);
         }
 
-        // Execute the file - should return a table
+        // Execute the file
         if (lua_pcall (L, 0, 1, 0) != 0) {
-            const char* err = lua_tostring (L, -1);
+            const char* err     = lua_tostring (L, -1);
             std::string err_msg = err ? err : "unknown error";
-            // std::cerr << "[luabot]: " << err_msg << std::endl;
-            lua_close (L);
-            throw std::runtime_error (err_msg);// ("failed to create module");
+            throw std::runtime_error (err_msg); // ("failed to create module");
         }
 
         // The module should return a table
         if (! lua_istable (L, -1)) {
-            std::cerr << "Error: Lua file must return a table with a 'new' function" << std::endl;
-            lua_close (L);
             throw std::runtime_error ("Module did not return a table");
         }
 
         // Get the 'new' function from the returned table
         lua_getfield (L, -1, "new");
         if (! lua_isfunction (L, -1)) {
-            // std::cerr << "Error: Module table must have a 'new' function" << std::endl;
-            lua_close (L);
             throw std::runtime_error ("Module table missing 'new' function");
         }
 
         // Call module.new() to create the robot instance
         if (lua_pcall (L, 0, 1, 0) != 0) {
-            const char* err = lua_tostring (L, -1);
+            const char* err     = lua_tostring (L, -1);
             std::string err_msg = err ? err : "unknown error";
             // std::cerr << "Error calling new(): " << err_msg << std::endl;
-            lua_close (L);
             throw std::runtime_error (err_msg);
         }
 
@@ -83,7 +91,6 @@ namespace detail {
         lua_getfield (L, -1, "startCompetition");
         if (! lua_isfunction (L, -1)) {
             // std::cerr << "Error: Robot instance must have a startCompetition method" << std::endl;
-            lua_close (L);
             throw std::runtime_error ("Robot missing startCompetition method");
         }
 
@@ -92,18 +99,36 @@ namespace detail {
 
         // Call instance:startCompetition()
         if (lua_pcall (L, 1, 0, 0) != 0) {
-            const char* err = lua_tostring (L, -1);
+            const char* err     = lua_tostring (L, -1);
             std::string err_msg = err ? err : "unknown error";
-            // Don't close L here - defer to thread cleanup to avoid nested exceptions
             throw std::runtime_error (err_msg);
         }
 
-        // Don't close L here - keep it alive for endCompetition
+        // startCompetition() has returned - call endCompetition before cleanup
+        lua_getfield (L, LUA_REGISTRYINDEX, "robot_instance");
+        if (lua_istable (L, -1)) {
+            lua_getfield (L, -1, "endCompetition");
+            if (lua_isfunction (L, -1)) {
+                lua_pushvalue (L, -2);
+                lua_pcall (L, 1, 0, 0);
+            }
+        }
+
+        // Clean up Lua state
+        lua_close (L);
+        {
+            std::scoped_lock lock { m };
+            *L_ptr = nullptr;
+        }
 
     } catch (const std::exception& e) {
-        auto hal_msg = std::string("[luabot]: ") + std::string (e.what());
+        auto hal_msg = std::string ("[luabot]: ") + std::string (e.what());
         HAL_SendError (1, frc::err::Error, 0, hal_msg.c_str(), "", "", 1);
-        // Don't re-throw - let caller handle cleanup
+        if (L) {
+            lua_close (L);
+            std::scoped_lock lock { m };
+            *L_ptr = nullptr;
+        }
     }
 }
 
@@ -133,7 +158,7 @@ int start_robot (const char* lua_file) {
                     exited = true;
                 }
                 cv.notify_all();
-                return;  // Don't re-throw from thread
+                return; // Don't re-throw from thread
             } catch (...) {
                 std::cerr << "[luabot]: Unknown exception in robot thread" << std::endl;
                 HAL_ExitMain();
@@ -143,7 +168,7 @@ int start_robot (const char* lua_file) {
                     exited = true;
                 }
                 cv.notify_all();
-                return;  // Don't re-throw from thread
+                return; // Don't re-throw from thread
             }
 
             HAL_ExitMain();
@@ -157,22 +182,6 @@ int start_robot (const char* lua_file) {
 
         HAL_RunMain();
 
-        // Signal loop to exit - call endCompetition on the robot instance
-        if (L != nullptr) {
-            // Get the robot instance from the registry
-            lua_getfield (L, LUA_REGISTRYINDEX, "robot_instance");
-            if (lua_istable (L, -1)) {
-                // Get the endCompetition method
-                lua_getfield (L, -1, "endCompetition");
-                if (lua_isfunction (L, -1)) {
-                    // Push the robot instance as 'self'
-                    lua_pushvalue (L, -2);
-                    // Call instance:endCompetition()
-                    lua_pcall (L, 1, 0, 0);
-                }
-            }
-        }
-
         // Prefer to join, but detach to exit if it doesn't exit in a timely manner
         using namespace std::chrono_literals;
         std::unique_lock lock { m };
@@ -180,11 +189,6 @@ int start_robot (const char* lua_file) {
             thr.join();
         } else {
             thr.detach();
-        }
-
-        // Clean up Lua state
-        if (L) {
-            lua_close (L);
         }
     } else {
         detail::run_lua_robot (m, &L, lua_file);
