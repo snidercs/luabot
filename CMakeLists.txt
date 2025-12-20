@@ -3,6 +3,16 @@ project('luabot' VERSION 0.0.1)
 
 option(LUABOT_BUILD_CONSOLE "Build the luabot console application" ON)
 
+# Enable ccache if available
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    message(STATUS "Found ccache: ${CCACHE_PROGRAM}")
+    set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+else()
+    message(STATUS "ccache not found")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -71,8 +81,6 @@ if(LUABOT_BUILD_CONSOLE)
         PATHS "${CMAKE_SOURCE_DIR}/3rdparty/include/luajit-2.1"
         REQUIRED)
 
-    
-
     add_executable(luabot
         src/console.c
         src/luabot.cpp)
@@ -90,24 +98,12 @@ if(LUABOT_BUILD_CONSOLE)
         target_compile_definitions(luabot PRIVATE DYNAMIC_CAMERA_SERVER)
     endif()
 
-    # Force load all symbols from static library for FFI dlsym lookup
-    # if(APPLE)
-    #     target_link_options(luabot PRIVATE -Wl,-force_load,$<TARGET_FILE:luabot-ffi>)
-    #     target_link_options(luabot PRIVATE -Wl,-export_dynamic)
-    # elseif(UNIX)
-    #     target_link_options(luabot PRIVATE -Wl,--whole-archive $<TARGET_FILE:luabot-ffi> -Wl,--no-whole-archive)
-    #     target_link_options(luabot PRIVATE -Wl,--export-dynamic)
-    # else()
-    #     target_link_libraries(luabot PRIVATE luabot-ffi)
-    # endif()
-
-    # add_dependencies(luabot luabot-ffi)
-
-    # Set RPATH for finding shared libraries
-    # set_target_properties(luabot PROPERTIES
-    #     INSTALL_RPATH "@executable_path/../lib"
-    #     BUILD_WITH_INSTALL_RPATH FALSE
-    #     MACOSX_RPATH TRUE)
+    # Export symbols for FFI dlsym lookup
+    if(APPLE)
+        target_link_options(luabot PRIVATE -Wl,-export_dynamic)
+    elseif(UNIX)
+        target_link_options(luabot PRIVATE -Wl,--export-dynamic)
+    endif()
 
     target_include_directories(luabot PRIVATE 
         ${CMAKE_BINARY_DIR}/include
