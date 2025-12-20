@@ -37,23 +37,6 @@ else()
     add_subdirectory(deps/allwpilib EXCLUDE_FROM_ALL)
 endif()
 
-get_target_property(wpilibc_INCLUDE_DIRS wpilibc INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(wpiutil_INCLUDE_DIRS wpiutil INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(hal_INCLUDE_DIRS hal INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(ntcore_INCLUDE_DIRS ntcore INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(wpimath_INCLUDE_DIRS wpimath INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(apriltag_INCLUDE_DIRS apriltag INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(wpilibc_INCLUDE_DIRS wpilibc INTERFACE_INCLUDE_DIRECTORIES)
-get_target_property(wpilibNewCommands_INCLUDE_DIRS wpilibNewCommands INTERFACE_INCLUDE_DIRECTORIES)
-list(APPEND WPILIB_INCLUDES 
-    ${hal_INCLUDE_DIRS} 
-    ${wpilibc_INCLUDE_DIRS} 
-    ${wpiutil_INCLUDE_DIRS} 
-    ${ntcore_INCLUDE_DIRS}
-    ${wpimath_INCLUDE_DIRS}
-    ${apriltag_INCLUDE_DIRS}
-    ${wpilibNewCommands_INCLUDE_DIRS})
-
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 set(PARSE_PY ${CMAKE_SOURCE_DIR}/util/parse.py)
 add_subdirectory(bindings)
