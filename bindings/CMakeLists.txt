@@ -189,20 +189,6 @@ foreach(IPP_DIR ${IPP_DIRS})
     list(APPEND GENERATED_IPP_FILES ${IPP_FILE})
 endforeach()
 
-# Generate ffi.cpp that includes all .ipp files
-set(FFI_CPP_FILE ${CMAKE_SOURCE_DIR}/src/ffi.cpp)
-set(FFI_CONTENT "// Auto-generated file that includes all FFI bindings\n")
-string(APPEND FFI_CONTENT "// Copyright (c) 2025 Michael Fisher @mfisher31\n")
-string(APPEND FFI_CONTENT "// SPDX-License-Identifier: MIT\n\n")
-
-foreach(IPP_DIR ${IPP_DIRS})
-    string(REPLACE "/" "_" IPP_NAME ${IPP_DIR})
-    string(REGEX REPLACE "^wpi_" "" IPP_NAME ${IPP_NAME})
-    string(APPEND FFI_CONTENT "#include <luabot/${IPP_NAME}.ipp>\n")
-endforeach()
-
-file(GENERATE OUTPUT ${FFI_CPP_FILE} CONTENT ${FFI_CONTENT})
-
 # Create a target that depends on all generated files
 add_custom_target(generate_bindings ALL
     DEPENDS ${GENERATED_LUA_FILES} ${GENERATED_C_FILES} ${COPIED_LUA_FILES} ${COPIED_CPP_FILES}

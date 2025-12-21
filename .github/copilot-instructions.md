@@ -16,14 +16,14 @@ LuaBot is a Lua scripting environment for FRC (FIRST Robotics Competition) robot
 - Use modern C++20 features where appropriate
 - Leverage WPILib patterns: HAL initialization, robot lifecycle management
 - Exception handling: Catch exceptions at thread boundaries, log via `HAL_SendError`, handle gracefully
-- Thread safety: Use `wpi::mutex` and `wpi::condition_variable` for synchronization
+- Thread safety: Use `std::mutex` and `std::condition_variable` for synchronization
 - Lua state management: One `lua_State*` per robot instance, stored in registry
 
 ### Lua Bindings (bindings/)
 - Generated from YAML definitions using `util/parse.py`
 - Output: `.lua` files in `build/lua/wpi/` and `.cpp` files for FFI declarations
 - FFI pattern: Load shared libraries via `ffi.load()`, use `ffi.cdef()` for declarations
-- Object-oriented Lua: Use `derive()` pattern for class inheritance
+- Object-oriented Lua: Use `luabot.class` for class inheritance
 - Module structure: Each module returns a table with methods and constructors
 
 ### Lua Runtime
@@ -40,12 +40,12 @@ LuaBot is a Lua scripting environment for FRC (FIRST Robotics Competition) robot
 - Prefer RAII and smart pointers
 - Always handle Lua errors with `lua_pcall()`, check return codes
 - Extract error messages with `lua_tostring()` before throwing
-- Clean up `lua_State*` on error paths
 
 ### Lua
 - Use `PascalCase` for classes (e.g., `TimedRobot`, `XboxController`)
 - Use `camelCase` for methods and variables
 - Use `---@class` annotations for type hints
+- Prefer single-quoted strings (`'string'`) over double-quoted strings (`"string"`), unless interpolation or escaping is needed
 - Implement classes using the `derive()` pattern from base classes
 - Store instance data in `self` table
 - **Constructor patterns**: Inconsistent across modules (will be standardized later)
@@ -103,7 +103,6 @@ lua_getfield(L, LUA_REGISTRYINDEX, "robot_instance");
 ## File Organization
 - `src/luabot.cpp`: Main entry point, robot lifecycle, simulation initialization
 - `src/console.c`: Interactive Lua REPL
-- `src/ffi.cpp`: FFI bindings generator
 - `bindings/`: YAML definitions for WPILib bindings
 - `build/lua/wpi/`: Generated Lua modules
 - `util/robots/`: Example robot implementations
