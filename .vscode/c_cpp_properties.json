@@ -18,7 +18,18 @@
         {
             "name": "macOS",
             "includePath": [
-                "${workspaceFolder}/src/*"
+                "${workspaceFolder}/src/*",
+                // "${workspaceFolder}/deps/allwpilib/wpiutil/src/main/native/thirdparty/fmtlib/include/*",
+                // "${workspaceFolder}/deps/allwpilib/wpiutil/src/main/native/thirdparty/json/include/*",
+                "${workspaceFolder}/deps/allwpilib/wpiutil/src/main/native/thirdparty/**/include/*",
+                "${workspaceFolder}/deps/allwpilib/wpiutil/src/main/native/include/*",
+                // "${workspaceFolder}/deps/allwpilib/wpimath/src/main/native/thirdparty/gcem/include/*",
+                // "${workspaceFolder}/deps/allwpilib/wpimath/src/main/native/thirdparty/eigen/include/*",
+                "${workspaceFolder}/deps/allwpilib/wpimath/src/main/native/thirdparty/**/include/*",
+                "${workspaceFolder}/deps/allwpilib/wpimath/src/main/native/include/*",
+                "${workspaceFolder}/deps/allwpilib/wpimath/src/generated/main/native/cpp/*",
+                "${workspaceFolder}/deps/allwpilib/wpilibc/src/main/native/include/*"
+                
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
