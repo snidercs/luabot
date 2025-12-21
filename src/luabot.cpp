@@ -1,11 +1,10 @@
 #include <chrono>
 #include <cstring>
 #include <iostream>
-#include <luabot/version.h>
 #include <thread>
 
-#include <lua.hpp>
 #include <luabot/luabot.hpp>
+#include <luabot/version.h>
 
 extern "C" int luabot_console (int argc, char* argv[]);
 
@@ -18,7 +17,7 @@ enum class Command {
 struct Options {
     bool version { false };
     Command command { Command::none };
-    const char* lua_file { nullptr };
+    std::string lua_file;
 };
 
 inline static void init_simulation() {
@@ -41,10 +40,10 @@ inline static const luabot::Options parse_options (int argc, char* argv[]) {
             opts.version = true;
         } else if (std::strcmp (argv[i], "sim") == 0) {
             opts.command = luabot::Command::sim;
-            // Next argument should be the lua file
-            if (i + 1 < argc) {
+            if (i + 1 < argc && argv[i + 1][0] != '-')
                 opts.lua_file = argv[i + 1];
-            }
+            else
+                opts.lua_file = "robot.lua";
         }
     }
 
@@ -69,8 +68,8 @@ int main (int argc, char* argv[]) {
     }
 
     if (opts.command == luabot::Command::sim) {
-        if (! opts.lua_file) {
-            std::cerr << "Error: sim command requires a Lua file argument" << std::endl;
+        if (opts.lua_file.empty()) {
+            std::cerr << "Error: sim command requires a Lua file to be specified" << std::endl;
             std::cerr << "Usage: luabot sim <robot.lua>" << std::endl;
             return 1;
         }

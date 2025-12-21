@@ -2,6 +2,7 @@
 /Testing/
 /dist/
 /3rdparty/
+/robot.lua
 
 # Meson
 .meson-subproject*

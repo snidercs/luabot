@@ -27,7 +27,7 @@
 namespace luabot {
 namespace detail {
 
-void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
+void run_lua_robot (std::mutex& m, lua_State** L_ptr, const char* lua_file) {
     lua_State* L = luaL_newstate();
     luaL_openlibs (L);
 
@@ -134,21 +134,21 @@ void run_lua_robot (wpi::mutex& m, lua_State** L_ptr, const char* lua_file) {
 
 } // namespace detail
 
-int start_robot (const char* lua_file) {
+int start_robot (std::string_view lua_file) {
     int halInit = frc::RunHALInitialization();
     if (halInit != 0) {
         return halInit;
     }
 
-    static wpi::mutex m;
-    static wpi::condition_variable cv;
+    static std::mutex m;
+    static std::condition_variable cv;
     static lua_State* L = nullptr;
     static bool exited  = false;
 
     if (HAL_HasMain()) {
         std::thread thr ([lua_file] {
             try {
-                detail::run_lua_robot (m, &L, lua_file);
+                detail::run_lua_robot (m, &L, lua_file.data());
             } catch (const std::exception& e) {
                 std::cerr << "[luabot]: " << e.what() << std::endl;
                 HAL_ExitMain();
@@ -191,7 +191,7 @@ int start_robot (const char* lua_file) {
             thr.detach();
         }
     } else {
-        detail::run_lua_robot (m, &L, lua_file);
+        detail::run_lua_robot (m, &L, lua_file.data());
     }
 
 #ifndef __FRC_ROBORIO__
