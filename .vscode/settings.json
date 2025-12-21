@@ -1,10 +1,14 @@
 {
     "Lua.addonManager.enable": false,
     "Lua.runtime.version": "LuaJIT",
+    "Lua.workspace.library": [
+        "${workspaceFolder}/bindings",
+        "${workspaceFolder}/build/lua",
+    ],
     "Lua.runtime.path": [
-        "${workspaceFolder}/build/lua/?.lua",
-        "${workspaceFolder}/build/lua/?/init.lua",
         "${workspaceFolder}/bindings/?.lua",
         "${workspaceFolder}/bindings/?/init.lua",
+        "${workspaceFolder}/build/lua/?.lua",
+        "${workspaceFolder}/build/lua/?/init.lua"
     ]
 }
