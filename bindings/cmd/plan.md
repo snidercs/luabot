@@ -4,9 +4,9 @@
 Create a **pure Lua implementation** of the WPILib command-based framework (frc2), modeled after the Java implementation. This is NOT a wrapper around C++ - it's a native Lua implementation that uses the existing WPILib HAL and utilities underneath, just like the Java version does.
 
 ## Key Design Principle
-**The Java wpilibNewCommands is a pure Java library that sits on top of WPILib's HAL layer. We're doing the same thing in Lua - writing the command framework entirely in Lua, using the existing HAL/WPILib bindings we already have.**
+The Java wpilibNewCommands is a pure Java library that sits on top of WPILib's HAL layer. We're doing the same thing in Lua - writing the command framework entirely in Lua, using the existing HAL/WPILib bindings we already have.
 
-**All class definitions and inheritance MUST use `luabot.class`.**
+**All class definitions and inheritance MUST use** `luabot.class`.
 
 ## Important Note
 **DO NOT use RobotBase, IterativeRobotBase, or TimedRobot as examples for the command framework!** These classes currently use a custom inheritance pattern (module tables with `derive()` functions) that predates the `luabot.class` system. They will be converted to use `luabot.class` later, but for now, the command framework should use `luabot.class` from the start as the canonical pattern.
