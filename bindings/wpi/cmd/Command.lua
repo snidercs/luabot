@@ -3,8 +3,8 @@ local class = require('luabot.class')
 ---@class Command
 ---Base class for robot commands in the command-based framework.
 ---A command represents an action the robot should take, potentially requiring one or more subsystems.
----@field _requirements table<Subsystem, boolean> Set of required subsystems
----@field _name string|nil Command name
+---@field private _requirements table<Subsystem, boolean> Set of required subsystems
+---@field private _name string|nil Command name
 local Command = class()
 
 ---Initialize a new Command instance
@@ -58,7 +58,7 @@ function Command:addRequirements(...)
 end
 
 ---Gets the subsystems required by this command.
----@return Subsystem[] Array of required subsystems
+---@return Subsystem[] requirements Array of required subsystems
 function Command:getRequirements()
     local reqs = {}
     for subsystem, _ in pairs(self._requirements) do

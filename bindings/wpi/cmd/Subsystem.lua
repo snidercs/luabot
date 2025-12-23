@@ -4,8 +4,8 @@ local class = require('luabot.class')
 ---Base class for robot subsystems.
 ---Subsystems are the basic unit of robot organization in the command-based framework.
 ---A subsystem defines the hardware and methods for a specific mechanism or capability of the robot.
----@field _defaultCommand Command|nil
----@field _name string|nil
+---@field private _defaultCommand Command|nil
+---@field private _name string|nil
 local Subsystem = class()
 
 ---Initialize a new Subsystem instance
@@ -14,11 +14,11 @@ local Subsystem = class()
 function Subsystem.init(instance)
     instance._defaultCommand = nil
     instance._name = nil
-    
+
     -- Register this subsystem with the scheduler (will be implemented later)
     -- local CommandScheduler = require('wpi.cmd.CommandScheduler')
     -- CommandScheduler.getInstance():registerSubsystem(instance)
-    
+
     return instance
 end
 
