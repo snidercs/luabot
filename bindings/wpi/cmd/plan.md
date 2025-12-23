@@ -24,7 +24,7 @@ These are pure Lua implementations, NOT YAML bindings:
      - `getName()` - Returns subsystem name (default: class name)
      - `setDefaultCommand(command)` - Sets the default command
      - `getDefaultCommand()` - Gets the default command
-   - **Users derive using**: `local MySubsystem = Class(Subsystem)` where `Class = require('luabot.class')`
+   - **Users derive using**: `local MySubsystem = class(Subsystem)` where `class = require('luabot.class')`
    - Override methods as needed in derived classes
 
 2. **Command** (`bindings/wpi/cmd/Command.lua`)
@@ -42,7 +42,7 @@ These are pure Lua implementations, NOT YAML bindings:
    - Methods provided by base:
      - `addRequirements(subsystems...)` - Add subsystem requirements
      - `getInterruptionBehavior()` - How to handle conflicts
-   - **Users derive using**: `local MyCommand = Class(Command)` where `Class = require('luabot.class')`
+   - **Users derive using**: `local MyCommand = class(Command)` where `class = require('luabot.class')`
    - Override lifecycle methods in derived classes
 
 3. **CommandScheduler** (`bindings/wpi/cmd/CommandScheduler.lua`)
@@ -144,13 +144,13 @@ The command framework will use existing WPILib bindings:
 - **`luabot.class`** - **REQUIRED** for all class definitions and inheritance
 - No FFI/C++ dependencies needed!
 
-## Class Hierarchy
+## class Hierarchy
 All classes use `luabot.class` callable pattern:
-```
+```lua
 local class = require('luabot.class')
 
-Command = class()              -- Base class created with Class()
-MyCommand = class(Command)     -- Derive using Class(Parent)
+Command = class()              -- Base class created with class()
+MyCommand = class(Command)     -- Derive using class(Parent)
 
 Subsystem = class()            -- Base class
 MySubsystem = class(Subsystem) -- Derive

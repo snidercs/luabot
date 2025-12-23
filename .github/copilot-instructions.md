@@ -46,8 +46,9 @@ LuaBot is a Lua scripting environment for FRC (FIRST Robotics Competition) robot
 - Use `camelCase` for methods and variables
 - Use `---@class` annotations for type hints
 - Prefer single-quoted strings (`'string'`) over double-quoted strings (`"string"`), unless interpolation or escaping is needed
-- Implement classes using the `derive()` pattern from base classes
 - Store instance data in `self` table
+- Class modules export "static" methods via table return.
+  - never return the full class table for types that are considered "final"
 - **Constructor patterns**: Inconsistent across modules (will be standardized later)
   - Some classes use `ClassName.new(...)` (e.g., `AddressableLED.new(1)`)
   - Others use direct call via `__call` metamethod (e.g., `Pose2d(1, 2, 3)`)
@@ -63,14 +64,23 @@ local C = require('wpi.clib.wpiHal').load(false)
 
 ### Creating Lua Classes
 ```lua
+local class = require('luabot.class')
 local BaseClass = require('wpi.frc.BaseClass')
-local MyClass = BaseClass.derive()
+local MyClass = class(BaseClass)
 
-function MyClass:init()
-    self.value = 0
+function MyClass.init(instance)
+    instance.value = 0
 end
 
-return MyClass
+function MyClass.new()
+  local obj = setmetatable({}, MyClass)
+  return obj
+end
+
+return {
+  init = MyClass.init,
+  new = MyClass.new
+}
 ```
 
 ### Exception Handling in C++
