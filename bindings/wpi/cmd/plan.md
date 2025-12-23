@@ -29,7 +29,7 @@ These are pure Lua implementations, NOT YAML bindings:
 
 2. **Command** (`bindings/wpi/cmd/Command.lua`)
    - Pure Lua base class created with `luabot.class`
-   - Instance fields (set in `:init()`):
+   - Instance fields (set in `.init()`):
      - `_requirements` - Table/set of required subsystems
      - `_name` - Command name (private)
    - Methods to implement (defaults provided):
@@ -47,7 +47,7 @@ These are pure Lua implementations, NOT YAML bindings:
 
 3. **CommandScheduler** (`bindings/wpi/cmd/CommandScheduler.lua`)
    - Pure Lua singleton implementation (uses `luabot.class` for structure)
-   - Internal state (tables, set in `:init()`):
+   - Internal state (tables, set in `.init()`):
      - `_scheduledCommands` - Set of currently running commands
      - `_requirements` - Map of subsystem -> command using it
      - `_subsystems` - Map of subsystem -> default command
