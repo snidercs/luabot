@@ -21,8 +21,7 @@ local function derive(supertype)
         error('supertype must be a table')
     end
 
-    local T = define()
-    setmetatable(T, { __index = supertype })
+    local T = setmetatable (define(), { __index = supertype })
 
     -- If supertype has an init, wrap it to enable automatic chaining
     if supertype.init then
