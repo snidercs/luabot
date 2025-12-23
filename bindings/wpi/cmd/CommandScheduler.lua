@@ -4,11 +4,11 @@ local class = require('luabot.class')
 ---Singleton scheduler for managing command execution in the command-based framework.
 ---The scheduler is responsible for running commands, managing subsystem requirements,
 ---and handling command lifecycle.
----@field _scheduledCommands table<Command, boolean> Set of currently running commands
----@field _requirements table<Subsystem, Command> Map of subsystem to command using it
----@field _subsystems table<Subsystem, Command|nil> Map of subsystem to default command
----@field _inRunLoop boolean Flag to prevent scheduling during run
----@field _disabled boolean Whether the scheduler is disabled
+---@field private _scheduledCommands table<Command, boolean> Set of currently running commands
+---@field private _requirements table<Subsystem, Command> Map of subsystem to command using it
+---@field private _subsystems table<Subsystem, Command|nil> Map of subsystem to default command
+---@field private _inRunLoop boolean Flag to prevent scheduling during run
+---@field private _disabled boolean Whether the scheduler is disabled
 local CommandScheduler = class()
 
 -- Singleton instance

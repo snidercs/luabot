@@ -47,6 +47,7 @@ LuaBot is a Lua scripting environment for FRC (FIRST Robotics Competition) robot
 - Use `---@class` annotations for type hints
 - Prefer single-quoted strings (`'string'`) over double-quoted strings (`"string"`), unless interpolation or escaping is needed
 - Store instance data in `self` table
+  - Underscored fields on self, e.g. `self._variablename`, are considered private and should be documented with `---@field private`
 - Class modules export "static" methods via table return.
   - never return the full class table for types that are considered "final"
 - **Constructor patterns**: Inconsistent across modules (will be standardized later)
