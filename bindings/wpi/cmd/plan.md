@@ -65,59 +65,112 @@ These are pure Lua implementations, NOT YAML bindings:
      - `requiring(subsystem)` - Get command using subsystem
      - `enable()` / `disable()` - Enable/disable scheduler
    - Main `run()` logic (from Java implementation):
-     1. Call `periodic()` on all registered subsystems
-     2. Poll event loop (for triggers - future)
-     3. For each scheduled command:
+     1. Return early if scheduler is disabled
+     2. Call `periodic()` on all registered subsystems
+     3. In simulation mode: call `simulationPeriodic()` on all subsystems
+     4. Poll event loop (for triggers - future Phase 3)
+     5. For each scheduled command:
         - Call `execute()`
-        - If `isFinished()`, call `end(false)` and unschedule
-     4. Schedule default commands for unused subsystems
-     5. Add newly scheduled commands
-     6. Call `simulationPeriodic()` in sim mode
+        - Check `isFinished()` after execute
+        - If finished: call `done(false)` and unschedule, clear requirements
+     6. Process any queued schedule/cancel operations (from calls during loop)
+     7. Schedule default commands for unused subsystems (if not already scheduled)
 
 ## Implementation Strategy
 
-### 1. Pure Lua Files (NOT YAML)
-- Simple command implementation  
-- Verify scheduler runs commands correctly
-- Test lifecycle methods (init, execute, end)
-- Test subsystem requirements/conflicts
-- Test command cancellation
-- Test default commands
+### Phase 1 - Core Framework (COMPLETE ✅)
+Create the three fundamental classes with all essential functionality:
+
+1. **Subsystem** - Base class for robot subsystems
+   - [x] `periodic()` / `simulationPeriodic()` virtual methods
+   - [x] Name management
+   - [x] Default command support
+   - [x] Automatic registration with scheduler (deferred to manual for now)
+
+2. **Command** - Base class for robot commands  
+   - [x] Lifecycle methods: `initialize()`, `execute()`, `done(interrupted)`, `isFinished()`
+   - [x] Requirements management with `addRequirements()` / `getRequirements()`
+   - [x] Name management
+   - [x] Interruption behavior support (returns 0=kCancelSelf by default)
+   - [x] Note: `done()` used instead of `end()` to avoid Lua keyword conflict
+
+3. **CommandScheduler** - Singleton scheduler
+   - [x] Singleton pattern with `getInstance()`
+   - [x] Command scheduling with conflict resolution based on interruption behavior
+   - [x] Command cancellation (individual and all)
+   - [x] Main `run()` loop with proper sequencing
+   - [x] Subsystem registration and periodic calling
+   - [x] Default command management
+   - [x] Enable/disable functionality
+   - [ ] Queue-based scheduling/cancellation during run loop to avoid concurrent modification
+   - [ ] Simulation mode support (calls `simulationPeriodic()`)
+
+### Testing & Validation
+- [x] Unit tests for all three classes
+- [x] Lifecycle method override tests
+- [x] Requirements conflict resolution tests
+- [x] Default command tests
+- [ ] Integration test with real command-based robot pattern (next step)
+- [ ] Example robot in `examples/` (next step)
 
 ## Implementation Details
 
 ### Command Lifecycle (from Java)
 1. When `schedule()` called:
-   - Check if already scheduled (skip if so)
-   - Check requirements - cancel conflicting commands
-   - Add to `scheduledCommands` set
-   - Mark subsystems as required in `requirements` map
-   - Call `initialize()` on command
+   - [ ] Return early if scheduler is disabled
+   - [x] Return early if command is already scheduled
+   - [x] Check if requirements are available (not currently in use)
+     - [x] If available: initialize and schedule immediately
+     - [x] If not available: check interruption behavior of conflicting commands
+       - [x] If any requiring command has `kCancelIncoming` (1): abort scheduling
+       - [x] Otherwise: cancel all conflicting commands, then initialize and schedule
+   - [x] Add to `scheduledCommands` set
+   - [x] Mark subsystems as required in `requirements` map
+   - [x] Call `initialize()` on command
+   - [ ] **Note**: If called during `run()` loop, queue for later scheduling
 
 2. During `run()`:
-   - Call `execute()` on all scheduled commands
-   - Check `isFinished()` after execute
-   - If finished, call `end(false)` and remove from schedule
+   - [x] Call `periodic()` on all registered subsystems
+   - [ ] In simulation mode: also call `simulationPeriodic()` on subsystems
+   - [ ] Poll event loop (for button triggers - Phase 3)
+   - [x] For each scheduled command:
+     - [x] Call `execute()`
+     - [x] Check `isFinished()` after execute
+     - [x] If finished: call `done(false)`, remove from schedule, clear requirements
+   - [ ] Process queued schedule/cancel operations (from step 1 note)
+   - [x] Schedule default commands for unused subsystems (if not already scheduled)
 
 3. When `cancel()` called:
-   - Call `end(true)` on command
-   - Remove from scheduled set
-   - Clear requirements
+   - [x] Return early if command not scheduled
+   - [x] Call `done(true)` on command (interrupted)
+   - [x] Remove from scheduled set
+   - [x] Clear subsystem requirements
+   - [ ] **Note**: If called during `run()` loop, queue for later cancellation
 
 ### Subsystem Management (from Java)
-- Subsystems register themselves (usually in constructor)
-- Scheduler maintains map of subsystem -> default command
-- During `run()`, schedule default command if subsystem not in use
-- Call `periodic()` on all registered subsystems each iteration
+- [x] Subsystems register themselves (usually in constructor)
+- [x] Scheduler maintains map of subsystem -> default command
+- [x] During `run()`, schedule default command if subsystem is not in use
+- [x] Call `periodic()` on all registered subsystems each iteration
+- [x] In simulation: call `simulationPeriodic()` on all subsystems
+- [ ] Default commands must require the subsystem they're set for (validation in Java)
+- [ ] Default commands that are `kCancelIncoming` will warn but are allowed
 
 ### Singleton Pattern
 ```lua
-local CommandScheduler = {}
+local SingletonType = {}
 local instance = nil
 
-function CommandScheduler.getInstance()
+--- init and new not required since instantition is controlled in `getInstance()`
+local function create()
+  local inst = setmetatable({}, SingletonType)
+  -- initialization steps
+  return inst
+end
+
+function SingletonType.getInstance()
     if not instance then
-        instance = CommandScheduler.new()
+        instance = create()
     end
     return instance
 end
