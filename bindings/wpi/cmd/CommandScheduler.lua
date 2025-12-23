@@ -78,6 +78,10 @@ end
 ---Schedules one or more commands
 ---@param ... Command One or more commands to schedule
 function CommandScheduler:schedule(...)
+    if self._disabled then
+        return
+    end
+    
     if self._inRunLoop then
         error("Commands cannot be scheduled from inside the run loop")
     end

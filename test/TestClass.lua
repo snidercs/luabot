@@ -233,6 +233,28 @@ function TestClassInitChaining:testInitCanModifyState()
     lu.assertEquals(obj.counter, 10)
 end
 
+function TestClassInitChaining:testInitResolvesToParentWhenNotDefined()
+    local Base = class()
+    
+    function Base.init(instance)
+        instance.base_initialized = true
+        instance.value = 42
+        return instance
+    end
+    
+    local Derived = class(Base)
+    -- Note: Derived does NOT define its own init()
+    
+    function Derived.new()
+        local self = setmetatable({}, Derived)
+        return Derived.init(self)  -- Should resolve to Base.init via __index
+    end
+    
+    local obj = Derived.new()
+    lu.assertTrue(obj.base_initialized)
+    lu.assertEquals(obj.value, 42)
+end
+
 TestClassErrors = {}
 
 function TestClassErrors:testErrorOnInvalidArgument()

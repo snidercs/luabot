@@ -6,6 +6,7 @@
         "${workspaceFolder}/build/lua",
     ],
     "Lua.runtime.path": [
+        "${workspaceFolder}/test/?.lua",
         "${workspaceFolder}/bindings/?.lua",
         "${workspaceFolder}/bindings/?/init.lua",
         "${workspaceFolder}/build/lua/?.lua",

@@ -78,7 +78,7 @@ These are pure Lua implementations, NOT YAML bindings:
 
 ## Implementation Strategy
 
-### Phase 1 - Core Framework (COMPLETE ✅)
+### Phase 1 - Core Framework
 Create the three fundamental classes with all essential functionality:
 
 1. **Subsystem** - Base class for robot subsystems
@@ -117,7 +117,7 @@ Create the three fundamental classes with all essential functionality:
 
 ### Command Lifecycle (from Java)
 1. When `schedule()` called:
-   - [ ] Return early if scheduler is disabled
+   - [x] Return early if scheduler is disabled
    - [x] Return early if command is already scheduled
    - [x] Check if requirements are available (not currently in use)
      - [x] If available: initialize and schedule immediately
@@ -277,14 +277,14 @@ test/wpi/
 ```
 
 ## Phase 2 (Future)
-After basic framework works, add convenience commands:
-- `InstantCommand` - Runs once then finishes
-- `RunCommand` - Wraps lambda/function
-- `FunctionalCommand` - Full lifecycle as functions
-- `SequentialCommandGroup` - Run commands in sequence
-- `ParallelCommandGroup` - Run commands in parallel
-- `ParallelRaceGroup` - First to finish wins
-- `ParallelDeadlineGroup` - Wait for deadline command
+After basic framework works, add convenience commands. Each of these should model the Java implementations and also follow the same class hierarchy.
+- [ ] `FunctionalCommand` - Full lifecycle as functions
+- [ ] `InstantCommand` - Runs once then finishes
+- [ ] `RunCommand` - Wraps lambda/function
+- [ ] `SequentialCommandGroup` - Run commands in sequence
+- [ ] `ParallelCommandGroup` - Run commands in parallel
+- [ ] `ParallelRaceGroup` - First to finish wins
+- [ ] `ParallelDeadlineGroup` - Wait for deadline command
 
 ## Phase 3 (Future)
 Add advanced features:
