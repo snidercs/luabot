@@ -28,8 +28,8 @@ end
 function TestCommand:testEndMethod()
     local command = Command.new()
     -- Should not throw - default implementation is no-op
-    command:_end(false)
-    command:_end(true)
+    command:done(false)
+    command:done(true)
     lu.assertTrue(true)
 end
 
@@ -102,7 +102,7 @@ function TestCommand:testDerivedCommand()
         executeCalled = true
     end
     
-    function DerivedCommand:_end(interrupted)
+    function DerivedCommand:done(interrupted)
         endCalled = true
         endInterrupted = interrupted
     end
@@ -127,7 +127,7 @@ function TestCommand:testDerivedCommand()
     lu.assertTrue(executeCalled)
     lu.assertTrue(derived:isFinished())
     
-    derived:_end(false)
+    derived:done(false)
     lu.assertTrue(endCalled)
     lu.assertFalse(endInterrupted)
 end

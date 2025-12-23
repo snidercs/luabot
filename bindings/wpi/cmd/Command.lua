@@ -36,8 +36,9 @@ function Command:execute()
 end
 
 ---Called when the command ends, either normally or by interruption.
+---Note: This is equivalent to the Java API's end() method (renamed to avoid Lua keyword conflict).
 ---@param interrupted boolean True if the command was interrupted, false if it finished normally
-function Command:_end(interrupted)
+function Command:done(interrupted)
     -- Default implementation does nothing
 end
 
