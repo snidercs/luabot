@@ -180,4 +180,4 @@ function TestCommand:testCommandWithRequirementsInInit()
     lu.assertEquals(reqs[1], subsystem)
 end
 
-return lu.LuaUnit.run()
+os.exit(lu.LuaUnit.run())
