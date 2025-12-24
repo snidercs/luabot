@@ -3,7 +3,6 @@ local mods = {
     'wpi.clib.cscore',
     'wpi.clib.ntcore',
     'wpi.clib.wpiHal',
-
     'wpi.frc.AddressableLED',
     'wpi.frc.DriverStation',
     'wpi.frc.Filesystem',
