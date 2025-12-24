@@ -280,7 +280,7 @@ test/wpi/
 After basic framework works, add convenience commands. Each of these should model the Java implementations and also follow the same class hierarchy.
 - [x] `FunctionalCommand` - Full lifecycle as functions
 - [x] `InstantCommand` - Runs once then finishes
-- [ ] `RunCommand` - Wraps lambda/function
+- [x] `RunCommand` - Wraps lambda/function
 - [ ] `SequentialCommandGroup` - Run commands in sequence
 - [ ] `ParallelCommandGroup` - Run commands in parallel
 - [ ] `ParallelRaceGroup` - First to finish wins

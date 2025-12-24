@@ -33,6 +33,7 @@ luabot_add_api_test(TestGeometry wpi/TestGeometry.lua)
 luabot_add_api_test(TestInstantCommand wpi/TestInstantCommand.lua)
 luabot_add_api_test(TestPose2d wpi/TestPose2d.lua)
 luabot_add_api_test(TestRobots wpi/TestRobots.lua)
+luabot_add_api_test(TestRunCommand wpi/TestRunCommand.lua)
 luabot_add_api_test(TestSubsystem wpi/TestSubsystem.lua)
 luabot_add_api_test(TestTimed wpi/TestTimed.lua)
 
