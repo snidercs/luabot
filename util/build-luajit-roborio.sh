@@ -7,6 +7,7 @@
 # cross-compilation toolchain. The 32-bit host compiler is required for the
 # amalgamated build process.
 
+wpilib_year="2026"
 prefix="/opt/luabot/linuxathena"
 
 outdir="`pwd`/3rdparty/linuxathena"

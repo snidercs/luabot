@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Michael Fisher @mfisher31
 # SPDX-License-Identifier: MIT
 
-FROM wpilib/roborio-cross-ubuntu:2025-24.04
+FROM wpilib/roborio-cross-ubuntu:2026-22.04-py314
 RUN apt-get update && apt-get install -y gcc-multilib dos2unix git && rm -rf /var/lib/apt/lists/* 
 ADD util/build-luajit-roborio.sh .
 RUN dos2unix build-luajit-roborio.sh

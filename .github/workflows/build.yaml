@@ -11,7 +11,7 @@ jobs:
     name: Linux (WPILib Docker)
     runs-on: ubuntu-latest
     container:
-      image: wpilib/roborio-cross-ubuntu:2024-22.04
+      image: wpilib/roborio-cross-ubuntu:2026-22.04-py314
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,6 +23,9 @@ jobs:
 
       - name: Set up Ninja
         uses: seanmiddleditch/gha-setup-ninja@v4
+
+      - name: Dependencies
+        run: apt-get update && apt-get install -y gcc-multilib dos2unix
 
       - name: LuaJIT
         run: |
