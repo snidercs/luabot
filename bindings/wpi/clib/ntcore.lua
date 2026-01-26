@@ -1,6 +1,7 @@
 local ffi = require('ffi')
+local luabot = require ('luabot')
 
-local SONAME = 'ntcore'
+local SONAME = luabot.BUILD_TYPE == 'Debug' and 'ntcored' or 'ntcore'
 local lib = nil
 
 ffi.cdef [[

@@ -1,6 +1,7 @@
 local ffi = require ('ffi')
+local luabot = require ('luabot')
 
-local SONAME = 'cscore'
+local SONAME = luabot.BUILD_TYPE == 'Debug' and 'cscored' or 'cscore'
 local lib
 
 ffi.cdef[[

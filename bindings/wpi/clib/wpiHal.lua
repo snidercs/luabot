@@ -1,6 +1,7 @@
 local ffi = require ('ffi')
+local luabot = require ('luabot')
 
-local SONAME = 'wpiHal'
+local SONAME = luabot.BUILD_TYPE == 'Debug' and 'wpiHald' or 'wpiHal'
 local lib = nil
 
 ffi.cdef[[

@@ -25,6 +25,13 @@ configure_file(
     @ONLY
 )
 
+# Generate luabot info module
+configure_file(
+    ${CMAKE_SOURCE_DIR}/bindings/luabot/init.lua.in
+    ${CMAKE_BINARY_DIR}/lua/luabot/init.lua
+    @ONLY
+)
+
 find_package(OpenCV QUIET)
 
 set(WITH_JAVA OFF)
@@ -39,18 +46,15 @@ set(WITH_PROTOBUF OFF)
 set(WITH_TESTS OFF)
 set(WITH_GUI ON)
 
-# Force WPILib to build in Release mode to avoid debug suffix on DLLs
-set(CMAKE_BUILD_TYPE_SAVED ${CMAKE_BUILD_TYPE})
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
 
 if(LUABOT_BUILD_CONSOLE)
     add_subdirectory(deps/allwpilib)
 else()
     add_subdirectory(deps/allwpilib EXCLUDE_FROM_ALL)
 endif()
-
-# Restore original build type
-set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE_SAVED} CACHE STRING "Build type" FORCE)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 set(PARSE_PY ${CMAKE_SOURCE_DIR}/util/parse.py)
