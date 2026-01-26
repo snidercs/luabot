@@ -1,5 +1,8 @@
+
 #include <cstring>
 #include <wpi/SymbolExports.h>
+
+#include <luabot/luabot.h>
 
 // =============================================================================
 #include <hal/HAL.h>
@@ -7,17 +10,17 @@
 // =============================================================================
 #include <frc/Filesystem.h>
 extern "C" {
-char* frcFilesystemGetLaunchDirectory() {
+LUABOT_EXPORT char* frcFilesystemGetLaunchDirectory() {
     auto str = frc::filesystem::GetLaunchDirectory();
     return strdup (str.c_str());
 }
 
-char* frcFilesystemGetOperatingDirectory() {
+LUABOT_EXPORT char* frcFilesystemGetOperatingDirectory() {
     auto str = frc::filesystem::GetOperatingDirectory();
     return strdup (str.c_str());
 }
 
-char* frcFilesystemGetDeployDirectory() {
+LUABOT_EXPORT char* frcFilesystemGetDeployDirectory() {
     auto str = frc::filesystem::GetDeployDirectory();
     return strdup (str.c_str());
 }
@@ -26,19 +29,19 @@ char* frcFilesystemGetDeployDirectory() {
 // =============================================================================
 #include <frc/RobotBase.h>
 extern "C" {
-bool frcRobotBaseIsSimulation() {
+LUABOT_EXPORT bool frcRobotBaseIsSimulation() {
     return frc::RobotBase::IsSimulation();
 }
 
-bool frcRobotBaseIsReal() {
+LUABOT_EXPORT bool frcRobotBaseIsReal() {
     return frc::RobotBase::IsReal();
 }
 
-int frcRunHalInitialization() {
+LUABOT_EXPORT int frcRunHALInitialization() {
     return frc::RunHALInitialization();
 }
 
-void frcRobotBaseInit() {
+LUABOT_EXPORT void frcRobotBaseInit() {
     static bool hasInit = false;
     if (hasInit)
         return;

@@ -3,14 +3,21 @@ add_executable(plusone plusone.cpp)
 target_link_libraries(plusone PRIVATE wpilibc hal wpiutil)
 
 # Set common environment for all tests
-set(TEST_LUA_PATH "LUA_PATH=${CMAKE_BINARY_DIR}/lua/?.lua\;${CMAKE_BINARY_DIR}/lua/?/init.lua\;${CMAKE_SOURCE_DIR}/test/?.lua\;${CMAKE_SOURCE_DIR}/test/?/init.lua\;\;")
+if(WIN32)
+    set(TEST_LUA_PATH "LUA_PATH=${CMAKE_BINARY_DIR}\\lua\\?.lua\;${CMAKE_BINARY_DIR}\\lua\\?\\init.lua\;${CMAKE_SOURCE_DIR}\\test\\?.lua\;${CMAKE_SOURCE_DIR}\\test\\?\\init.lua\;\;")
+    set(TEST_PATH "PATH=${CMAKE_BINARY_DIR}\;$ENV{PATH}")
+    set(TEST_ENV_VARS "${TEST_LUA_PATH}" "${TEST_PATH}")
+else()
+    set(TEST_LUA_PATH "LUA_PATH=${CMAKE_BINARY_DIR}/lua/?.lua\;${CMAKE_BINARY_DIR}/lua/?/init.lua\;${CMAKE_SOURCE_DIR}/test/?.lua\;${CMAKE_SOURCE_DIR}/test/?/init.lua\;\;")
+    set(TEST_ENV_VARS "${TEST_LUA_PATH}")
+endif()
 
 # Helper function to add Lua tests
 function(luabot_add_api_test test_name test_file)
     add_test(NAME ${test_name}
         COMMAND luabot ${CMAKE_SOURCE_DIR}/test/${test_file}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/wpi)
-    set_tests_properties(${test_name} PROPERTIES ENVIRONMENT "${TEST_LUA_PATH}")
+    set_tests_properties(${test_name} PROPERTIES ENVIRONMENT "${TEST_ENV_VARS}")
 endfunction()
 
 # Add tests
@@ -31,7 +38,7 @@ function(luabot_add_bad_robot_test test_name test_file expected_pattern)
         COMMAND luabot sim ${CMAKE_SOURCE_DIR}/test/robots/${test_file}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/test/robots)
     set_tests_properties(${test_name} 
-        PROPERTIES ENVIRONMENT "${TEST_LUA_PATH}"
+        PROPERTIES ENVIRONMENT "${TEST_ENV_VARS}"
         PASS_REGULAR_EXPRESSION "${expected_pattern}")
 endfunction()
 

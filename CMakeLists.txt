@@ -39,11 +39,18 @@ set(WITH_PROTOBUF OFF)
 set(WITH_TESTS OFF)
 set(WITH_GUI ON)
 
+# Force WPILib to build in Release mode to avoid debug suffix on DLLs
+set(CMAKE_BUILD_TYPE_SAVED ${CMAKE_BUILD_TYPE})
+set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+
 if(LUABOT_BUILD_CONSOLE)
     add_subdirectory(deps/allwpilib)
 else()
     add_subdirectory(deps/allwpilib EXCLUDE_FROM_ALL)
 endif()
+
+# Restore original build type
+set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE_SAVED} CACHE STRING "Build type" FORCE)
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 set(PARSE_PY ${CMAKE_SOURCE_DIR}/util/parse.py)
@@ -113,6 +120,13 @@ if(LUABOT_BUILD_CONSOLE)
     add_executable(luabot
         src/console.c
         src/luabot.cpp)
+    
+    # Ensure console subsystem on Windows
+    if(WIN32)
+        set_target_properties(luabot PROPERTIES
+            LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+    endif()
+    
     add_dependencies(luabot generate_bindings)
     target_link_libraries(luabot PRIVATE 
         ${LuaJIT}
@@ -126,9 +140,47 @@ if(LUABOT_BUILD_CONSOLE)
     if(NOT WITH_CSCORE)
         target_compile_definitions(luabot PRIVATE DYNAMIC_CAMERA_SERVER)
     endif()
+    
+    # Copy WPILib DLLs to binary directory on Windows
+    if(WIN32)
+        add_custom_command(TARGET luabot POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:wpilibc>
+                $<TARGET_FILE_DIR:luabot>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:wpilibNewCommands>
+                $<TARGET_FILE_DIR:luabot>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:hal>
+                $<TARGET_FILE_DIR:luabot>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:wpimath>
+                $<TARGET_FILE_DIR:luabot>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:wpiutil>
+                $<TARGET_FILE_DIR:luabot>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:wpinet>
+                $<TARGET_FILE_DIR:luabot>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:ntcore>
+                $<TARGET_FILE_DIR:luabot>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:halsim_gui>
+                $<TARGET_FILE_DIR:luabot>
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                $<TARGET_FILE:halsim_ds_socket>
+                $<TARGET_FILE_DIR:luabot>
+            COMMENT "Copying WPILib and HAL simulation DLLs to binary directory"
+        )
+    endif()
 
     # Export symbols for FFI dlsym lookup
-    if(APPLE)
+    if(WIN32)
+        # On Windows, symbols from DLLs are already accessible
+        # If needed, use /EXPORT flags or .def file for executable exports
+        # set_target_properties(luabot PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    elseif(APPLE)
         target_link_options(luabot PRIVATE -Wl,-export_dynamic)
     elseif(UNIX)
         target_link_options(luabot PRIVATE -Wl,--export-dynamic)

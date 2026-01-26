@@ -204,7 +204,7 @@ def gen_ffi_impl (obj):
 
     out = '#include <wpi/SymbolExports.h>\n'
     out += '#include <%s>\n\n' % obj['header']
-
+    out += "#include <luabot/luabot.h>\n\n"
     out += 'extern "C" { \n\n'
 
     ct = ctype(obj)
@@ -213,7 +213,7 @@ def gen_ffi_impl (obj):
 
     if obj.get ('destructor', True):
         out += '''
-void frc%sFree (%s* self) {
+LUABOT_EXPORT void frc%sFree (%s* self) {
     delete (%s*) self;
 }
         '''.strip() % (typename, ct, qtypename)
@@ -233,7 +233,7 @@ void frc%sFree (%s* self) {
         cbody = method.get('c_body', '')
 
         if method.get('factory', False) and not len(cbody) > 0:
-            out += '%s %s%s%s (%s) {\n' % \
+            out += 'LUABOT_EXPORT %s %s%s%s (%s) {\n' % \
                 (rt, obj['namespace'], typename, k, ps)
             
             if not stub:
@@ -242,18 +242,18 @@ void frc%sFree (%s* self) {
             
             out += '}\n\n'
         elif method.get ('static', False):
-            out += '%s %s%s%s (%s) {\n' % \
+            out += 'LUABOT_EXPORT %s %s%s%s (%s) {\n' % \
                 (rt, obj['namespace'], typename, k, ps)
             
             if len(cbody) > 0:
-                out +=  cbody + '\n'
+                out += '    ' + cbody + '\n'
             elif not stub:
                 out += '    return %s::%s(%s);\n' \
                     % (qtypename, k, ls)
             
             out += '}\n\n'
         else:
-            out += '%s %s%s%s (%s) {\n' % \
+            out += 'LUABOT_EXPORT %s %s%s%s (%s) {\n' % \
                 (rt, obj['namespace'], typename, k, ps)
             if len(cbody) > 0:
                 out +=  cbody + '\n'

@@ -1,7 +1,6 @@
-#include <chrono>
 #include <cstring>
+#include <cstdlib>
 #include <iostream>
-#include <thread>
 
 #include <luabot/luabot.hpp>
 #include <luabot/version.h>
@@ -25,11 +24,12 @@ inline static void init_simulation() {
     // User can override with environment variable
     auto extensions = std::getenv ("HALSIM_EXTENSIONS");
     if (nullptr == extensions || strlen (extensions) == 0) {
+#ifdef _WIN32
+        _putenv_s("HALSIM_EXTENSIONS", "halsim_ds_socket:halsim_gui");
+#else
         setenv ("HALSIM_EXTENSIONS", "halsim_ds_socket:halsim_gui", 1);
+#endif
     }
-
-    if (nullptr != extensions)
-        std::free (extensions);
 }
 
 inline static const luabot::Options parse_options (int argc, char* argv[]) {
@@ -85,6 +85,5 @@ int main (int argc, char* argv[]) {
 }
 
 #include <luabot/apriltag.ipp>
-#include <luabot/command.ipp>
 #include <luabot/frc.ipp>
 #include <luabot/math.ipp>
