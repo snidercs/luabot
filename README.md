@@ -1,3 +1,5 @@
+[![REUSE](https://github.com/snidercs/luabot/actions/workflows/reuse.yaml/badge.svg)](https://github.com/snidercs/luabot/actions/workflows/reuse.yaml)
+
 # LuaBot
 A system for running LuaJIT powered FRC and other robots.
 
