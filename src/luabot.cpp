@@ -1,12 +1,18 @@
 // SPDX-FileCopyrightText: Michael Fisher @mfisher31
 // SPDX-License-Identifier: MIT
 
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
 #include <luabot/luabot.hpp>
 #include <luabot/version.h>
+
+#if defined(NDEBUG) || defined(_NDEBUG)
+#    define LUABOT_SIM_EXTENSIONS "halsim_ds_socket:halsim_gui"
+#else
+#    define LUABOT_SIM_EXTENSIONS "halsim_ds_socketd:halsim_guid"
+#endif
 
 extern "C" int luabot_console (int argc, char* argv[]);
 
@@ -28,9 +34,9 @@ inline static void init_simulation() {
     auto extensions = std::getenv ("HALSIM_EXTENSIONS");
     if (nullptr == extensions || strlen (extensions) == 0) {
 #ifdef _WIN32
-        _putenv_s("HALSIM_EXTENSIONS", "halsim_ds_socket:halsim_gui");
+        _putenv_s ("HALSIM_EXTENSIONS", LUABOT_SIM_EXTENSIONS);
 #else
-        setenv ("HALSIM_EXTENSIONS", "halsim_ds_socket:halsim_gui", 1);
+        setenv ("HALSIM_EXTENSIONS", LUABOT_SIM_EXTENSIONS, 1);
 #endif
     }
 }
