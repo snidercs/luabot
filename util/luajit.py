@@ -78,13 +78,18 @@ class LuaJITBuilder:
             raise RuntimeError('LuaJIT build failed')
             
         print('LuaJIT build completed successfully')
-        
+    
+    def build_darwin(self):
+        pass
+
     def build(self):
         """Build LuaJIT based on the current platform."""
         if self.system == 'Windows':
             self.build_windows()
-        elif self.system in ('Linux', 'Darwin'):
+        elif self.system == 'Linux':
             self.build_unix()
+        elif self.system == 'Darwin':
+            self.build_darwin()
         else:
             raise NotImplementedError(f'Platform {self.system} is not supported')
             
@@ -157,12 +162,17 @@ class LuaJITBuilder:
             
         print('Installation completed successfully')
         
+    def install_darwin(self):
+        pass
+
     def install(self):
         """Install LuaJIT based on the current platform."""
         if self.system == 'Windows':
             self.install_windows()
-        elif self.system in ('Linux', 'Darwin'):
+        elif self.system == 'Linux':
             self.install_unix()
+        elif self.system == 'Darwin':
+            self.install_darwin()
         else:
             raise NotImplementedError(f'Platform {self.system} is not supported')
             
