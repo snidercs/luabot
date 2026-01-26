@@ -1,3 +1,5 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
 
 -- provide table.pack if missing
 if not table.pack then

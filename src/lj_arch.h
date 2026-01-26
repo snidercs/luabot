@@ -1,6 +1,8 @@
 /*
 ** Target architecture selection.
 ** Copyright (C) 2005-2023 Mike Pall. See Copyright Notice in luajit.h
+**
+** SPDX-License-Identifier: MIT
 */
 
 // clang-format off

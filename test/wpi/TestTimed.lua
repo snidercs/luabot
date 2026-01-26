@@ -1,3 +1,6 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 local hal = require('wpi.hal')
 local TimedRobot = require('wpi.frc.TimedRobot')
 

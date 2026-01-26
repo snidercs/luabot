@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
+
 """
 LuaJIT build script for cross-platform builds.
 Builds LuaJIT and installs it to the 3rdparty directory.

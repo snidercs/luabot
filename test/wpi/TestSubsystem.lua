@@ -1,3 +1,6 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 ---Test for Subsystem base class
 local lu = require('luaunit')
 local class = require('luabot.class')

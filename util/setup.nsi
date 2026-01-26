@@ -1,3 +1,6 @@
+; SPDX-FileCopyrightText: Michael Fisher @mfisher31
+; SPDX-License-Identifier: MIT
+
 ; LuaBot LuaJIT Installer
 ; NSIS Modern User Interface
 

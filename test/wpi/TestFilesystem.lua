@@ -1,3 +1,6 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 local Filesystem = require ('wpi.frc.Filesystem')
 
 do

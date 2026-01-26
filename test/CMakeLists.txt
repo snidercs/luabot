@@ -1,4 +1,7 @@
 # Build benchmark executables
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
+
 add_executable(plusone plusone.cpp)
 target_link_libraries(plusone PRIVATE wpilibc hal wpiutil)
 

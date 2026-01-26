@@ -1,3 +1,6 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 ---Example usage of the class module
 ---This demonstrates the Objective-C style two-phase initialization pattern
 

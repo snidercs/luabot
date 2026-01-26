@@ -1,3 +1,6 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 local wpiHal = require ('wpi.clib.wpiHal')
 local NS = wpiHal.load (false)
 

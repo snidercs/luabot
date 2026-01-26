@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Michael Fisher @mfisher31
+// SPDX-License-Identifier: MIT
+
 #include <frc/geometry/CoordinateAxis.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/geometry/Rotation2d.h>
@@ -5,7 +8,6 @@
 #include <frc/geometry/Twist2d.h>
 
 #include <luabot/luabot.h>
-
 
 static_assert (sizeof (void*) == sizeof (frc::Pose2d*));
 

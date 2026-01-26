@@ -3,4 +3,7 @@
 function broken(
     -- Missing closing parenthesis and 'end'
 
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 return {}

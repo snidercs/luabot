@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Michael Fisher @mfisher31
+// SPDX-License-Identifier: MIT
+
 static double fib (double x) {
     if (x < 2.0)
         return x;

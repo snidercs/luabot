@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
+
 cmake_minimum_required(VERSION 3.20.0)
 project('luabot' VERSION 0.0.1)
 

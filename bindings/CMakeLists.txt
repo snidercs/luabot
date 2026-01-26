@@ -1,4 +1,7 @@
 # Find all YAML files recursively
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
+
 file(GLOB_RECURSE YAML_FILES 
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     "*.yaml"

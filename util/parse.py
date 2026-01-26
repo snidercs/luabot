@@ -1,7 +1,13 @@
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
+
 import io, yaml
 import os
 
 T_FRC_LUA_CLASS = '''
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 local ffi = require ('ffi')
 
 ffi.cdef[[

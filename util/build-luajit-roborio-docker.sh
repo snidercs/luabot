@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
 
 # This script builds LuaJIT for roboRIO using Docker and extracts the compiled artifacts.
 # It creates a Docker image with the cross-compilation toolchain, builds LuaJIT inside

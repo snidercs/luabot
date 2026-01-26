@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
+
 """
 Benchmark comparison between plusone.lua and plusone.cpp
 Uses Python's subprocess and time modules for accurate measurements

@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
 
 # This script builds LuaJIT for macOS and roboRIO platforms.
 # It compiles LuaJIT separately for x86_64 and ARM64 architectures, then combines

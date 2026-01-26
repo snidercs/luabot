@@ -1,3 +1,6 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 local ffi = require('ffi')
 local ntcore = require('wpi.clib.ntcore')
 local wpiHal = require('wpi.clib.wpiHal')

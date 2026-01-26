@@ -1,4 +1,7 @@
 ---Test for RunCommand
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 local lu = require('luaunit')
 local class = require('luabot.class')
 local Subsystem = require('wpi.cmd.Subsystem')

@@ -1,5 +1,8 @@
 ---@module 'luabot.class'
 ---LuaBot class system for inheritance and object creation
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 local M = {}
 
 ---Module version number

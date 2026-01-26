@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
 
 # This script cross-compiles LuaJIT for the roboRIO (ARM-based FRC robot controller).
 # It builds LuaJIT in static mode with Lua 5.2 compatibility using the WPILib

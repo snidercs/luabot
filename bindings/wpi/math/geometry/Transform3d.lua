@@ -1,3 +1,6 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 ---Transform3d wrapper
 ---@class Transform3d
 local Transform3d = {}

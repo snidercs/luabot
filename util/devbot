@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
 
 LUA_PATH="$(pwd)/build/lua/?.lua"
 LUA_PATH="$LUA_PATH;$(pwd)/build/lua/?/init.lua"

@@ -8,6 +8,9 @@ Based on initial work of Ryu, Gwang (http://www.gpgstudy.com/gpgiki/LuaUnit)
 License: BSD License, see LICENSE.txt
 ]]--
 
+---SPDX-FileCopyrightText: Philippe Fremy <phil@freehackers.org>
+---SPDX-License-Identifier: BSD-3-Clause
+
 require("math")
 local M={}
 

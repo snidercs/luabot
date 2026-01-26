@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Michael Fisher @mfisher31
+// SPDX-License-Identifier: MIT
 
 #ifndef LUABOT_H
 #define LUABOT_H

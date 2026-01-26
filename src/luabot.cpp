@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Michael Fisher @mfisher31
+// SPDX-License-Identifier: MIT
+
 #include <cstring>
 #include <cstdlib>
 #include <iostream>

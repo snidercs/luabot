@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Michael Fisher @mfisher31
+// SPDX-License-Identifier: MIT
+
 #include <frc/IterativeRobotBase.h>
 
 static const int iterations = 2000000;

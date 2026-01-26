@@ -1,3 +1,6 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
 local iterations = 2000000
 
 local IterativeRobotBase = require('wpi.frc.IterativeRobotBase')
