@@ -2,13 +2,7 @@ version = 1
 
 [[annotations]]
 path = [
-    ".clang-format",
-    ".github/copilot-instructions.md",
-    ".github/prompts/commands-api.md",
-    ".gitignore",
-    ".gitmodules",
-    ".vscode/c_cpp_properties.json",
-    ".vscode/settings.json",
+    ".github/**/*.md",
     "README.md"
 ]
 SPDX-FileCopyrightText = "Michael Fisher @mfisher31"
@@ -16,7 +10,12 @@ SPDX-License-Identifier = "CC0-1.0"
 
 [[annotations]]
 path = [
-    "bindings/**/*.yaml"
+    "**/*.yaml",
+    ".gitignore",
+    ".gitmodules",
+    ".clang-format",
+    ".vscode/c_cpp_properties.json",
+    ".vscode/settings.json"
 ]
 SPDX-FileCopyrightText = "Michael Fisher @mfisher31"
 SPDX-License-Identifier = "MIT"
