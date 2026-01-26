@@ -39,6 +39,28 @@
 #include <signal.h>
 #endif
 
+#ifndef LUABOT_DEFAULT_PATH
+#define LUABOT_DEFAULT_PATH \
+  "./?.lua;./?/init.lua;" \
+  "/opt/luabot/share/luajit-2.1/?.lua;/opt/luabot/share/luajit-2.1/?/init.lua;" \
+  "/opt/luabot/share/lua/5.1/?.lua;/opt/luabot/share/lua/5.1/?/init.lua"
+#endif
+
+static void luabot_set_default_paths(lua_State* L) {
+  char* epath = getenv("LUA_PATH");
+  if (epath == NULL || strlen(epath) == 0) {
+    lua_getglobal(L, "package");
+    lua_pushstring(L, LUABOT_DEFAULT_PATH);
+    lua_setfield(L, -2, "path");
+    lua_pop(L, 1);
+  }
+
+  if(epath != NULL) {
+    fprintf(stdout, "LUA_PATH=%s\n", epath);
+    // free(epath);
+  }
+}
+
 static lua_State *globalL = NULL;
 static const char *progname = LUA_PROGNAME;
 static char *empty_argv[2] = { NULL, NULL };
@@ -534,6 +556,7 @@ static int pmain(lua_State *L)
   /* Stop collector during library initialization. */
   lua_gc(L, LUA_GCSTOP, 0);
   luaL_openlibs(L);
+  luabot_set_default_paths (L);
   lua_gc(L, LUA_GCRESTART, -1);
 
   createargtable(L, argv, s->argc, argn);
