@@ -28,13 +28,6 @@ configure_file(
     @ONLY
 )
 
-# Generate luabot info module
-configure_file(
-    ${CMAKE_SOURCE_DIR}/bindings/luabot/init.lua.in
-    ${CMAKE_BINARY_DIR}/lua/luabot/init.lua
-    @ONLY
-)
-
 find_package(OpenCV QUIET)
 
 set(WITH_JAVA OFF)

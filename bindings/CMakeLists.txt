@@ -2,6 +2,20 @@
 # SPDX-FileCopyrightText: Michael Fisher @mfisher31
 # SPDX-License-Identifier: MIT
 
+# Generate luabot info module
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/luabot/init.lua.in
+    ${PROJECT_BINARY_DIR}/lua/luabot/init.lua
+    @ONLY
+)
+
+# Generate luabot info module
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/wpi/init.lua.in
+    ${PROJECT_BINARY_DIR}/lua/wpi/init.lua
+    @ONLY
+)
+
 file(GLOB_RECURSE YAML_FILES 
     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
     "*.yaml"

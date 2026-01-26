@@ -1,0 +1,14 @@
+---SPDX-FileCopyrightText: Michael Fisher @mfisher31
+---SPDX-License-Identifier: MIT
+
+---@class wpi
+---@field VERSION string The luabot version
+---@field BUILD_TYPE string The build type (Debug, Release, etc.)
+local wpi = {
+    YEAR = 2026,
+    VERSION = '2026.2.1',
+    BUILD_TYPE = '@CMAKE_BUILD_TYPE@',
+}
+
+return wpi
+
