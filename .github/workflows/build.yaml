@@ -1,0 +1,89 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  linux:
+    name: Linux (WPILib Docker)
+    runs-on: ubuntu-latest
+    container:
+      image: wpilib/roborio-cross-ubuntu:2024-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v4
+
+      - name: LuaJIT
+        run: |
+          sh util/build-luajit-linux.sh
+          sh util/build-luajit-roborio.sh 
+
+      - name: Configure
+        run: cmake -S . -B build -G Ninja
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+  # macos:
+  #   name: macOS
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up CMake
+  #       uses: jwlawson/actions-setup-cmake@v1
+
+  #     - name: Set up Ninja
+  #       uses: seanmiddleditch/gha-setup-ninja@v4
+
+  #     - name: Install dependencies (macOS)
+  #       run: brew install pkg-config readline
+
+  #     - name: Configure
+  #       run: cmake -S . -B build -G Ninja
+
+  #     - name: Build
+  #       run: cmake --build build
+
+  #     - name: Test
+  #       run: ctest --test-dir build --output-on-failure
+
+  # windows:
+  #   name: Windows (VS 2022)
+  #   runs-on: windows-2022
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up CMake
+  #       uses: jwlawson/actions-setup-cmake@v1
+
+  #     - name: Set up Ninja
+  #       uses: seanmiddleditch/gha-setup-ninja@v4
+
+  #     - name: Set up MSVC
+  #       uses: ilammy/msvc-dev-cmd@v1
+
+  #     - name: Configure
+  #       run: cmake -S . -B build -G Ninja
+
+  #     - name: Build
+  #       run: cmake --build build
+
+  #     - name: Test
+  #       run: ctest --test-dir build --output-on-failure

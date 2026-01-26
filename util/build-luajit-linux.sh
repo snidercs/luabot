@@ -8,8 +8,6 @@
 # it invokes the Docker build to cross-compile LuaJIT for the roboRIO platform.
 # All build artifacts are placed in the dist/ directory.
 
-wpilib_year="2025"
-
 outdir="`pwd`/3rdparty"
 mkdir -p "$outdir"
 rm -rf "$outdir"/*
@@ -24,7 +22,5 @@ make amalg \
 make install PREFIX="$outdir"
 make clean
 cd ../..
-
-sh util/build-luajit-roborio-docker.sh
 
 exit 0
