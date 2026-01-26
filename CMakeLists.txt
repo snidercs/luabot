@@ -100,7 +100,11 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/linuxathena/
     DESTINATION linuxathena)
 
 if(LUABOT_BUILD_CONSOLE)
-    find_library(LuaJIT NAMES luajit-5.1 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED NO_DEFAULT_PATH)
+    if(WIN32)
+        find_library(LuaJIT NAMES lua51 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED NO_DEFAULT_PATH)
+    else()
+        find_library(LuaJIT NAMES luajit-5.1 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED NO_DEFAULT_PATH)
+    endif()
     find_path(LuaJIT_INCLUDE_DIR
         NAMES luajit.h lua.h lua.hpp
         PATHS "${CMAKE_SOURCE_DIR}/3rdparty/include/luajit-2.1"

@@ -48,3 +48,5 @@
 
 simgui*.json
 networktables.json
+
+.cache
