@@ -11,4 +11,3 @@ local wpi = {
 }
 
 return wpi
-
