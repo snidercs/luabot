@@ -8,10 +8,9 @@ on:
 
 jobs:
   linux:
-    name: Linux (WPILib Docker)
-    runs-on: ubuntu-latest
-    container:
-      image: wpilib/roborio-cross-ubuntu:2026-22.04-py314
+    name: Linux
+    runs-on: ubuntu-22.04
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,8 +32,11 @@ jobs:
           libglu1-mesa-dev libisl-dev libopencv-dev libvulkan-dev \
           libx11-dev libxcursor-dev libxi-dev \
           libxinerama-dev libxrandr-dev make mesa-common-dev \
-          python3-dev python3-pip python3-setuptools sudo unzip wget zip
+          python3-dev python3-pip python3-setuptools sudo unzip curl wget zip
 
+      - name: roboRIO Toolchain
+        run: curl -SL https://github.com/wpilibsuite/opensdk/releases/download/v2025-1/cortexa9_vfpv3-roborio-academic-2025-x86_64-linux-gnu-Toolchain-12.1.0.tgz | sh -c 'mkdir -p /usr/local && cd /usr/local && tar xzf - --strip-components=2'
+      
       - name: LuaJIT
         run: |
           sh util/build-luajit-linux.sh
