@@ -21,8 +21,8 @@ jobs:
 
       - name: Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
+          apt-get update
+          apt-get install -y --no-install-recommends \
             apt-transport-https \
             build-essential \
             ca-certificates \
