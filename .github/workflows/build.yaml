@@ -98,7 +98,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: linuxathena
-          path: 3rdparty
+          path: 3rdparty/linuxathena
 
       - name: Configure
         run: cmake -S . -B build -G Ninja
@@ -120,7 +120,9 @@ jobs:
           submodules: true
       
       - name: Install dependencies (macOS)
-        run: brew install cmake ninja pkg-config
+        run: |
+          brew install cmake ninja pkg-config
+          sudo softwareupdate --install-rosetta --agree-to-license
 
       - name: LuaJIT
         run: |
@@ -130,7 +132,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: linuxathena
-          path: 3rdparty
+          path: 3rdparty/linuxathena
 
       - name: Configure
         run: cmake -S . -B build -G Ninja
