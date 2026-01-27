@@ -154,12 +154,19 @@ jobs:
         with:
           submodules: true
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Dependencies
         run: |
-          pip3 install pyyaml
+          python -m pip install --upgrade pip
+          python -m pip install pyyaml
+          python -c "import yaml; print('pyyaml ok', yaml.__version__)"
 
       - name: LuaJIT
         run: |
@@ -172,10 +179,13 @@ jobs:
           path: 3rdparty/linuxathena
 
       - name: Configure
+        shell: pwsh
         run: |
+          $py = (Get-Command python).Source
           cmake -B build -G Ninja `
             -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl `
-            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_BUILD_TYPE=Release `
+            -DPython3_EXECUTABLE="$py"
 
       - name: Build
         run: cmake --build build
