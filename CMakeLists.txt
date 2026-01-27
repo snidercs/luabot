@@ -82,7 +82,7 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/include/luabot
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/luabot
     DESTINATION "${LUABOT_INCLUDE_DIR}"
     COMPONENT Core
-    FILES_MATCHING PATTERN "*.h" PATTERN "*.h.in" EXCLUDE)
+    FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp" PATTERN "*.h.in" EXCLUDE)
 
 # Install generated Lua binding sources
 set(LUABOT_LUA_DIR "share/luajit-2.1" CACHE STRING "Sub path to install lua files" )
