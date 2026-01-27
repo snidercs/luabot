@@ -10,6 +10,8 @@ jobs:
   linux:
     name: Linux
     runs-on: ubuntu-22.04
+    container:
+      image: wpilib/roborio-cross-ubuntu:2026-22.04-py314
 
     steps:
       - name: Checkout repository
@@ -61,9 +63,6 @@ jobs:
             unzip \
             wget \
             zip
-
-      - name: roboRIO Toolchain
-        run: sudo curl -SL https://github.com/wpilibsuite/opensdk/releases/download/v2025-1/cortexa9_vfpv3-roborio-academic-2025-x86_64-linux-gnu-Toolchain-12.1.0.tgz | sh -c 'mkdir -p /usr/local && cd /usr/local && tar xzf - --strip-components=2'
       
       - name: LuaJIT
         run: |
