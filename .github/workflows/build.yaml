@@ -62,6 +62,7 @@ jobs:
             unzip \
             wget \
             zip
+          pip3 install pyyaml
       
       - name: LuaJIT
         run: |
