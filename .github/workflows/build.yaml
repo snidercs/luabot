@@ -5,9 +5,35 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
+  luajit-roborio:
+    name: LuaJIT roboRIO
+    runs-on: ubuntu-22.04
+    container:
+      image: wpilib/roborio-cross-ubuntu:2026-22.04-py314
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      
+      - name: Dependencies
+        run: |
+          apt-get update && apt-get install -y --no-install-recommends gcc-multilib
+      
+      - name: Compile
+        run: sh util/build-luajit-roborio.sh
+      
+      - name: Upload linuxathena artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linuxathena
+          path: 3rdparty/linuxathena
+
   linux:
+    needs: luajit-roborio
     name: Linux
     runs-on: ubuntu-22.04
     container:
@@ -67,7 +93,12 @@ jobs:
       - name: LuaJIT
         run: |
           sh util/build-luajit-linux.sh
-          sh util/build-luajit-roborio.sh 
+
+      - name: LuaJIT (roboRIO)
+        uses: actions/download-artifact@v4
+        with:
+          name: linuxathena
+          path: 3rdparty
 
       - name: Configure
         run: cmake -S . -B build -G Ninja
@@ -78,30 +109,35 @@ jobs:
       - name: Test
         run: ctest --test-dir build --output-on-failure
 
-  # macos:
-  #   name: macOS
-  #   runs-on: macos-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  macos:
+    needs: luajit-roborio
+    name: macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Set up CMake
-  #       uses: jwlawson/actions-setup-cmake@v1
+      - name: Install dependencies (macOS)
+        run: brew install cmake ninja pkg-config
 
-  #     - name: Set up Ninja
-  #       uses: seanmiddleditch/gha-setup-ninja@v4
+      - name: LuaJIT
+        run: |
+          sh util/build-luajit-macos.sh
 
-  #     - name: Install dependencies (macOS)
-  #       run: brew install pkg-config readline
+      - name: LuaJIT (roboRIO)
+        uses: actions/download-artifact@v4
+        with:
+          name: linuxathena
+          path: 3rdparty
 
-  #     - name: Configure
-  #       run: cmake -S . -B build -G Ninja
+      - name: Configure
+        run: cmake -S . -B build -G Ninja
 
-  #     - name: Build
-  #       run: cmake --build build
+      - name: Build
+        run: cmake --build build
 
-  #     - name: Test
-  #       run: ctest --test-dir build --output-on-failure
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
 
   # windows:
   #   name: Windows (VS 2022)

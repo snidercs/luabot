@@ -62,6 +62,4 @@ sed -i '' 's|^prefix=.*|prefix=/opt/luabot|' "$distdir/lib/pkgconfig/luajit.pc"
 
 rm -rf "$distdir/arm64" "$distdir/x86_64"
 
-sh util/build-luajit-roborio-docker.sh
-
 exit 0
