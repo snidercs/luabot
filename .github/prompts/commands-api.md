@@ -1,20 +1,39 @@
-# Command Framework Pure Lua Implementation Plan
+# Command Framework Implementation Guide
 
-## Overview
-Create a **pure Lua implementation** of the WPILib command-based framework (frc2), modeled after the Java implementation. This is NOT a wrapper around C++ - it's a native Lua implementation that uses the existing WPILib HAL and utilities underneath, just like the Java version does.
+## Architecture Overview
+The LuaBot command framework is a **pure Lua implementation** of WPILib's command-based framework (frc2). This is NOT a wrapper around C++ code - it's a native Lua implementation that sits on top of the existing WPILib HAL and utilities, exactly like the Java wpilibNewCommands library does.
 
-## Key Design Principle
-The Java wpilibNewCommands is a pure Java library that sits on top of WPILib's HAL layer. We're doing the same thing in Lua - writing the command framework entirely in Lua, using the existing HAL/WPILib bindings we already have.
+## Critical Design Rules
 
-**All class definitions and inheritance MUST use** `luabot.class`.
+### Class Definition Requirements
+- **ALWAYS use `luabot.class` for ALL command framework classes**
+- Never use FFI or C++ wrappers for command logic
+- Never use the old `derive()` pattern from RobotBase/TimedRobot (these predate `luabot.class` and will be migrated later)
+- All user-facing classes must support inheritance via `local MyClass = class(BaseClass)`
 
-## Important Note
-**DO NOT use RobotBase, IterativeRobotBase, or TimedRobot as examples for the command framework!** These classes currently use a custom inheritance pattern (module tables with `derive()` functions) that predates the `luabot.class` system. They will be converted to use `luabot.class` later, but for now, the command framework should use `luabot.class` from the start as the canonical pattern.
+### Reference Implementation Requirements
+**ALWAYS check the corresponding Java implementation before implementing or modifying any wpi.cmd class.**
 
-## Architecture
+All Lua classes in `wpi.cmd` modules MUST reference their Java counterparts for:
+- Method signatures and behavior
+- Edge case handling
+- Error conditions
+- State management patterns
+- Documentation of intended functionality
 
-### Core Classes (Phase 1 - Simple Framework)
-These are pure Lua implementations, NOT YAML bindings:
+**Model after**: `deps/allwpilib/wpilibNewCommands/src/main/java/`
+- `Command.java` - Lifecycle methods and requirements tracking
+- `Subsystem.java` - Periodic callbacks and default commands
+- `CommandScheduler.java` - Singleton scheduler with conflict resolution
+
+The Java implementation is 100% pure Java sitting on WPILib HAL. Do the same in Lua - no C++ dependencies for command logic.
+
+**Never make assumptions about behavior** - if unsure, read the Java source code to understand the correct implementation.
+
+## Core Framework Classes
+
+### Implementation Files
+Create these as pure Lua source files in `bindings/wpi/cmd/` (NOT YAML bindings):
 
 1. **Subsystem** (`bindings/wpi/cmd/Subsystem.lua`)
    - Pure Lua base class created with `luabot.class`
@@ -76,42 +95,25 @@ These are pure Lua implementations, NOT YAML bindings:
      6. Process any queued schedule/cancel operations (from calls during loop)
      7. Schedule default commands for unused subsystems (if not already scheduled)
 
-## Implementation Strategy
+## Implementation Requirements
 
-### Phase 1 - Core Framework
-Create the three fundamental classes with all essential functionality:
+### Completed Features
+The core framework classes are implemented with:
+- Subsystem base class with `periodic()`, `simulationPeriodic()`, default commands
+- Command base class with lifecycle methods (`initialize()`, `execute()`, `done()`, `isFinished()`)
+- CommandScheduler singleton with scheduling, conflict resolution, and cancellation
+- Requirements tracking and validation
+- Interruption behavior support (`kCancelSelf=0`, `kCancelIncoming=1`)
+- Basic unit tests for all three core classes
 
-1. **Subsystem** - Base class for robot subsystems
-   - [x] `periodic()` / `simulationPeriodic()` virtual methods
-   - [x] Name management
-   - [x] Default command support
-   - [x] Automatic registration with scheduler (deferred to manual for now)
-
-2. **Command** - Base class for robot commands  
-   - [x] Lifecycle methods: `initialize()`, `execute()`, `done(interrupted)`, `isFinished()`
-   - [x] Requirements management with `addRequirements()` / `getRequirements()`
-   - [x] Name management
-   - [x] Interruption behavior support (returns 0=kCancelSelf by default)
-   - [x] Note: `done()` used instead of `end()` to avoid Lua keyword conflict
-
-3. **CommandScheduler** - Singleton scheduler
-   - [x] Singleton pattern with `getInstance()`
-   - [x] Command scheduling with conflict resolution based on interruption behavior
-   - [x] Command cancellation (individual and all)
-   - [x] Main `run()` loop with proper sequencing
-   - [x] Subsystem registration and periodic calling
-   - [x] Default command management
-   - [x] Enable/disable functionality
-   - [ ] Queue-based scheduling/cancellation during run loop to avoid concurrent modification
-   - [ ] Simulation mode support (calls `simulationPeriodic()`)
-
-### Testing & Validation
-- [x] Unit tests for all three classes
-- [x] Lifecycle method override tests
-- [x] Requirements conflict resolution tests
-- [x] Default command tests
-- [ ] Integration test with real command-based robot pattern (next step)
-- [ ] Example robot in `examples/` (next step)
+### Remaining Work
+When extending the command framework:
+- [ ] Add queue-based scheduling/cancellation in CommandScheduler to prevent concurrent modification during `run()` loop
+- [ ] Implement simulation mode detection and `simulationPeriodic()` calls in scheduler
+- [ ] Create integration test with realistic command-based robot
+- [ ] Add example command-based robot to `examples/`
+- [ ] Implement command group classes (Sequential, Parallel, etc.)
+- [ ] Add trigger system for button bindings
 
 ## Implementation Details
 
@@ -130,9 +132,9 @@ Create the three fundamental classes with all essential functionality:
    - [ ] **Note**: If called during `run()` loop, queue for later scheduling
 
 2. During `run()`:
-   - [x] Call `periodic()` on all registered subsystems
-   - [ ] In simulation mode: also call `simulationPeriodic()` on subsystems
-   - [ ] Poll event loop (for button triggers - Phase 3)
+   Command Scheduler Behavior
+
+### Scheduling Logic (follows Java CommandSchedulertton triggers - Phase 3)
    - [x] For each scheduled command:
      - [x] Call `execute()`
      - [x] Check `isFinished()` after execute
@@ -209,21 +211,33 @@ Subsystem = class()            -- Base class
 MySubsystem = class(Subsystem) -- Derive
 
 CommandScheduler = class()     -- Singleton
-```
+```Coding Standards for Command Framework
 
-### Requirements Tracking
+### Required Dependencies
+- **`luabot.class`** - MANDATORY for all class definitions and inheritance
+- No FFI/C++ dependencies for command logic
+- # Class Definition Pattern
+Always use `luabot.class` for inheritance:
 ```lua
--- In Command:
-function Command:addRequirements(...)
-    local subsystems = {...}
-    for _, subsystem in ipairs(subsystems) do
-        self._requirements[subsystem] = true
-    end
-end
+local class = require('luabot.class')
 
-function Command:getRequirements()
-    local reqs = {}
-    for subsystem, _ in pairs(self._requirements) do
+-- Base classes
+local Command = class()
+local Subsystem = class()
+
+-- User derivation
+local MyCommand = class(Command)
+local MySubsystem = class(Subsystem)
+
+-- Singleton pattern for CommandScheduler
+local CommandScheduler = class()
+local instance = nil
+function CommandScheduler.getInstance()
+    if not instance then
+        instance = CommandScheduler.new()
+    end
+    return instance
+endments) do
         table.insert(reqs, subsystem)
     end
     return reqs
@@ -234,36 +248,16 @@ Commands and Subsystems use Lua's standard method override pattern via `luabot.c
 
 ### Memory Management
 Commands can be owned by scheduler or user:
-- CommandPtr in C++ uses move semantics
-- LReference Implementation
-**Model after**: `deps/allwpilib/wpilibNewCommands/src/main/java/`
-- `Command.java` - Abstract base class with lifecycle methods
-- `Subsystem.java` - Interface with default methods
-- `CommandScheduler.java` - Singleton scheduler with run loop
+- CoMethod Override Pattern
+- Commands and Subsystems provide virtual methods with default implementations
+- Users override methods in derived classes using standard Lua method syntax
+- Use `self` to access instance state
+- Private fields use underscore prefix: `self._requirements`, `self._name`
 
-**Key insight**: The Java version is 100% pure Java code sitting on top of WPILib HAL. It doesn't call into C++ for command logic. We do the same in Lua.
-
-## Questions Resolved
-1. ~~Should we wrap C++?~~ **No - pure Lua implementation**
-2. ~~YAML bindings?~~ **No - regular Lua source files**
-3. Requirements handling? **Lua tables, no FFI needed**
-4. Singleton pattern? **Standard Lua singleton with instance variable**
-5. SubsystemBase? **Not needed for phase 1 - just base Subsystem class**
-
-## Success Criteria
-Phase 1 is complete when:
-- [ ] Can create Lua class derived from Subsystem
-- [ ] Can create Lua class derived from Command  
-- [ ] Scheduler.run() executes command lifecycle correctly
-- [ ] Multiple commands respect subsystem requirements
-- [ ] Default commands work
-- [ ] Command cancellation works
-- [ ] Test passes with real command-based robot pattern
-- [ ] Can write a simple command-based robot in examples/
-## File Structure
-```
-bindings/wpi/cmd/
-├── Subsystem.yaml
+### Memory Management
+- Commands owned by scheduler during execution
+- Lua GC handles cleanup when commands unscheduled
+- No explicit memory management needed (unlike C++ CommandPtr)Subsystem.yaml
 ├── Command.yaml
 └── CommandScheduler.yaml
 
@@ -294,16 +288,37 @@ Add advanced features:
 - Integration with SendableChooser
 
 ## Questions to Resolve
-1. Should we expose CommandPtr or just raw Command pointers?
-2. How to handle command ownership - Lua GC or explicit management?
-3. Do we need SubsystemBase as well as Subsystem?
-4. Should commands self-register requirements in constructor?
+1. Extension Classes
 
-## Success Criteria
-Phase 1 is complete when:
-- [ ] Can create Lua class derived from Subsystem
-- [ ] Can create Lua class derived from Command  
-- [ ] Scheduler can run commands that require subsystems
-- [ ] Lifecycle methods are called correctly
-- [ ] Multiple commands respecting subsystem requirements
-- [ ] Test passes with real command-based robot pattern
+### Convenience Commands (Implemented)
+When creating new command types, model after Java implementations:
+- `FunctionalCommand` - Accepts functions for each lifecycle method
+- `InstantCommand` - Executes once and finishes immediately
+- `RunCommand` - Wraps a single execute function
+
+### Command Groups (Not Yet Implemented)
+These should follow the same patterns when added:
+- `SequentialCommandGroup` - Run commands in sequence
+- `ParallelCommandGroup` - Run commands in parallel
+- `ParallelRaceGroup` - First to finish wins
+- `ParallelDeadlineGroup` - Wait for deadline command
+
+### Advanced Features (Future)
+- Triggers for button bindings (Phase 3)
+- Command decorators: `withTimeout()`, `until()`, `repeatedly()`
+- Utility commands: `PrintCommand`, `WaitCommand`
+- SendableChooser integration
+
+## Testing Requirements
+
+### Unit Tests
+- Create test file per class: `test/wpi/TestClassName.lua`
+- Test construction, lifecycle methods, edge cases
+- Verify garbage collection with `collectgarbage()`
+- Add to `test/CMakeLists.txt` using `luabot_add_api_test()`
+
+### Integration Tests
+- Test realistic command-based robot patterns
+- Verify subsystem requirement conflicts
+- Test default command behavior
+- Validate scheduler run loop sequencing
