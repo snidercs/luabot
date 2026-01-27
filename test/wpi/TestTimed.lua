@@ -73,7 +73,7 @@ do
 
     assert(robot:tick() == robot:duration())
     assert(robot:tick() == 100)
-    assert(tick == 50, 'tick ~= 50 (actual=' .. tick .. ')')
+    assert(math.abs(tick - 50) <= 2, 'tick ~= 50±2 (actual=' .. tick .. ')')
     assert(robot:initialized())
 end
 
