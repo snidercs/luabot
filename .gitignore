@@ -50,3 +50,5 @@ simgui*.json
 networktables.json
 
 .cache
+.DS_Store
+

@@ -101,7 +101,7 @@ jobs:
           path: 3rdparty/linuxathena
 
       - name: Configure
-        run: cmake -S . -B build -G Ninja
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build build
@@ -136,7 +136,7 @@ jobs:
           path: 3rdparty/linuxathena
 
       - name: Configure
-        run: cmake -S . -B build -G Ninja
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build build
@@ -144,27 +144,41 @@ jobs:
       - name: Test
         run: ctest --test-dir build --output-on-failure
 
-  # windows:
-  #   name: Windows (VS 2022)
-  #   runs-on: windows-2022
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  windows:
+    needs: luajit-roborio
+    name: Windows
+    runs-on: windows-2022
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
 
-  #     - name: Set up CMake
-  #       uses: jwlawson/actions-setup-cmake@v1
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
 
-  #     - name: Set up Ninja
-  #       uses: seanmiddleditch/gha-setup-ninja@v4
+      - name: Dependencies
+        run: |
+          pip install pyyaml
 
-  #     - name: Set up MSVC
-  #       uses: ilammy/msvc-dev-cmd@v1
+      - name: LuaJIT
+        run: |
+          python util/luajit.py
 
-  #     - name: Configure
-  #       run: cmake -S . -B build -G Ninja
+      - name: LuaJIT (roboRIO)
+        uses: actions/download-artifact@v4
+        with:
+          name: linuxathena
+          path: 3rdparty/linuxathena
 
-  #     - name: Build
-  #       run: cmake --build build
+      - name: Configure
+        run: |
+          cmake -B build -G Ninja `
+            -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl `
+            -DCMAKE_BUILD_TYPE=Release
 
-  #     - name: Test
-  #       run: ctest --test-dir build --output-on-failure
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
