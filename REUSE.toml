@@ -11,6 +11,8 @@ SPDX-License-Identifier = "CC0-1.0"
 [[annotations]]
 path = [
     "**/*.yaml",
+    "**/*.yml",
+    "**/*.json.in",
     ".gitignore",
     ".gitmodules",
     ".clang-format",
