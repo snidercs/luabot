@@ -116,7 +116,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+        with:
+          submodules: true
+      
       - name: Install dependencies (macOS)
         run: brew install cmake ninja pkg-config
 
