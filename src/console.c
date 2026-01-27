@@ -21,6 +21,8 @@
 #include "luajit.h"
 #include "lj_arch.h"
 
+#include "luabot/luabot.h"
+
 #if LJ_TARGET_POSIX
 #include <unistd.h>
 #define lua_stdin_is_tty()	isatty(0)
@@ -38,28 +40,6 @@
 #if !LJ_TARGET_CONSOLE
 #include <signal.h>
 #endif
-
-#ifndef LUABOT_DEFAULT_PATH
-#define LUABOT_DEFAULT_PATH \
-  "./?.lua;./?/init.lua;" \
-  "/opt/luabot/share/luajit-2.1/?.lua;/opt/luabot/share/luajit-2.1/?/init.lua;" \
-  "/opt/luabot/share/lua/5.1/?.lua;/opt/luabot/share/lua/5.1/?/init.lua"
-#endif
-
-static void luabot_set_default_paths(lua_State* L) {
-  char* epath = getenv("LUA_PATH");
-  if (epath == NULL || strlen(epath) == 0) {
-    lua_getglobal(L, "package");
-    lua_pushstring(L, LUABOT_DEFAULT_PATH);
-    lua_setfield(L, -2, "path");
-    lua_pop(L, 1);
-  }
-
-  if(epath != NULL) {
-    fprintf(stdout, "LUA_PATH=%s\n", epath);
-    // free(epath);
-  }
-}
 
 static lua_State *globalL = NULL;
 static const char *progname = LUA_PROGNAME;

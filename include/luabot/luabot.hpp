@@ -12,6 +12,8 @@
 #include <hal/Main.h>
 #include <lua.hpp>
 
+#include <luabot/luabot.h>
+
 #if defined(__GNUC__) || defined(__clang__)
 #    define LUABOT_FUNCTION __PRETTY_FUNCTION__
 #elif defined(_MSC_VER)
@@ -30,7 +32,7 @@ namespace detail {
 void run_lua_robot (std::mutex& m, lua_State** L_ptr, const char* lua_file) {
     lua_State* L = luaL_newstate();
     luaL_openlibs (L);
-
+    luabot_set_default_paths (L);
     try {
 #if LUABOT_DEVELOPMENT
         // Set LUA_PATH to include build/lua directory

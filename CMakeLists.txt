@@ -90,6 +90,10 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/lua/wpi
     DESTINATION "${LUABOT_LUA_DIR}"
     COMPONENT Core
     FILES_MATCHING PATTERN "*.lua")
+install(DIRECTORY ${CMAKE_BINARY_DIR}/lua/luabot
+    DESTINATION "${LUABOT_LUA_DIR}"
+    COMPONENT Core
+    FILES_MATCHING PATTERN "*.lua")
 
 # 3rdparty/bin/* goes to cmake bin dir
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/bin/
