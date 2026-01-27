@@ -123,7 +123,7 @@ jobs:
         run: |
           brew install cmake ninja pkg-config
           sudo softwareupdate --install-rosetta --agree-to-license
-
+          pip3 install pyyaml
       - name: LuaJIT
         run: |
           sh util/build-luajit-macos.sh
