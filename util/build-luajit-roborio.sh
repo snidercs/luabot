@@ -7,7 +7,7 @@
 # cross-compilation toolchain. The 32-bit host compiler is required for the
 # amalgamated build process.
 
-wpilib_year="2026"
+wpilib_year="2025" ## 2026 docker image uses 2025 toolchain...
 prefix="/opt/luabot/linuxathena"
 
 outdir="`pwd`/3rdparty/linuxathena"
