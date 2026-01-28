@@ -39,12 +39,14 @@ luabot_add_api_test(TestFunctionalCommand wpi/TestFunctionalCommand.lua)
 luabot_add_api_test(TestGenericHID wpi/TestGenericHID.lua)
 luabot_add_api_test(TestGeometry wpi/TestGeometry.lua)
 luabot_add_api_test(TestInstantCommand wpi/TestInstantCommand.lua)
+luabot_add_api_test(TestJoystick wpi/TestJoystick.lua)
 luabot_add_api_test(TestPose2d wpi/TestPose2d.lua)
 luabot_add_api_test(TestRobots wpi/TestRobots.lua)
 luabot_add_api_test(TestRunCommand wpi/TestRunCommand.lua)
 luabot_add_api_test(TestSubsystem wpi/TestSubsystem.lua)
 luabot_add_api_test(TestTimed wpi/TestTimed.lua)
 luabot_add_api_test(TestTrigger wpi/TestTrigger.lua)
+luabot_add_api_test(TestXboxController wpi/TestXboxController.lua)
 
 # Simulation Tests
 # Helper function to add Lua tests

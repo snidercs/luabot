@@ -24,17 +24,18 @@ end
 -- Joystick
 do
     local j = Joystick.new(0)
-    assert(type(j) == 'cdata', "should be cdata")
+    assert(type(j) == 'table', "should be table (pure Lua class)")
     j:setYChannel(2)
     assert(j:getYChannel() == 2, "should be 2")
     j:getX()
 
-    local res, _ = pcall(function()
-        local _ = Joystick.new(10)
-    end)
-    assert(not res, "Port out of range")
+    -- Port range validation is now handled by HAL/DriverStation,
+    -- not at construction time
+    local j2 = Joystick.new(5)  -- Maximum valid port
+    assert(j2 ~= nil, "Port 5 should be valid")
 
-    res, _ = pcall(function()
+    -- Constructor requires port argument
+    local res, _ = pcall(function()
         Joystick.new()
     end)
     assert(not res, "default ctor not allowed")
