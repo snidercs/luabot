@@ -26,6 +26,7 @@ LuaBot is a Lua scripting environment for FRC (FIRST Robotics Competition) robot
 - Object-oriented Lua: Use `luabot.class` for class inheritance
 - Module structure: Each module returns a table with methods and constructors
 - **IMPORTANT**: Never edit Lua files in `build/` directory - always edit source files in `bindings/` directory. The build system copies them automatically via CMake's `generate_bindings` target
+- **Design Principle**: Match Java WPILib implementation as closely as possible. Do not add workarounds, shortcuts, or extra methods to classes that don't exist in the Java version. When implementing WPILib features, reference the Java source code to ensure architectural fidelity
 
 ### Lua Runtime
 - Package path: Set to include `build/lua/` for development

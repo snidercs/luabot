@@ -55,6 +55,12 @@ local function setupMockScheduler()
     return scheduled
 end
 
+-- Helper function to poll and execute deferred actions
+local function pollAndExecute(loop)
+    loop:poll()
+    loop:executeDeferredActions()
+end
+
 function TestTrigger:testConstructorWithLoop()
     local loop = EventLoop.new()
     local condition = function() return true end

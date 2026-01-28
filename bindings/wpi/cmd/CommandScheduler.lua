@@ -29,6 +29,7 @@ local function create()
     inst._inRunLoop = false
     inst._disabled = false
     inst._defaultButtonLoop = EventLoop.new()
+    inst._toSchedule = {}  -- Queue of commands to schedule after run loop
     return inst
 end
 
@@ -101,8 +102,13 @@ function CommandScheduler:schedule(...)
         return
     end
     
+    -- If called during run loop, queue for later
     if self._inRunLoop then
-        error("Commands cannot be scheduled from inside the run loop")
+        local commands = {...}
+        for _, command in ipairs(commands) do
+            table.insert(self._toSchedule, command)
+        end
+        return
     end
     
     local commands = {...}
@@ -241,9 +247,12 @@ function CommandScheduler:run()
     
     self._inRunLoop = false
     
-    -- Step 6: Execute deferred actions from button loop (triggers scheduling commands)
-    -- This must happen AFTER _inRunLoop is set to false
-    self._defaultButtonLoop:executeDeferredActions()
+    -- Step 6: Schedule commands that were queued during the run loop
+    local toSchedule = self._toSchedule
+    self._toSchedule = {}
+    for _, command in ipairs(toSchedule) do
+        self:schedule(command)
+    end
 end
 
 ---Disables the scheduler
