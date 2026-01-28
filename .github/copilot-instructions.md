@@ -25,6 +25,7 @@ LuaBot is a Lua scripting environment for FRC (FIRST Robotics Competition) robot
 - FFI pattern: Load shared libraries via `ffi.load()`, use `ffi.cdef()` for declarations
 - Object-oriented Lua: Use `luabot.class` for class inheritance
 - Module structure: Each module returns a table with methods and constructors
+- **IMPORTANT**: Never edit Lua files in `build/` directory - always edit source files in `bindings/` directory. The build system copies them automatically via CMake's `generate_bindings` target
 
 ### Lua Runtime
 - Package path: Set to include `build/lua/` for development

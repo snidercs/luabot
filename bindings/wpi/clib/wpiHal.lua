@@ -39,6 +39,8 @@ struct HAL_ControlWord {
 // hal/DriverStation.h
 typedef struct HAL_ControlWord HAL_ControlWord;
 int32_t HAL_GetControlWord(HAL_ControlWord* controlWord);
+int32_t HAL_SetJoystickOutputs(int32_t joystickNum, int64_t outputs,
+                               int32_t leftRumble, int32_t rightRumble);
 
 void HAL_ObserveUserProgramStarting();
 void HAL_ObserveUserProgramDisabled();
