@@ -12,6 +12,7 @@ local class = require('luabot.class')
 ---@field private _subsystems table<Subsystem, Command|nil> Map of subsystem to default command
 ---@field private _inRunLoop boolean Flag to prevent scheduling during run
 ---@field private _disabled boolean Whether the scheduler is disabled
+---@field private _defaultButtonLoop EventLoop Default event loop for button/trigger polling
 local CommandScheduler = class()
 
 -- Singleton instance
@@ -20,12 +21,14 @@ local instance = nil
 ---Creates a new CommandScheduler instance (private, use getInstance)
 ---@return CommandScheduler instance A new scheduler instance
 local function create()
+    local EventLoop = require('wpi.event.EventLoop')
     local inst = setmetatable({}, CommandScheduler)
     inst._scheduledCommands = {}
     inst._requirements = {}
     inst._subsystems = {}
     inst._inRunLoop = false
     inst._disabled = false
+    inst._defaultButtonLoop = EventLoop.new()
     return inst
 end
 
@@ -43,12 +46,25 @@ function CommandScheduler.resetInstance()
     instance = nil
 end
 
+---Gets the default button loop for trigger polling
+---@return EventLoop The default event loop for button/trigger polling
+function CommandScheduler:getDefaultButtonLoop()
+    return self._defaultButtonLoop
+end
+
 ---Registers subsystems with the scheduler for periodic execution
 ---@param ... Subsystem One or more subsystems to register
 function CommandScheduler:registerSubsystem(...)
     local subsystems = {...}
     for _, subsystem in ipairs(subsystems) do
-        self._subsystems[subsystem] = self._subsystems[subsystem] or false
+        if not subsystem then
+            -- Skip nil subsystems (could log warning)
+        elseif self._subsystems[subsystem] ~= nil then
+            -- Already registered, skip (could log warning)
+        else
+            -- Register with no default command
+            self._subsystems[subsystem] = false
+        end
     end
 end
 
@@ -183,8 +199,8 @@ function CommandScheduler:run()
         subsystem:periodic()
     end
     
-    -- Step 2: Poll event loop (for triggers - future phase)
-    -- TODO: Implement trigger polling
+    -- Step 2: Poll default button loop (for triggers)
+    self._defaultButtonLoop:poll()
     
     -- Step 3: Execute scheduled commands
     local commandsToFinish = {}

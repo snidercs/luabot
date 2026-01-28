@@ -30,6 +30,8 @@ luabot_add_api_test(TestClass TestClass.lua)
 luabot_add_api_test(TestClib wpi/TestClib.lua)
 luabot_add_api_test(TestCommand wpi/TestCommand.lua)
 luabot_add_api_test(TestCommandScheduler wpi/TestCommandScheduler.lua)
+luabot_add_api_test(TestDebouncer wpi/TestDebouncer.lua)
+luabot_add_api_test(TestEventLoop wpi/TestEventLoop.lua)
 luabot_add_api_test(TestFilesystem wpi/TestFilesystem.lua)
 luabot_add_api_test(TestFunctionalCommand wpi/TestFunctionalCommand.lua)
 luabot_add_api_test(TestGeometry wpi/TestGeometry.lua)
@@ -39,6 +41,7 @@ luabot_add_api_test(TestRobots wpi/TestRobots.lua)
 luabot_add_api_test(TestRunCommand wpi/TestRunCommand.lua)
 luabot_add_api_test(TestSubsystem wpi/TestSubsystem.lua)
 luabot_add_api_test(TestTimed wpi/TestTimed.lua)
+luabot_add_api_test(TestTrigger wpi/TestTrigger.lua)
 
 # Simulation Tests
 # Helper function to add Lua tests
