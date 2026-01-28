@@ -11,14 +11,17 @@ hal.initialize(500, 1)
 DriverStation.silenceJoystickConnectionWarning(true)
 DriverStation.refreshData()
 
--- Reality Check / No construction
+-- Reality Check / Abstract base class
 do
     assert(RobotBase.isReal() == false)
     assert(RobotBase.isSimulation() == true)
+    -- RobotBase can be constructed but will error if you try to use abstract methods
+    local rb = RobotBase.new()
+    assert(rb ~= nil, "RobotBase should be constructable")
     local ok, err = pcall(function()
-        local _ = RobotBase.new()
+        rb:startCompetition()  -- This should error - abstract method
     end)
-    assert(ok == false and #err > 0)
+    assert(ok == false and #err > 0, "startCompetition should error on abstract base")
 end
 
 -- Joystick
@@ -41,20 +44,24 @@ do
     assert(not res, "default ctor not allowed")
 end
 
-do -- no construction
-    local IterativeRobotBase = require ('wpi.frc.IterativeRobotBase')
+do -- IterativeRobotBase is constructable
+    local IterativeRobotBase = require('wpi.frc.IterativeRobotBase')
+    local irb = IterativeRobotBase.new(20)
+    assert(irb ~= nil, "IterativeRobotBase should be constructable")
+    -- But calling abstract method should error
     local ok, err = pcall(function() 
-        local _ = IterativeRobotBase.new (20)
+        irb:startCompetition()
     end)
-    assert(ok == false)
+    assert(ok == false, "startCompetition should error on base class")
 end
 
-do -- no construction
-    local TimedRobot = require ('wpi.frc.TimedRobot')
-    local ok, err = pcall(function()
-        local _ = TimedRobot.new (20)
-    end)
-    assert(ok == false)
+do -- TimedRobot is constructable
+    local TimedRobot = require('wpi.frc.TimedRobot')
+    local tr = TimedRobot.new(20)
+    assert(tr ~= nil, "TimedRobot should be constructable")
+    -- TimedRobot actually implements startCompetition, so it won't error
+    -- but we can verify it exists
+    assert(type(tr.startCompetition) == 'function', "should have startCompetition")
 end
 
 hal.shutdown()

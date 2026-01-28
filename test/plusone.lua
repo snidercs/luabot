@@ -3,11 +3,12 @@
 
 local iterations = 2000000
 
+local class = require('luabot.class')
 local IterativeRobotBase = require('wpi.frc.IterativeRobotBase')
-local ffi = require ('ffi')
+local hal = require ('wpi.hal')
 
----@class PlusOne A mock robot to use in testing.
-local PlusOne = IterativeRobotBase.derive()
+---@class PlusOne : IterativeRobotBase A mock robot to use in testing.
+local PlusOne = class(IterativeRobotBase)
 
 ---@return number
 function PlusOne:process(x)
@@ -16,21 +17,20 @@ function PlusOne:process(x)
 end
 
 local function instantiate()
-    local robot = IterativeRobotBase.init({})
-    setmetatable(robot, { __index = PlusOne })
+    local robot = setmetatable({}, PlusOne)
+    IterativeRobotBase.init(robot)
     return robot
 end
 
 local function main()
-    ffi.C.frcRunHalInitialization()
-    ffi.C.frcRobotBaseInit()
+    hal.initialize (500, 0)
     local _ = 0
     local robot = instantiate()
     for i = 1, iterations do
         _ = robot:process(i)
     end
 
-    ffi.C.HAL_Shutdown()
+    hal.shutdown()
     return 0
 end
 

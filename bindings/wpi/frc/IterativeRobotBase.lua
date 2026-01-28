@@ -1,6 +1,7 @@
 ---SPDX-FileCopyrightText: Michael Fisher @mfisher31
 ---SPDX-License-Identifier: MIT
 
+local class = require('luabot.class')
 local ffi = require('ffi')
 local ntcore = require('wpi.clib.ntcore')
 local wpiHal = require('wpi.clib.wpiHal')
@@ -22,9 +23,8 @@ local kTest = 4
 
 local isSimulation = RobotBase.isSimulation()
 
----
----@class IterativeRobotBase
-local IterativeRobotBase = RobotBase.derive()
+---@class IterativeRobotBase : RobotBase
+local IterativeRobotBase = class(RobotBase)
 
 function IterativeRobotBase:robotInit() end
 
@@ -79,9 +79,11 @@ end
 local HC = wpiHal.load()
 local NC = ntcore.load()
 
----@return table
-local function init(obj, seconds)
-    local impl = RobotBase.init(obj)
+---Initialize an IterativeRobotBase instance
+---@param self IterativeRobotBase
+---@param seconds? number Loop period in seconds (default 0.02)
+function IterativeRobotBase.init(self, seconds)
+    RobotBase.init(self)
 
     local lwEnabledInTest = false
     local ntFlushEnabled = false
@@ -91,17 +93,17 @@ local function init(obj, seconds)
     local period = tonumber(seconds) or kDefaultPeriod
     local watchdog = Watchdog.new(period)
 
-    function impl:getPeriod() return period end
+    function self:getPeriod() return period end
 
-    function impl:setNetworkTablesFlushEnabled(enabled)
+    function self:setNetworkTablesFlushEnabled(enabled)
         ntFlushEnabled = enabled and true or false
     end
 
     local hasReportedLWTest = false
-    function impl:enableLiveWindowInTest(testLW)
+    function self:enableLiveWindowInTest(testLW)
         testLW = testLW and true or false
 
-        if impl:isTestEnabled() then
+        if self:isTestEnabled() then
             error("Can't configure test mode while in test mode!")
         end
 
@@ -115,9 +117,9 @@ local function init(obj, seconds)
         lwEnabledInTest = testLW
     end
 
-    function impl:isLiveWindowEnabledInTest() return lwEnabledInTest end
+    function self:isLiveWindowEnabledInTest() return lwEnabledInTest end
 
-    function impl:loopFunc()
+    function self:loopFunc()
         DriverStation.refreshData()
         watchdog:reset()
 
@@ -224,19 +226,15 @@ local function init(obj, seconds)
             watchdog:printEpochs()
         end
     end
-
-    return impl
 end
 
----Derive this robot type.
----@return table
-local function derive()
-    local T = {}
-    for k, v in pairs(IterativeRobotBase) do T[k] = v end
-    return T
+---Create a new IterativeRobotBase instance
+---@param seconds? number Loop period in seconds (default 0.02)
+---@return IterativeRobotBase
+function IterativeRobotBase.new(seconds)
+    local instance = setmetatable({}, IterativeRobotBase)
+    IterativeRobotBase.init(instance, seconds)
+    return instance
 end
 
-return {
-    init = init,
-    derive = derive
-}
+return IterativeRobotBase

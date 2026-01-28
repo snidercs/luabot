@@ -2,47 +2,51 @@
 ---SPDX-License-Identifier: MIT
 
 local hal = require('wpi.hal')
+local class = require('luabot.class')
 local TimedRobot = require('wpi.frc.TimedRobot')
 
 local function TimedRobotTest(dur, timeout)
-    local Robot = TimedRobot.derive()
-    local robot = TimedRobot.init(
-        setmetatable({}, { __index = Robot }),
-        timeout)
+    local Robot = class(TimedRobot)
 
     local duration = tonumber(dur) or 100
     local tick = 0
     local initialized = false
 
-    function robot:tick() return tick end
+    function Robot.init(self, t)
+        TimedRobot.init(self, t)
+    end
 
-    function robot:initialized() return initialized end
+    function Robot:tick() return tick end
 
-    function robot:duration() return duration end
+    function Robot:initialized() return initialized end
 
-    function robot:robotInit()
+    function Robot:duration() return duration end
+
+    function Robot:robotInit()
         initialized = true
         self:setNetworkTablesFlushEnabled(false)
         self:enableLiveWindowInTest(false)
     end
 
-    function robot:robotPeriodic()
+    function Robot:robotPeriodic()
         if tick >= duration then
             return
         end
 
         tick = tick + 1
         if tick == duration / 2 then
-            robot:setNetworkTablesFlushEnabled(true)
-            robot:enableLiveWindowInTest(true)
+            self:setNetworkTablesFlushEnabled(true)
+            self:enableLiveWindowInTest(true)
         end
 
         if tick >= duration then
-            robot:endCompetition()
+            self:endCompetition()
         end
     end
 
-    return robot
+    local instance = setmetatable({}, Robot)
+    Robot.init(instance, timeout)
+    return instance
 end
 
 hal.initialize(500, 0)

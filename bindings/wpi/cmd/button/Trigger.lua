@@ -72,8 +72,10 @@ function Trigger:onChange(command)
     
     self:addBinding(function(previous, current)
         if previous ~= current then
-            local CommandScheduler = require('wpi.cmd.CommandScheduler')
-            CommandScheduler.getInstance():schedule(command)
+            self._loop:defer(function()
+                local CommandScheduler = require('wpi.cmd.CommandScheduler')
+                CommandScheduler.getInstance():schedule(command)
+            end)
         end
     end)
     
@@ -90,8 +92,10 @@ function Trigger:onTrue(command)
     
     self:addBinding(function(previous, current)
         if not previous and current then
-            local CommandScheduler = require('wpi.cmd.CommandScheduler')
-            CommandScheduler.getInstance():schedule(command)
+            self._loop:defer(function()
+                local CommandScheduler = require('wpi.cmd.CommandScheduler')
+                CommandScheduler.getInstance():schedule(command)
+            end)
         end
     end)
     
@@ -108,8 +112,10 @@ function Trigger:onFalse(command)
     
     self:addBinding(function(previous, current)
         if previous and not current then
-            local CommandScheduler = require('wpi.cmd.CommandScheduler')
-            CommandScheduler.getInstance():schedule(command)
+            self._loop:defer(function()
+                local CommandScheduler = require('wpi.cmd.CommandScheduler')
+                CommandScheduler.getInstance():schedule(command)
+            end)
         end
     end)
     
@@ -127,10 +133,14 @@ function Trigger:whileTrue(command)
     
     self:addBinding(function(previous, current)
         if not previous and current then
-            local CommandScheduler = require('wpi.cmd.CommandScheduler')
-            CommandScheduler.getInstance():schedule(command)
+            self._loop:defer(function()
+                local CommandScheduler = require('wpi.cmd.CommandScheduler')
+                CommandScheduler.getInstance():schedule(command)
+            end)
         elseif previous and not current then
-            command:cancel()
+            self._loop:defer(function()
+                command:cancel()
+            end)
         end
     end)
     
@@ -148,10 +158,14 @@ function Trigger:whileFalse(command)
     
     self:addBinding(function(previous, current)
         if previous and not current then
-            local CommandScheduler = require('wpi.cmd.CommandScheduler')
-            CommandScheduler.getInstance():schedule(command)
+            self._loop:defer(function()
+                local CommandScheduler = require('wpi.cmd.CommandScheduler')
+                CommandScheduler.getInstance():schedule(command)
+            end)
         elseif not previous and current then
-            command:cancel()
+            self._loop:defer(function()
+                command:cancel()
+            end)
         end
     end)
     
@@ -168,12 +182,14 @@ function Trigger:toggleOnTrue(command)
     
     self:addBinding(function(previous, current)
         if not previous and current then
-            if command:isScheduled() then
-                command:cancel()
-            else
-                local CommandScheduler = require('wpi.cmd.CommandScheduler')
-                CommandScheduler.getInstance():schedule(command)
-            end
+            self._loop:defer(function()
+                if command:isScheduled() then
+                    command:cancel()
+                else
+                    local CommandScheduler = require('wpi.cmd.CommandScheduler')
+                    CommandScheduler.getInstance():schedule(command)
+                end
+            end)
         end
     end)
     
@@ -190,12 +206,14 @@ function Trigger:toggleOnFalse(command)
     
     self:addBinding(function(previous, current)
         if previous and not current then
-            if command:isScheduled() then
-                command:cancel()
-            else
-                local CommandScheduler = require('wpi.cmd.CommandScheduler')
-                CommandScheduler.getInstance():schedule(command)
-            end
+            self._loop:defer(function()
+                if command:isScheduled() then
+                    command:cancel()
+                else
+                    local CommandScheduler = require('wpi.cmd.CommandScheduler')
+                    CommandScheduler.getInstance():schedule(command)
+                end
+            end)
         end
     end)
     

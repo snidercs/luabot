@@ -1,6 +1,7 @@
 ---SPDX-FileCopyrightText: Michael Fisher @mfisher31
 ---SPDX-License-Identifier: MIT
 
+local class = require('luabot.class')
 local ffi = require('ffi')
 local C = require('wpi.clib.wpiHal').load(false)
 
@@ -8,8 +9,8 @@ local IterativeRobotBase = require('wpi.frc.IterativeRobotBase')
 local RobotBase = require('wpi.frc.RobotBase')
 local Timer = require('wpi.frc.Timer')
 
----@class TimedRobot
-local TimedRobot = IterativeRobotBase.derive()
+---@class TimedRobot : IterativeRobotBase
+local TimedRobot = class(IterativeRobotBase)
 
 local function FRC_ReportError(format, ...)
     print(format)
@@ -35,8 +36,11 @@ end
 function TimedRobot.addPeriodic(callback, period)
 end
 
-local function init(instance, timeout)
-    local impl = IterativeRobotBase.init(instance)
+---Initialize a TimedRobot instance
+---@param self TimedRobot
+---@param timeout? number Loop period in seconds (default 0.02)
+function TimedRobot.init(self, timeout)
+    IterativeRobotBase.init(self, timeout)
 
     local status = ffi.new('int32_t[1]')
     local period = tonumber(timeout) or 0.02
@@ -62,15 +66,15 @@ local function init(instance, timeout)
     -- kResourceType_Framework, kFramework_Timed
     C.HAL_Report(22, 4, 0, nil);
 
-    function impl:addPeriodic(f, p)
+    function self:addPeriodic(f, p)
         callbacks.push(Callback(f, p))
     end
 
-    function impl:startCompetition()
-        impl:robotInit()
+    function self:startCompetition()
+        self:robotInit()
 
         if RobotBase.isSimulation() then
-            impl:simulationInit()
+            self:simulationInit()
         end
 
         -- Tell the DS that the robot is ready to be enabled
@@ -110,23 +114,21 @@ local function init(instance, timeout)
         end
     end
 
-    function impl:endCompetition()
+    function self:endCompetition()
         status[0] = 0
         C.HAL_StopNotifier(notifier, status)
     end
 
-    impl:addPeriodic(function() impl:loopFunc() end, period)
-
-    return impl
+    self:addPeriodic(function() self:loopFunc() end, period)
 end
 
-local function derive()
-    local T = {}
-    for k, v in pairs(TimedRobot) do T[k] = v end
-    return T
+---Create a new TimedRobot instance
+---@param timeout? number Loop period in seconds (default 0.02)
+---@return TimedRobot
+function TimedRobot.new(timeout)
+    local instance = setmetatable({}, TimedRobot)
+    TimedRobot.init(instance, timeout)
+    return instance
 end
 
-return {
-    derive = derive,
-    init = init
-}
+return TimedRobot

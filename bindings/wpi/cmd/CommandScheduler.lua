@@ -240,6 +240,10 @@ function CommandScheduler:run()
     -- TODO: Detect sim mode and call simulationPeriodic
     
     self._inRunLoop = false
+    
+    -- Step 6: Execute deferred actions from button loop (triggers scheduling commands)
+    -- This must happen AFTER _inRunLoop is set to false
+    self._defaultButtonLoop:executeDeferredActions()
 end
 
 ---Disables the scheduler
