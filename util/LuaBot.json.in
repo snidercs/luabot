@@ -4,14 +4,16 @@
     "version": "@PROJECT_VERSION@",
     "uuid": "54bbb5ab-d271-4f09-93f7-b0fe752672c5",
     "frcYear": "2026",
-    "mavenUrls": [],
-    "jsonUrl": "",
+    "mavenUrls": [
+        "https://github.com/@GITHUB_REPO@/releases/latest/download/"
+    ],
+    "jsonUrl": "https://github.com/@GITHUB_REPO@/releases/latest/download/LuaBot.json",
     "javaDependencies": [],
     "jniDependencies": [],
     "cppDependencies": [
         {
-            "groupId": "org.luabot.LuaJIT",
-            "artifactId": "luajit-cpp",
+            "groupId": "",
+            "artifactId": "luabot",
             "version": "@PROJECT_VERSION@",
             "libName": "luajit-2.1",
             "headerClassifier": "headers",
