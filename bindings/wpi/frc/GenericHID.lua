@@ -4,6 +4,7 @@
 local class = require('luabot.class')
 local DriverStation = require('wpi.frc.DriverStation')
 local bit = require('bit')
+local wpiHal = require('wpi.clib.wpiHal').load(false)
 
 ---@class GenericHID
 ---Generic Human Interface Device (HID)
@@ -143,9 +144,7 @@ end
 ---Set a single HID output value
 ---@param outputNumber number The index of the output to set (1-32)
 ---@param value boolean The value to set the output to
-function GenericHID:setOutput(outputNumber, value)
-  local wpiHal = require('wpi.clib.wpiHal').load(false)
-  
+function GenericHID:setOutput(outputNumber, value)  
   if value then
     self._outputs = bit.bor(self._outputs, bit.lshift(1, outputNumber - 1))
   else
@@ -158,7 +157,6 @@ end
 ---Set all output values for the HID
 ---@param value number The 32 bit output value (1 bit for each output)
 function GenericHID:setOutputs(value)
-  local wpiHal = require('wpi.clib.wpiHal').load(false)
   self._outputs = value
   wpiHal.HAL_SetJoystickOutputs(self._port, self._outputs, self._leftRumble, self._rightRumble)
 end
@@ -166,9 +164,7 @@ end
 ---Set the rumble output for the HID
 ---@param type number The RumbleType (kLeftRumble, kRightRumble, or kBothRumble)
 ---@param value number The normalized value (0 to 1) to set the rumble to
-function GenericHID:setRumble(type, value)
-  local wpiHal = require('wpi.clib.wpiHal').load(false)
-  
+function GenericHID:setRumble(type, value)  
   -- Convert 0-1 to 0-65535 (0xFFFF)
   local rumbleValue = math.floor(value * 65535 + 0.5)
   
