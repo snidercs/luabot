@@ -71,6 +71,19 @@ endif()
 
 add_subdirectory(bindings)
 
+# Generate vendor dependency JSON
+set(GITHUB_REPO "snidercs/luabot" CACHE STRING "GitHub repository for releases")
+configure_file(
+    ${CMAKE_SOURCE_DIR}/util/LuaBot.json.in
+    ${CMAKE_BINARY_DIR}/LuaBot.json
+    @ONLY
+)
+
+# Install vendor dependency JSON
+install(FILES ${CMAKE_BINARY_DIR}/LuaBot.json
+    DESTINATION .
+    COMPONENT luabot)
+
 # Install generated C++ binding headers
 set(LUABOT_INCLUDE_DIR "include" CACHE STRING "Include directory to install headers and ffi binding code" )
 install(DIRECTORY ${CMAKE_BINARY_DIR}/include/luabot
@@ -116,10 +129,12 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/share/
     DESTINATION share
     COMPONENT Core)
 
-# 3rdparty/linuxathena/* goes to cmake prefix slash linuxathena
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/linuxathena/
-    DESTINATION linuxathena
-    COMPONENT Core)
+if(LUABOT_BUILD_CONSOLE)
+    # 3rdparty/linuxathena/* goes to cmake prefix slash linuxathena
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/linuxathena/
+        DESTINATION linuxathena
+        COMPONENT Core)
+endif()
 
 if(LUABOT_BUILD_CONSOLE)
     if(WIN32)
@@ -234,38 +249,58 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "LuaBot")
 set(CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/LICENSES/MIT.txt")
 set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSES/MIT.txt")
 
-if(LINUX)
-    set(LUABOT_SYSTEM_NAME "linux")
-    string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" LUABOT_PROCESSOR)
-    set(CPACK_GENERATOR "DEB")
-    set(CPACK_ARCHIVE_COMPONENT_INSTALL OFF)
-    set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
-    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libfreetype6;libx11-6;libxext6;libxrandr2;libxinerama1;libxcursor1;libcurl4;libgl1;libstdc++6")
-elseif(APPLE)
-    set(LUABOT_SYSTEM_NAME "macos")
-    set(LUABOT_PROCESSOR "universal")
-    set(CPACK_GENERATOR "productbuild")
-    set(CPACK_COMPONENT_INSTALL ON)
-    set(CPACK_SET_DESTDIR OFF)
-    set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/luabot")
-    set(CPACK_PRODUCTBUILD_IDENTIFIER "org.luabot.installer")
-elseif(WIN32)
-    set(CPACK_NSIS_PACKAGE_NAME "LuaBot")
-    set(LUABOT_SYSTEM_NAME "windows")
-    string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" LUABOT_PROCESSOR)
-    set(CPACK_GENERATOR "NSIS")
-    set(CPACK_SET_DESTDIR OFF)
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "LuaBot")
-    set(CPACK_COMPONENT_INSTALL ON)
+if(LUABOT_BUILD_CONSOLE)
+    if(LINUX)
+        set(LUABOT_SYSTEM_NAME "linux")
+        string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" LUABOT_PROCESSOR)
+        set(CPACK_GENERATOR "DEB")
+        set(CPACK_ARCHIVE_COMPONENT_INSTALL OFF)
+        set(CPACK_PACKAGING_INSTALL_PREFIX "/usr")
+        set(CPACK_DEBIAN_PACKAGE_DEPENDS "libfreetype6;libx11-6;libxext6;libxrandr2;libxinerama1;libxcursor1;libcurl4;libgl1;libstdc++6")
+    elseif(APPLE)
+        set(LUABOT_SYSTEM_NAME "macos")
+        set(LUABOT_PROCESSOR "universal")
+        set(CPACK_GENERATOR "productbuild")
+        set(CPACK_COMPONENT_INSTALL ON)
+        set(CPACK_SET_DESTDIR OFF)
+        set(CPACK_PACKAGING_INSTALL_PREFIX "/opt/luabot")
+        set(CPACK_PRODUCTBUILD_IDENTIFIER "org.luabot.installer")
+    elseif(WIN32)
+        set(CPACK_NSIS_PACKAGE_NAME "LuaBot")
+        set(LUABOT_SYSTEM_NAME "windows")
+        string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" LUABOT_PROCESSOR)
+        set(CPACK_GENERATOR "NSIS")
+        set(CPACK_SET_DESTDIR OFF)
+        set(CPACK_PACKAGE_INSTALL_DIRECTORY "LuaBot")
+        set(CPACK_COMPONENT_INSTALL ON)
+        set(CPACK_PACKAGING_INSTALL_PREFIX "/")
+        set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+        set(CPACK_NSIS_MODIFY_PATH OFF)
+    endif()
+    
+    set(LUABOT_PACKAGE_FILE_NAME "${PROJECT_NAME}-${CPACK_PACKAGE_VERSION}-${LUABOT_SYSTEM_NAME}-${LUABOT_PROCESSOR}")
+else()
+    set(CPACK_GENERATOR "ZIP")
     set(CPACK_PACKAGING_INSTALL_PREFIX "/")
-    set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-    set(CPACK_NSIS_MODIFY_PATH OFF)
+    set(CPACK_ARCHIVE_COMPONENT_INSTALL OFF)
+
+    if(LUABOT_ROBORIO)
+        set(LUABOT_SYSTEM_NAME "linuxathena")
+    elseif(LINUX)
+        set(LUABOT_SYSTEM_NAME "linuxx86-64")
+    elseif(APPLE)
+        set(LUABOT_SYSTEM_NAME "osxuniversal")
+    elseif(WIN32)
+        set(LUABOT_SYSTEM_NAME "windowsx86-64")
+    endif()
+
+    set(LUABOT_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}-${LUABOT_SYSTEM_NAME}")
 endif()
 
 set(LUABOT_GENERATOR ${CPACK_GENERATOR})
 message(STATUS "Using CPack generator: ${LUABOT_GENERATOR}")
-set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${CPACK_PACKAGE_VERSION}-${LUABOT_SYSTEM_NAME}-${LUABOT_PROCESSOR}")
-set(LUABOT_PACKAGE_FILE_NAME "${CPACK_PACKAGE_FILE_NAME}")
+set(CPACK_PACKAGE_FILE_NAME "${LUABOT_PACKAGE_FILE_NAME}")
+
 include(CPack)
 
 add_custom_target(installer

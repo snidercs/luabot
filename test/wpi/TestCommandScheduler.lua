@@ -270,4 +270,115 @@ function TestCommandScheduler:testDisableScheduler()
     lu.assertTrue(executeCalled)
 end
 
+function TestCommandScheduler:testDeferredSchedulingDuringRunLoop()
+    local scheduler = CommandScheduler.getInstance()
+    local EventLoop = require('wpi.event.EventLoop')
+    local loop = scheduler:getDefaultButtonLoop()
+    
+    local deferredCommand = Command.new()
+    local scheduledDuringLoop = false
+    
+    -- Create a command that tries to schedule another command during execute
+    local MyCommand = class(Command)
+    function MyCommand:execute()
+        -- This should queue the command for deferred scheduling
+        scheduler:schedule(deferredCommand)
+        scheduledDuringLoop = true
+    end
+    
+    function MyCommand.new()
+        local self = setmetatable({}, MyCommand)
+        return MyCommand.init(self)
+    end
+    
+    local command = MyCommand.new()
+    scheduler:schedule(command)
+    
+    -- Command should be scheduled immediately
+    lu.assertTrue(scheduler:isScheduled(command))
+    lu.assertFalse(scheduler:isScheduled(deferredCommand))
+    
+    -- Run the scheduler - this will execute command which schedules deferredCommand
+    scheduler:run()
+    
+    -- Deferred command should now be scheduled
+    lu.assertTrue(scheduledDuringLoop)
+    lu.assertTrue(scheduler:isScheduled(deferredCommand))
+end
+
+function TestCommandScheduler:testMultipleDeferredCommands()
+    local scheduler = CommandScheduler.getInstance()
+    
+    local deferred1 = Command.new()
+    local deferred2 = Command.new()
+    local deferred3 = Command.new()
+    
+    -- Create a command that schedules multiple commands during execute
+    local MyCommand = class(Command)
+    function MyCommand:execute()
+        scheduler:schedule(deferred1)
+        scheduler:schedule(deferred2)
+        scheduler:schedule(deferred3)
+    end
+    
+    function MyCommand.new()
+        local self = setmetatable({}, MyCommand)
+        return MyCommand.init(self)
+    end
+    
+    local command = MyCommand.new()
+    scheduler:schedule(command)
+    
+    lu.assertFalse(scheduler:isScheduled(deferred1))
+    lu.assertFalse(scheduler:isScheduled(deferred2))
+    lu.assertFalse(scheduler:isScheduled(deferred3))
+    
+    scheduler:run()
+    
+    -- All deferred commands should now be scheduled
+    lu.assertTrue(scheduler:isScheduled(deferred1))
+    lu.assertTrue(scheduler:isScheduled(deferred2))
+    lu.assertTrue(scheduler:isScheduled(deferred3))
+end
+
+function TestCommandScheduler:testDeferredCommandsInitialized()
+    local scheduler = CommandScheduler.getInstance()
+    
+    local MyCommand = class(Command)
+    local initCalled = false
+    
+    function MyCommand:initialize()
+        initCalled = true
+    end
+    
+    function MyCommand.new()
+        local self = setmetatable({}, MyCommand)
+        return MyCommand.init(self)
+    end
+    
+    local deferredCommand = MyCommand.new()
+    
+    -- Create a command that schedules deferredCommand during execute
+    local TriggerCommand = class(Command)
+    function TriggerCommand:execute()
+        scheduler:schedule(deferredCommand)
+    end
+    
+    function TriggerCommand.new()
+        local self = setmetatable({}, TriggerCommand)
+        return TriggerCommand.init(self)
+    end
+    
+    local command = TriggerCommand.new()
+    scheduler:schedule(command)
+    
+    lu.assertFalse(initCalled)
+    
+    scheduler:run()
+    
+    -- Deferred command should be initialized after run loop
+    lu.assertTrue(initCalled)
+    lu.assertTrue(scheduler:isScheduled(deferredCommand))
+end
+
 os.exit(lu.LuaUnit.run('TestCommandScheduler'))

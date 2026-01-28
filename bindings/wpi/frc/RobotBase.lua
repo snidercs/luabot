@@ -1,11 +1,12 @@
 ---SPDX-FileCopyrightText: Michael Fisher @mfisher31
 ---SPDX-License-Identifier: MIT
 
+local class = require('luabot.class')
+local ffi = require('ffi')
+
 ---RobotBase
 ---@class RobotBase
-local RobotBase = {}
-
-local ffi = require('ffi')
+local RobotBase = class()
 
 ffi.cdef[[
 bool frcRobotBaseIsReal();
@@ -69,22 +70,19 @@ function RobotBase.isSimulation()
     return CC.frcRobotBaseIsSimulation()
 end
 
-local function derive()
-    local T = {}
-    for k, v in pairs(RobotBase) do T[k] = v end
-    return T
-end
-
----@return table instance An instance table
-local function init(instance)
+---Initialize a RobotBase instance
+---@param self RobotBase
+function RobotBase.init(self)
     -- CC.frcRunHalInitialization()
     -- CC.frcRobotBaseInit()
+end
+
+---Create a new RobotBase instance
+---@return RobotBase
+function RobotBase.new()
+    local instance = setmetatable({}, RobotBase)
+    RobotBase.init(instance)
     return instance
 end
 
-return  {
-    init = init,
-    derive = derive,
-    isSimulation = RobotBase.isSimulation,
-    isReal = RobotBase.isReal
-}
+return RobotBase

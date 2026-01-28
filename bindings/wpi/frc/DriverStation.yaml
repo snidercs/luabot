@@ -63,12 +63,44 @@ methods:
     params:
       stick: int
 
-  # GetJoystickIsXbox:
-  # GetJoystickType:
-  # GetJoystickName:
-  # GetJoystickAxisType:
-  # IsJoystickConnected:
+  GetJoystickIsXbox:
+    <<: *StaticGetBool
+    params:
+      stick: int
 
+  GetJoystickType:
+    <<: *StaticGetInt
+    params:
+      stick: int
+  
+  GetJoystickName:
+    static: true
+    return_type: string
+    params:
+      stick: int
+    c_body: |
+      auto str = frc::DriverStation::GetJoystickName(stick);
+          auto buf = (char*) malloc (str.size() + 1);
+          std::strcpy (buf, str.c_str());
+          return buf;
+    lua_body: |
+      local ptr = lib.frcDriverStationGetJoystickName(stick)
+          if ptr == nil then return "" end
+          local str = ffi.string(ptr)
+          ffi.C.free(ptr)
+          return str
+
+  GetJoystickAxisType:
+    <<: *StaticGetInt
+    params:
+      stick: int
+      axis: int
+
+  IsJoystickConnected:
+    <<: *StaticGetBool
+    params:
+      stick: int
+  
   IsEnabled:
     <<: *StaticGetBool
   IsDisabled:

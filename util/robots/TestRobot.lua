@@ -1,11 +1,12 @@
 ---SPDX-FileCopyrightText: Michael Fisher @mfisher31
 ---SPDX-License-Identifier: MIT
 
-local TimedRobot = require ('wpi.frc.TimedRobot')
-local XboxController = require ('wpi.frc.XboxController')
+local class = require('luabot.class')
+local TimedRobot = require('wpi.frc.TimedRobot')
+local XboxController = require('wpi.frc.XboxController')
 
----@class MockRobot A mock robot to use in testing.
-local MockRobot = TimedRobot.derive()
+---@class MockRobot : TimedRobot A mock robot to use in testing.
+local MockRobot = class(TimedRobot)
 
 function MockRobot:robotInit()
     self.pad = XboxController.new (0)
@@ -54,10 +55,10 @@ function MockRobot:robotPeriodic()
     if math.abs(val) >= 0.052 then print (val) end
 end
 
-local function instantiate (timeout)
+local function instantiate(timeout)
     timeout = tonumber(timeout) or 0.02
-    local robot = TimedRobot.init ({}, timeout)
-    setmetatable (robot, { __index = MockRobot })
+    local robot = setmetatable({}, MockRobot)
+    TimedRobot.init(robot, timeout)
 
     -- private member variables are possible in lua with a ctor as a closure.
     local tick = 0
