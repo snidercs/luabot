@@ -11,6 +11,7 @@ T_FRC_LUA_CLASS = '''
 local ffi = require ('ffi')
 
 ffi.cdef[[
+void free(void* ptr);
 @CDEF@
 ]]
 
@@ -131,6 +132,8 @@ def gen_ffi_cdef (obj):
         rt = method.get('return_type')
         if rt == None: rt = 'void'
         if rt == 'cptr': rt = ct + "*"
+        if rt == 'string': rt = 'char*'
+
         ps = cparams (obj, method)
         
         out += '%s %s%s%s(%s);\n' % \
@@ -204,6 +207,9 @@ def gen_ffi_class (obj):
         .replace ('@CTOR@', gen_ffi_ctor (obj)) \
         .replace ('@METHODS@', gen_ffi_methods (obj))
 
+def gen_ffi_body_string():
+    pass
+
 def gen_ffi_impl (obj):
     typename = obj['typename']
     qtypename = qualified_type (obj)
@@ -233,6 +239,7 @@ LUABOT_EXPORT void frc%sFree (%s* self) {
         rt = method.get('return_type')
         if rt == None: rt = 'void'
         if rt == 'cptr': rt = ctype(obj) + '*'
+        if rt == 'string': rt = 'char*'
 
         ps = cparams (obj, method)
         ls = lparams (method)
