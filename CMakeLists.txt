@@ -6,6 +6,7 @@ project(luabot VERSION 0.0.1)
 
 option(LUABOT_BUILD_CONSOLE "Build the luabot console application" ON)
 option(LUABOT_BUILD_TESTS "Build the unit tests" ON)
+option(LUABOT_ROBORIO "Do special things for roboRIO" OFF)
 
 # Enable ccache if available
 find_program(CCACHE_PROGRAM ccache)
@@ -79,6 +80,19 @@ configure_file(
     @ONLY
 )
 
+# configure_file(
+#     "${CMAKE_SOURCE_DIR}/util/luabot.pom.in"
+#     "${CMAKE_BINARY_DIR}/vendordep/luabot-${PROJECT_VERSION}.pom"
+#     @ONLY
+# )
+
+# set(ARTIFACT_ID "luajit-mac")
+# configure_file(
+#     "${CMAKE_SOURCE_DIR}/util/luajit.pom.in"
+#     "${CMAKE_BINARY_DIR}/vendordep/${ARTIFACT_ID}-2.1.pom"
+#     @ONLY
+# )
+
 # Install vendor dependency JSON
 install(FILES ${CMAKE_BINARY_DIR}/LuaBot.json
     DESTINATION .
@@ -108,28 +122,33 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/lua/luabot
     COMPONENT Core
     FILES_MATCHING PATTERN "*.lua")
 
+set(LUABOT_3RDPARTY_DIR ${CMAKE_SOURCE_DIR}/3rdparty)
+if(LUABOT_ROBORIO)
+    set(LUABOT_3RDPARTY_DIR "${LUABOT_3RDPARTY_DIR}/linuxathena")
+endif()
+
 # 3rdparty/bin/* goes to cmake bin dir
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/bin/
+install(DIRECTORY ${LUABOT_3RDPARTY_DIR}/bin/
     DESTINATION bin
     USE_SOURCE_PERMISSIONS
     COMPONENT Core)
 
 # 3rdparty/lib/* goes to cmake lib dir
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/lib/
+install(DIRECTORY ${LUABOT_3RDPARTY_DIR}/lib/
     DESTINATION lib
     COMPONENT Core)
 
 # 3rdparty/include/* goes to cmake include dir
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/include/
+install(DIRECTORY ${LUABOT_3RDPARTY_DIR}/include/
     DESTINATION include
     COMPONENT Core)
 
 # 3rdparty/share/* goes to cmake share dir
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/share/
+install(DIRECTORY ${LUABOT_3RDPARTY_DIR}/share/
     DESTINATION share
     COMPONENT Core)
 
-if(LUABOT_BUILD_CONSOLE)
+if(LUABOT_BUILD_CONSOLE AND NOT LUABOT_ROBORIO)
     # 3rdparty/linuxathena/* goes to cmake prefix slash linuxathena
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/linuxathena/
         DESTINATION linuxathena

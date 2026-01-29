@@ -12,7 +12,7 @@
     "jniDependencies": [],
     "cppDependencies": [
         {
-            "groupId": "",
+            "groupId": "org.luabot",
             "artifactId": "luabot",
             "version": "@PROJECT_VERSION@",
             "libName": "luajit-2.1",
