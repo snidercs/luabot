@@ -14,8 +14,9 @@
         {
             "groupId": "org.luabot",
             "artifactId": "luabot-lua",
-            "version": "0.0.1",
-            "moduleClassifier": "modules"
+            "version": "@PROJECT_VERSION@",
+            "moduleClassifier": "modules",
+            "ffiEnabled": true
         }
     ],
     "cppDependencies": [
