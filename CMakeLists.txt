@@ -71,32 +71,7 @@ if(NOT YAML_CHECK_RESULT EQUAL 0)
 endif()
 
 add_subdirectory(bindings)
-
-# Generate vendor dependency JSON
-set(GITHUB_REPO "snidercs/luabot" CACHE STRING "GitHub repository for releases")
-configure_file(
-    ${CMAKE_SOURCE_DIR}/util/LuaBot.json.in
-    ${CMAKE_BINARY_DIR}/LuaBot.json
-    @ONLY
-)
-
-# configure_file(
-#     "${CMAKE_SOURCE_DIR}/util/luabot.pom.in"
-#     "${CMAKE_BINARY_DIR}/vendordep/luabot-${PROJECT_VERSION}.pom"
-#     @ONLY
-# )
-
-# set(ARTIFACT_ID "luajit-mac")
-# configure_file(
-#     "${CMAKE_SOURCE_DIR}/util/luajit.pom.in"
-#     "${CMAKE_BINARY_DIR}/vendordep/${ARTIFACT_ID}-2.1.pom"
-#     @ONLY
-# )
-
-# Install vendor dependency JSON
-install(FILES ${CMAKE_BINARY_DIR}/LuaBot.json
-    DESTINATION .
-    COMPONENT luabot)
+add_subdirectory(vendordep)
 
 # Install generated C++ binding headers
 set(LUABOT_INCLUDE_DIR "include" CACHE STRING "Include directory to install headers and ffi binding code" )

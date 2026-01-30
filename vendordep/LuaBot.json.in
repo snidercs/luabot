@@ -8,25 +8,36 @@
         "https://github.com/@GITHUB_REPO@/releases/latest/download/"
     ],
     "jsonUrl": "https://github.com/@GITHUB_REPO@/releases/latest/download/LuaBot.json",
-    "javaDependencies": [],
     "jniDependencies": [],
+    "javaDependencies": [
+    ],
     "cppDependencies": [
         {
             "groupId": "org.luabot",
-            "artifactId": "luabot",
+            "artifactId": "luabot-cpp",
             "version": "@PROJECT_VERSION@",
-            "libName": "luajit-2.1",
+            "libName": "luabot-stub",
             "headerClassifier": "headers",
-            "sourcesClassifier": "sources",
             "sharedLibrary": false,
             "skipInvalidPlatforms": true,
             "binaryPlatforms": [
-                "linuxsystemcore",
                 "linuxathena",
-                "linuxarm32",
-                "linuxarm64",
                 "windowsx86-64",
-                "windowsx86",
+                "linuxx86-64",
+                "osxuniversal"
+            ]
+        },
+        {
+            "groupId": "org.luabot",
+            "artifactId": "luajit-cpp",
+            "version": "2.1",
+            "libName": "luajit",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "linuxathena",
+                "windowsx86-64",
                 "linuxx86-64",
                 "osxuniversal"
             ]

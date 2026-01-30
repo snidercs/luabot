@@ -4,7 +4,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.luabot</groupId>
-  <artifactId>luabot</artifactId>
+  <artifactId>@ARTIFACT_ID@</artifactId>
   <version>@PROJECT_VERSION@</version>
   <packaging>zip</packaging>
   <name>LuaBot</name>
