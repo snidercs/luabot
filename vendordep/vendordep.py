@@ -97,13 +97,14 @@ def create_luajit_libs(version, platform, output_dir):
         lib_dir = base_path / 'lib'
         if lib_dir.exists():
             for file_path in lib_dir.rglob('*'):
-                if file_path.is_file() and file_path.suffix in ['.a', '.lib']:
+                if file_path.is_file() and file_path.suffix in ['.a', '.lib'] and 'luajit' in file_path.name.lower():
                     # Rename to standard name: libluajit.a (Unix) or luajit.lib (Windows)
                     if file_path.suffix == '.a':
                         arcname = os.path.join(top_level_dir, 'lib', 'libluajit.a')
                     else:  # .lib
                         arcname = os.path.join(top_level_dir, 'lib', 'luajit.lib')
                     zipf.write(file_path, Path(arcname))
+                    break  # Only add the first matching file
 
     # Create debug zip with libluajitd.a (GradleRIO requires debug zips)
     import shutil
@@ -116,12 +117,13 @@ def create_luajit_libs(version, platform, output_dir):
         lib_dir = base_path / 'lib'
         if lib_dir.exists():
             for file_path in lib_dir.rglob('*'):
-                if file_path.is_file() and file_path.suffix in ['.a', '.lib']:
+                if file_path.is_file() and file_path.suffix in ['.a', '.lib'] and 'luajit' in file_path.name.lower():
                     if file_path.suffix == '.a':
                         arcname = os.path.join(top_level_dir, 'lib', 'libluajitd.a')
                     else:  # .lib
                         arcname = os.path.join(top_level_dir, 'lib', 'luajitd.lib')
                     zipf.write(file_path, Path(arcname))
+                    break  # Only add the first matching file
 
     print(f"Created {debug_zip_path}")
     print(f"Created {zip_path}")
@@ -184,14 +186,15 @@ def create_luabot_libs(version, platform, build_dir, output_dir):
         # Add library files (*.a, *.lib) to lib/
         if lib_source.exists():
             for file_path in lib_source.rglob('*'):
-                if file_path.is_file() and file_path.suffix in ['.a', '.lib']:
+                if file_path.is_file() and file_path.suffix in ['.a', '.lib'] and 'luabot' in file_path.name.lower():
                     # Rename to standard name: libluabot-stub.a (Unix) or luabot-stub.lib (Windows)
                     if file_path.suffix == '.a':
                         arcname = os.path.join(top_level_dir, 'lib', 'libluabot-stub.a')
                     else:  # .lib
                         arcname = os.path.join(top_level_dir, 'lib', 'luabot-stub.lib')
                     zipf.write(file_path, Path(arcname))
-    
+                    break  # Only add the first matching file
+
     # Create debug zip with renamed library (GradleRIO requires debug zips)
     debug_zip_name = f"{zip_path.stem}debug.zip"
     debug_zip_path = zip_path.parent / debug_zip_name
@@ -200,14 +203,40 @@ def create_luabot_libs(version, platform, build_dir, output_dir):
         # Add library files as libluabot-stubd.a (Unix) or luabot-stubd.lib (Windows) for debug
         if lib_source.exists():
             for file_path in lib_source.rglob('*'):
-                if file_path.is_file() and file_path.suffix in ['.a', '.lib']:
+                if file_path.is_file() and file_path.suffix in ['.a', '.lib'] and 'luabot' in file_path.name.lower():
                     if file_path.suffix == '.a':
                         arcname = os.path.join(top_level_dir, 'lib', 'libluabot-stubd.a')
                     else:  # .lib
                         arcname = os.path.join(top_level_dir, 'lib', 'luabot-stubd.lib')
                     zipf.write(file_path, Path(arcname))
+                    break  # Only add the first matching file
     
     print(f"Created {debug_zip_path}")
+    print(f"Created {zip_path}")
+    return zip_path
+
+def create_lua_bindings(version, build_dir, output_dir):
+    """Create luabot-lua-{version}-modules.zip with WPILib Lua bindings"""
+    zip_name = f"luabot-lua-{version}-modules.zip"
+    zip_path = Path(output_dir) / zip_name
+    
+    # Ensure output directory exists
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    
+    lua_source = Path(build_dir) / 'lua'
+    
+    if not lua_source.exists():
+        print(f"Warning: {lua_source} does not exist, skipping Lua bindings")
+        return None
+    
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        # Add all Lua files from build/lua/wpi and build/lua/luabot
+        for root, dirs, files in os.walk(lua_source):
+            for file in files:
+                file_path = Path(root) / file
+                rel_path = file_path.relative_to(lua_source)
+                zipf.write(file_path, rel_path)
+    
     print(f"Created {zip_path}")
     return zip_path
 
@@ -331,7 +360,8 @@ def main():
     luajit_version = '2.1'
     # Create single headers zip (platform-independent)
     create_luajit_headers(luajit_version, args.output_dir)
-    
+    create_lua_bindings(args.version, args.build_dir, args.output_dir)
+
     # Generate single POM for luajit-cpp
     pom_template = os.path.join(args.source_dir, 'vendordep', 'luajit.pom.in')
     generate_pom(luajit_version, pom_template, 'luajit-cpp', args.output_dir)
@@ -351,6 +381,7 @@ def main():
 
     if args.install:
         install_artifact('luabot-cpp', args.version, args.output_dir)
+        install_artifact('luabot-lua', args.version, args.output_dir)
         install_artifact('luajit-cpp', luajit_version, args.output_dir)
 
 if __name__ == '__main__':

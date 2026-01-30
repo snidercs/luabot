@@ -9,7 +9,14 @@
     ],
     "jsonUrl": "https://github.com/@GITHUB_REPO@/releases/latest/download/LuaBot.json",
     "jniDependencies": [],
-    "javaDependencies": [
+    "javaDependencies": [],
+    "luaDependencies": [
+        {
+            "groupId": "org.luabot",
+            "artifactId": "luabot-lua",
+            "version": "0.0.1",
+            "moduleClassifier": "modules"
+        }
     ],
     "cppDependencies": [
         {
