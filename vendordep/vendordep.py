@@ -170,16 +170,20 @@ def create_luabot_libs(version, platform, build_dir, output_dir):
     # Ensure output directory exists
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     
-    build_path = Path(build_dir)
-    if not build_path.exists():
-        print(f"Warning: {build_dir} does not exist, skipping")
+    # Determine library source path based on platform
+    if platform == 'linuxathena':
+        lib_source = Path('3rdparty/linuxathena/lib')
+    else:
+        lib_source = Path(build_dir) / 'vendordep'
+    
+    if not lib_source.exists():
+        print(f"Warning: {lib_source} does not exist, skipping")
         return None
     
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Add library files (*.a, *.lib) to lib/
-        lib_dir = build_path / 'vendordep'
-        if lib_dir.exists():
-            for file_path in lib_dir.rglob('*'):
+        if lib_source.exists():
+            for file_path in lib_source.rglob('*'):
                 if file_path.is_file() and file_path.suffix in ['.a', '.lib']:
                     # Rename to standard name: libluabot-stub.a (Unix) or luabot-stub.lib (Windows)
                     if file_path.suffix == '.a':
@@ -194,9 +198,8 @@ def create_luabot_libs(version, platform, build_dir, output_dir):
     
     with zipfile.ZipFile(debug_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # Add library files as libluabot-stubd.a (Unix) or luabot-stubd.lib (Windows) for debug
-        lib_dir = build_path / 'vendordep'
-        if lib_dir.exists():
-            for file_path in lib_dir.rglob('*'):
+        if lib_source.exists():
+            for file_path in lib_source.rglob('*'):
                 if file_path.is_file() and file_path.suffix in ['.a', '.lib']:
                     if file_path.suffix == '.a':
                         arcname = os.path.join(top_level_dir, 'lib', 'libluabot-stubd.a')
