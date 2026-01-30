@@ -314,7 +314,8 @@ def main():
     parser.add_argument('--source-dir', default='.', help='Source directory (default: .)')
     parser.add_argument('--output-dir', default='build/vendordep', help='Output directory for ZIP files (default: build)')
     parser.add_argument('--github-repo', default='snidercs/luabot', help='GitHub repository (default: snidercs/luabot)')
-    parser.add_argument('--install', action='store_true', help='Install to maven directory structure (default: false)')
+    parser.add_argument('--install', action='store_true', help='Install to maven directory structure. This option will also build stubs when needed (default: false)')
+    parser.add_argument('--stubs', action='store_true', help='Generate stub zips for platforms without local builds (for local dev/testing)')
     
     args = parser.parse_args()
     
@@ -341,11 +342,12 @@ def main():
         create_luajit_libs(luajit_version, platform, args.output_dir)
         create_luabot_libs(args.version, platform, args.build_dir, args.output_dir)
     
-    # Create stub zips for platforms we don't have binaries for
-    missing_platforms = [p for p in PLATFORMS if p not in built_platforms]
-    for platform in missing_platforms:
-        create_stub_libs('luajit-cpp', luajit_version, platform, args.output_dir)
-        create_stub_libs('luabot-cpp', args.version, platform, args.output_dir)
+    # Create stub zips for platforms we don't have binaries for (only if --stubs)
+    if args.stubs or args.install:
+        missing_platforms = [p for p in PLATFORMS if p not in built_platforms]
+        for platform in missing_platforms:
+            create_stub_libs('luajit-cpp', luajit_version, platform, args.output_dir)
+            create_stub_libs('luabot-cpp', args.version, platform, args.output_dir)
 
     if args.install:
         install_artifact('luabot-cpp', args.version, args.output_dir)
