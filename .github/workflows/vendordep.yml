@@ -72,7 +72,7 @@ jobs:
 
       - name: LuaBot Stub (linuxathena)
         run: |
-          mkdir /tmp
+          mkdir -p /tmp
           arm-frc2025-linux-gnueabi-gcc -c vendordep/stub.c -o /tmp/stub.o && \
           arm-frc2025-linux-gnueabi-ar rcs 3rdparty/linuxathena/lib/libluabot-stub.a /tmp/stub.o
 
