@@ -2,9 +2,9 @@ name: Pages
 
 on:
   push:
-    branches: [ vendordep ]
-    # paths:
-    #   - 'vendordep/index.html'
+    branches: [ main, vendordep ]
+    paths:
+      - 'vendordep/index.html'
   workflow_dispatch:
 
 permissions:
