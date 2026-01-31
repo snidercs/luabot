@@ -1,4 +1,4 @@
-name: Build
+name: Vencdordep
 
 on:
   push:
