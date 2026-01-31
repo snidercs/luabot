@@ -183,6 +183,10 @@ jobs:
     needs: [ 'linux', 'macos', 'windows' ]
     name: Vendordep
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -202,9 +206,10 @@ jobs:
           cp vendordep/index.html build/html
           python3 vendordep/vendordep.py --version="0.0.1" --install --prefix="$(pwd)/build/html/maven"
 
-      - name: Publish
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/html
-          force_orphan: true
+          path: build/html
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
