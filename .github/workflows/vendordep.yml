@@ -201,10 +201,9 @@ jobs:
 
       - name: Install
         run: | 
-          mkdir -p build/maven build/html
-          cp build/vendordep/LuaBot.json build/html
-          cp vendordep/index.html build/html
+          mkdir -p build/maven
           python3 vendordep/vendordep.py --version="0.0.1" --install --prefix="$(pwd)/build/maven"
+          cp build/vendordep/LuaBot.json build/maven
 
       - name: Setup AWS
         uses: aws-actions/configure-aws-credentials@v4
