@@ -11,8 +11,8 @@ if(_vendordep_artifacts)
     ADDITIONAL_CLEAN_FILES "${_vendordep_artifacts}")
 endif()
 
-# Generate vendordep zip artifacts on demand (part of ALL)
-add_custom_target(vendordep_zips ALL
+# Generate vendordep zip artifacts on demand
+add_custom_target(luabot-vendordep
   COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/vendordep.py
     --version ${PROJECT_VERSION}
     --build-dir ${PROJECT_BINARY_DIR}
