@@ -1,6 +1,10 @@
 name: Vendordep
 
 on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -163,4 +167,3 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: false
-      
