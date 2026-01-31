@@ -201,18 +201,18 @@ jobs:
 
       - name: Install
         run: | 
-          mkdir -p build/html/maven
+          mkdir -p build/maven build/html
           cp build/vendordep/LuaBot.json build/html
           cp vendordep/index.html build/html
-          python3 vendordep/vendordep.py --version="0.0.1" --install --prefix="$(pwd)/build/html/maven"
+          python3 vendordep/vendordep.py --version="0.0.1" --install --prefix="$(pwd)/build/maven"
 
-      - name: Configure AWS credentials
+      - name: Setup AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy to S3
+      - name: Deploy
         run: |
-          aws s3 sync build/html/maven s3://luabot/maven/
+          aws s3 sync build/maven s3://luabot/maven/
