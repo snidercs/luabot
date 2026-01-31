@@ -1,10 +1,10 @@
-name: Deploy to GitHub Pages
+name: Pages
 
 on:
   push:
     branches: [ vendordep ]
-    paths:
-      - 'vendordep/index.html'
+    # paths:
+    #   - 'vendordep/index.html'
   workflow_dispatch:
 
 permissions:
