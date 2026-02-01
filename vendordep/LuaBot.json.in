@@ -1,0 +1,61 @@
+{
+    "fileName": "LuaBot.json",
+    "name": "LuaBot",
+    "version": "@PROJECT_VERSION@",
+    "uuid": "54bbb5ab-d271-4f09-93f7-b0fe752672c5",
+    "frcYear": "2026",
+    "mavenUrls": [
+        "https://snidercs.org/luabot/maven/"
+    ],
+    "jsonUrl": "https://snidercs.org/luabot/LuaBot.json",
+    "jniDependencies": [],
+    "javaDependencies": [],
+    "luaDependencies": [
+        {
+            "groupId": "org.luabot",
+            "artifactId": "luabot-lua",
+            "version": "@PROJECT_VERSION@",
+            "moduleClassifier": "modules",
+            "ffiEnabled": true
+        },
+        {
+            "groupId": "org.luabot",
+            "artifactId": "luajit-lua",
+            "version": "2.1",
+            "moduleClassifier": "modules",
+            "ffiEnabled": true
+        }
+    ],
+    "cppDependencies": [
+        {
+            "groupId": "org.luabot",
+            "artifactId": "luabot-cpp",
+            "version": "@PROJECT_VERSION@",
+            "libName": "luabot-stub",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "linuxathena",
+                "windowsx86-64",
+                "linuxx86-64",
+                "osxuniversal"
+            ]
+        },
+        {
+            "groupId": "org.luabot",
+            "artifactId": "luajit-cpp",
+            "version": "2.1",
+            "libName": "luajit",
+            "headerClassifier": "headers",
+            "sharedLibrary": false,
+            "skipInvalidPlatforms": true,
+            "binaryPlatforms": [
+                "linuxathena",
+                "windowsx86-64",
+                "linuxx86-64",
+                "osxuniversal"
+            ]
+        }
+    ]
+}

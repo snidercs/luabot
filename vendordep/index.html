@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuaBot - Lua Scripting for FRC Robots</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        .install-url {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .install-url code {
+            background: #c8e6c9;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        a {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>LuaBot</h1>
+        <p><strong>Lua Scripting for FRC Robots</strong></p>
+        
+        <p>LuaBot enables you to program FRC robots using LuaJIT, providing full access to WPILib's HAL, command-based framework, and simulation capabilities.</p>
+
+        <h2>Installation</h2>
+        <p>Add the LuaBot vendordep to your robot project:</p>
+        
+        <div class="install-url">
+            <p><strong>Vendor Dependency URL:</strong></p>
+            <code>https://snidercs.github.io/luabot/LuaBot.json</code>
+        </div>
+
+        <h3>Steps:</h3>
+        <ol>
+            <li>Open your robot project in VS Code with WPILib extension installed</li>
+            <li>Press <code>Ctrl+Shift+P</code> (or <code>Cmd+Shift+P</code> on macOS)</li>
+            <li>Type <strong>"WPILib: Manage Vendor Libraries"</strong></li>
+            <li>Select <strong>"Install new libraries (online)"</strong></li>
+            <li>Paste the vendor dependency URL above</li>
+            <li>Click <strong>OK</strong></li>
+        </ol>
+
+        <h2>What Gets Installed</h2>
+        <ul>
+            <li><strong>LuaJIT 2.1</strong> - Fast Lua runtime with FFI support</li>
+            <li><strong>WPILib Lua Bindings</strong> - Access to motors, sensors, commands, and more</li>
+            <li><strong>Platform Support</strong> - Works on Windows, macOS, Linux, and roboRIO</li>
+        </ul>
+
+        <h2>Example Robot Code</h2>
+        <pre><code>local TimedRobot = require('wpi.frc.TimedRobot')
+local XboxController = require('wpi.frc.XboxController')
+
+local MyRobot = TimedRobot.new()
+
+function MyRobot:robotInit()
+    self.controller = XboxController.new(0)
+end
+
+function MyRobot:teleopPeriodic()
+    local speed = self.controller:getLeftY()
+    -- Drive code here
+end
+
+return MyRobot</code></pre>
+
+        <h2>Resources</h2>
+        <ul>
+            <li><a href="https://github.com/snidercs/luabot">GitHub Repository</a></li>
+            <li><a href="https://github.com/snidercs/luabot/blob/main/README.md">Documentation</a></li>
+            <li><a href="maven/">Maven Repository</a> (for GradleRIO)</li>
+        </ul>
+
+        <div class="footer">
+            <p>LuaBot is open source software. Visit our <a href="https://github.com/snidercs/luabot">GitHub repository</a> for more information.</p>
+        </div>
+    </div>
+</body>
+</html>

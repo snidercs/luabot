@@ -6,6 +6,7 @@ project(luabot VERSION 0.0.1)
 
 option(LUABOT_BUILD_CONSOLE "Build the luabot console application" ON)
 option(LUABOT_BUILD_TESTS "Build the unit tests" ON)
+option(LUABOT_ROBORIO "Do special things for roboRIO" OFF)
 
 # Enable ccache if available
 find_program(CCACHE_PROGRAM ccache)
@@ -70,19 +71,7 @@ if(NOT YAML_CHECK_RESULT EQUAL 0)
 endif()
 
 add_subdirectory(bindings)
-
-# Generate vendor dependency JSON
-set(GITHUB_REPO "snidercs/luabot" CACHE STRING "GitHub repository for releases")
-configure_file(
-    ${CMAKE_SOURCE_DIR}/util/LuaBot.json.in
-    ${CMAKE_BINARY_DIR}/LuaBot.json
-    @ONLY
-)
-
-# Install vendor dependency JSON
-install(FILES ${CMAKE_BINARY_DIR}/LuaBot.json
-    DESTINATION .
-    COMPONENT luabot)
+add_subdirectory(vendordep)
 
 # Install generated C++ binding headers
 set(LUABOT_INCLUDE_DIR "include" CACHE STRING "Include directory to install headers and ffi binding code" )
@@ -108,28 +97,33 @@ install(DIRECTORY ${CMAKE_BINARY_DIR}/lua/luabot
     COMPONENT Core
     FILES_MATCHING PATTERN "*.lua")
 
+set(LUABOT_3RDPARTY_DIR ${CMAKE_SOURCE_DIR}/3rdparty)
+if(LUABOT_ROBORIO)
+    set(LUABOT_3RDPARTY_DIR "${LUABOT_3RDPARTY_DIR}/linuxathena")
+endif()
+
 # 3rdparty/bin/* goes to cmake bin dir
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/bin/
+install(DIRECTORY ${LUABOT_3RDPARTY_DIR}/bin/
     DESTINATION bin
     USE_SOURCE_PERMISSIONS
     COMPONENT Core)
 
 # 3rdparty/lib/* goes to cmake lib dir
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/lib/
+install(DIRECTORY ${LUABOT_3RDPARTY_DIR}/lib/
     DESTINATION lib
     COMPONENT Core)
 
 # 3rdparty/include/* goes to cmake include dir
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/include/
+install(DIRECTORY ${LUABOT_3RDPARTY_DIR}/include/
     DESTINATION include
     COMPONENT Core)
 
 # 3rdparty/share/* goes to cmake share dir
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/share/
+install(DIRECTORY ${LUABOT_3RDPARTY_DIR}/share/
     DESTINATION share
     COMPONENT Core)
 
-if(LUABOT_BUILD_CONSOLE)
+if(LUABOT_BUILD_CONSOLE AND NOT LUABOT_ROBORIO)
     # 3rdparty/linuxathena/* goes to cmake prefix slash linuxathena
     install(DIRECTORY ${CMAKE_SOURCE_DIR}/3rdparty/linuxathena/
         DESTINATION linuxathena

@@ -1,6 +1,8 @@
 name: Vendordep
 
 on:
+  push:
+    branches: [ vendordep ]
   workflow_dispatch:
 
 jobs:
@@ -68,7 +70,7 @@ jobs:
 
       - name: LuaBot Stub (linuxathena)
         run: |
-          mkdir /tmp
+          mkdir -p /tmp
           arm-frc2025-linux-gnueabi-gcc -c vendordep/stub.c -o /tmp/stub.o && \
           arm-frc2025-linux-gnueabi-ar rcs 3rdparty/linuxathena/lib/libluabot-stub.a /tmp/stub.o
 
@@ -83,6 +85,15 @@ jobs:
           cmake --build build
           python3 vendordep/vendordep.py --version="0.0.1" --cross
 
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-deps
+          path: |
+            build/vendordep/*.zip
+            build/vendordep/*.pom
+            build/vendordep/*.json
+  
   macos:
     name: macOS
     runs-on: macos-latest
@@ -111,6 +122,12 @@ jobs:
         run: |
           cmake --build build
           python3 vendordep/vendordep.py --version="0.0.1" --local
+      
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-deps
+          path: build/vendordep/*.zip
 
   windows:
     name: Windows
@@ -153,14 +170,47 @@ jobs:
         run: |
           cmake --build build
           python vendordep/vendordep.py --version="0.0.1" --local
-  
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-deps
+          path: build/vendordep/*.zip
+
   vendordep:
     needs: [ 'linux', 'macos', 'windows' ]
     name: Vendordep
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: false
       
+      - name: Assemble
+        uses: actions/download-artifact@v4
+        with:
+          path: build/vendordep
+          merge-multiple: true
+
+      - name: Install
+        run: | 
+          mkdir -p build/maven
+          python3 vendordep/vendordep.py --version="0.0.1" --install --prefix="$(pwd)/build/maven"
+          cp build/vendordep/LuaBot.json build/maven
+
+      - name: Setup AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy
+        run: |
+          aws s3 sync build/maven s3://luabot/maven/
+          aws cloudfront create-invalidation --distribution-id E3QY5NK3CA5GKI --paths "/*"
