@@ -3,6 +3,7 @@
 /dist/
 /3rdparty/
 /robot.lua
+/docs/_build/
 
 # Meson
 .meson-subproject*

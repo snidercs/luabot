@@ -4,6 +4,7 @@ version = 1
 path = [
     "**/*.md",
     "**/*.html",
+    "**/*.rst",
     "README.md"
 ]
 SPDX-FileCopyrightText = "Michael Fisher @mfisher31"
@@ -15,11 +16,13 @@ path = [
     "**/*.yml",
     "**/*.json.in",
     "**/*.pom.in",
+    ".readthedocs.yaml",
     ".gitignore",
     ".gitmodules",
     ".clang-format",
     ".vscode/c_cpp_properties.json",
-    ".vscode/settings.json"
+    ".vscode/settings.json",
+    "docs/requirements.txt"
 ]
 SPDX-FileCopyrightText = "Michael Fisher @mfisher31"
 SPDX-License-Identifier = "MIT"
