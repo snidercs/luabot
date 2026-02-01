@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: Michael Fisher @mfisher31
+# SPDX-License-Identifier: MIT
 
 add_library(luabot-stub STATIC "${CMAKE_CURRENT_SOURCE_DIR}/stub.c")
 
