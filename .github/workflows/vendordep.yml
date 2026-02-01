@@ -2,9 +2,7 @@ name: Vendordep
 
 on:
   push:
-    branches: [ main, vendordep ]
-  pull_request:
-    branches: [ main ]
+    branches: [ vendordep ]
   workflow_dispatch:
 
 jobs:
