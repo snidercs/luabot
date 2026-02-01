@@ -2,7 +2,7 @@ name: Pages
 
 on:
   push:
-    branches: [ main, vendordep ]
+    branches: [ main ]
     paths:
       - 'vendordep/index.html'
   workflow_dispatch:

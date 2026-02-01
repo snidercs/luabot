@@ -86,7 +86,7 @@
         
         <div class="install-url">
             <p><strong>Vendor Dependency URL:</strong></p>
-            <code>https://snidercs.github.io/luabot/LuaBot.json</code>
+            <code>https://maven.luabot.org/LuaBot.json</code>
         </div>
 
         <h3>Steps:</h3>
@@ -107,10 +107,11 @@
         </ul>
 
         <h2>Example Robot Code</h2>
-        <pre><code>local TimedRobot = require('wpi.frc.TimedRobot')
+        <pre><code>local class = require('luabot.class')
+local TimedRobot = require('wpi.frc.TimedRobot')
 local XboxController = require('wpi.frc.XboxController')
 
-local MyRobot = TimedRobot.new()
+local MyRobot = class (TimedRobot)
 
 function MyRobot:robotInit()
     self.controller = XboxController.new(0)
@@ -121,13 +122,13 @@ function MyRobot:teleopPeriodic()
     -- Drive code here
 end
 
-return MyRobot</code></pre>
+return MyRobot
+</code></pre>
 
         <h2>Resources</h2>
         <ul>
             <li><a href="https://github.com/snidercs/luabot">GitHub Repository</a></li>
             <li><a href="https://github.com/snidercs/luabot/blob/main/README.md">Documentation</a></li>
-            <li><a href="maven/">Maven Repository</a> (for GradleRIO)</li>
         </ul>
 
         <div class="footer">

@@ -5,9 +5,9 @@
     "uuid": "54bbb5ab-d271-4f09-93f7-b0fe752672c5",
     "frcYear": "2026",
     "mavenUrls": [
-        "https://snidercs.org/luabot/maven/"
+        "https://maven.luabot.org/"
     ],
-    "jsonUrl": "https://snidercs.org/luabot/LuaBot.json",
+    "jsonUrl": "https://maven.luabot.org/LuaBot.json",
     "jniDependencies": [],
     "javaDependencies": [],
     "luaDependencies": [
