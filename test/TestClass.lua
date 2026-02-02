@@ -1,7 +1,7 @@
----SPDX-FileCopyrightText: Michael Fisher @mfisher31
----SPDX-License-Identifier: MIT
+--- SPDX-FileCopyrightText: Michael Fisher @mfisher31
+--- SPDX-License-Identifier: MIT
 
----Unit tests for the class module
+--- Unit tests for the class module
 local lu = require('luaunit')
 local class = require('luabot.class')
 
@@ -50,6 +50,110 @@ function TestClassDefine:testDefineCanHaveInitFunction()
     
     local obj = MyClass.new()
     lu.assertTrue(obj.initialized)
+end
+
+TestClassDefaultConstruction = {}
+
+function TestClassDefaultConstruction:testDefaultNewExists()
+    local MyClass = class()
+    lu.assertNotNil(MyClass.new)
+    lu.assertEquals(type(MyClass.new), "function")
+end
+
+function TestClassDefaultConstruction:testDefaultNewCreatesInstance()
+    local MyClass = class()
+    local obj = MyClass.new()
+    
+    lu.assertNotNil(obj)
+    lu.assertEquals(type(obj), "table")
+end
+
+function TestClassDefaultConstruction:testDefaultNewSetsMetatable()
+    local MyClass = class()
+    local obj = MyClass.new()
+    
+    -- Verify metatable is set correctly
+    lu.assertEquals(getmetatable(obj), MyClass)
+    lu.assertEquals(getmetatable(obj).__index, MyClass)
+end
+
+function TestClassDefaultConstruction:testDefaultNewCallsInit()
+    local MyClass = class()
+    local init_called = false
+    
+    -- Override init to track if it's called
+    function MyClass.init(instance)
+        init_called = true
+        instance.init_value = 42
+        return instance
+    end
+    
+    local obj = MyClass.new()
+    lu.assertTrue(init_called)
+    lu.assertEquals(obj.init_value, 42)
+end
+
+function TestClassDefaultConstruction:testDefaultInitReturnsInstance()
+    local MyClass = class()
+    
+    -- Default init should return the instance unchanged
+    local instance = setmetatable({}, MyClass)
+    local result = MyClass.init(instance)
+    
+    lu.assertEquals(result, instance)
+end
+
+function TestClassDefaultConstruction:testCanOverrideDefaultNew()
+    local MyClass = class()
+    
+    -- Override default new with custom constructor
+    function MyClass.new(value)
+        local self = setmetatable({}, MyClass)
+        self.value = value
+        return self
+    end
+    
+    local obj = MyClass.new(100)
+    lu.assertEquals(obj.value, 100)
+end
+
+function TestClassDefaultConstruction:testMultipleInstancesAreIndependent()
+    local MyClass = class()
+    
+    function MyClass.init(instance)
+        instance.counter = 0
+        return instance
+    end
+    
+    local obj1 = MyClass.new()
+    local obj2 = MyClass.new()
+    
+    obj1.counter = 10
+    obj2.counter = 20
+    
+    lu.assertEquals(obj1.counter, 10)
+    lu.assertEquals(obj2.counter, 20)
+end
+
+function TestClassDefaultConstruction:testInstanceCanCallClassMethods()
+    local MyClass = class()
+    
+    function MyClass:increment()
+        self.value = (self.value or 0) + 1
+    end
+    
+    function MyClass:getValue()
+        return self.value or 0
+    end
+    
+    local obj = MyClass.new()
+    lu.assertEquals(obj:getValue(), 0)
+    
+    obj:increment()
+    lu.assertEquals(obj:getValue(), 1)
+    
+    obj:increment()
+    lu.assertEquals(obj:getValue(), 2)
 end
 
 TestClassDerive = {}
@@ -316,6 +420,154 @@ function TestClassInstanceBehavior:testGarbageCollection()
     obj = nil
     collectgarbage()
     lu.assertNil(weak_ref[1])  -- Object should be collected
+end
+
+TestClassNew = {}
+
+function TestClassNew:testNewFunctionExists()
+    lu.assertNotNil(class.new)
+    lu.assertEquals(type(class.new), "function")
+end
+
+function TestClassNew:testNewWithClassTable()
+    local MyClass = class()
+    
+    function MyClass.init(instance)
+        instance.created = true
+        return instance
+    end
+    
+    local obj = class.new(MyClass)
+    
+    lu.assertNotNil(obj)
+    lu.assertTrue(obj.created)
+    lu.assertEquals(getmetatable(obj), MyClass)
+end
+
+function TestClassNew:testNewWithArguments()
+    local MyClass = class()
+    
+    function MyClass.new(value1, value2)
+        local self = setmetatable({}, MyClass)
+        self.value1 = value1
+        self.value2 = value2
+        return self
+    end
+    
+    local obj = class.new(MyClass, 42, "hello")
+    
+    lu.assertEquals(obj.value1, 42)
+    lu.assertEquals(obj.value2, "hello")
+end
+
+function TestClassNew:testNewEquivalentToDirectCall()
+    local MyClass = class()
+    
+    function MyClass.init(instance)
+        instance.counter = 0
+        return instance
+    end
+    
+    local obj1 = class.new(MyClass)
+    local obj2 = MyClass.new()
+    
+    -- Both should have the same structure
+    lu.assertNotNil(obj1.counter)
+    lu.assertNotNil(obj2.counter)
+    lu.assertEquals(obj1.counter, obj2.counter)
+    lu.assertEquals(getmetatable(obj1), getmetatable(obj2))
+end
+
+function TestClassNew:testNewWithModuleString()
+    -- Create a temporary module for testing
+    local test_module_path = 'test_temp_class_module'
+    
+    -- Define a test class in package.preload
+    package.preload[test_module_path] = function()
+        local TestClass = class()
+        function TestClass.init(instance)
+            instance.from_module = true
+            return instance
+        end
+        return TestClass
+    end
+    
+    local obj = class.new(test_module_path)
+    
+    lu.assertNotNil(obj)
+    lu.assertTrue(obj.from_module)
+    
+    -- Clean up
+    package.preload[test_module_path] = nil
+    package.loaded[test_module_path] = nil
+end
+
+function TestClassNew:testNewWithModuleStringAndArguments()
+    local test_module_path = 'test_temp_class_module_args'
+    
+    package.preload[test_module_path] = function()
+        local TestClass = class()
+        function TestClass.new(x, y)
+            local self = setmetatable({}, TestClass)
+            self.x = x
+            self.y = y
+            return self
+        end
+        return TestClass
+    end
+    
+    local obj = class.new(test_module_path, 10, 20)
+    
+    lu.assertEquals(obj.x, 10)
+    lu.assertEquals(obj.y, 20)
+    
+    -- Clean up
+    package.preload[test_module_path] = nil
+    package.loaded[test_module_path] = nil
+end
+
+function TestClassNew:testNewErrorOnNonTable()
+    lu.assertErrorMsgContains("Cannot instantiate a non-class type", function()
+        class.new(42)
+    end)
+    
+    lu.assertErrorMsgContains("Cannot instantiate a non-class type", function()
+        class.new(function() end)
+    end)
+end
+
+function TestClassNew:testNewErrorOnTableWithoutNew()
+    local not_a_class = { some_field = true }
+    
+    lu.assertErrorMsgContains("Cannot instantiate a non-class type", function()
+        class.new(not_a_class)
+    end)
+end
+
+function TestClassNew:testNewErrorOnInvalidModule()
+    lu.assertError(function()
+        class.new('this_module_does_not_exist_xyz123')
+    end)
+end
+
+function TestClassNew:testNewWithDerivedClass()
+    local Base = class()
+    function Base.init(instance)
+        instance.base_init = true
+        return instance
+    end
+    
+    local Derived = class(Base)
+    function Derived.init(instance)
+        Base.init(instance)
+        instance.derived_init = true
+        return instance
+    end
+    
+    local obj = class.new(Derived)
+    
+    lu.assertTrue(obj.base_init)
+    lu.assertTrue(obj.derived_init)
 end
 
 TestClassVersion = {}

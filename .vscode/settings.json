@@ -11,5 +11,8 @@
         "${workspaceFolder}/bindings/?/init.lua",
         "${workspaceFolder}/build/lua/?.lua",
         "${workspaceFolder}/build/lua/?/init.lua"
-    ]
+    ],
+    "[lua]": {
+        "editor.defaultFormatter": "sumneko.lua",
+    }
 }
