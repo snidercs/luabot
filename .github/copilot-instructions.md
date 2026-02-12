@@ -47,6 +47,7 @@ LuaBot is a Lua scripting environment for FRC (FIRST Robotics Competition) robot
 - Use `PascalCase` for classes (e.g., `TimedRobot`, `XboxController`)
 - Use `camelCase` for methods and variables
 - Use `---@class` annotations for type hints
+- Doc comments: Always use a space after dashes: `--- Comment` not `---Comment`
 - Prefer single-quoted strings (`'string'`) over double-quoted strings (`"string"`), unless interpolation or escaping is needed
 - Store instance data in `self` table
   - Underscored fields on self, e.g. `self._variablename`, are considered private and should be documented with `---@field private`
