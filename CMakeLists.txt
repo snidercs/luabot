@@ -132,7 +132,7 @@ endif()
 
 if(LUABOT_BUILD_CONSOLE)
     if(WIN32)
-        find_library(LuaJIT NAMES lua51 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED NO_DEFAULT_PATH)
+        find_library(LuaJIT NAMES luajit PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED NO_DEFAULT_PATH)
     else()
         find_library(LuaJIT NAMES luajit-5.1 PATHS "${CMAKE_SOURCE_DIR}/3rdparty/lib" REQUIRED NO_DEFAULT_PATH)
     endif()

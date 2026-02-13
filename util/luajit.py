@@ -109,7 +109,7 @@ class LuaJITBuilder:
         # Copy static library
         shutil.copy2(
             self.luajit_src_dir / 'lua51.lib',
-            self.thirdparty_dir / 'lib' / 'lua51.lib'
+            self.thirdparty_dir / 'lib' / 'luajit.lib'
         )
         
         # Copy headers
