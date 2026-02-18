@@ -81,4 +81,30 @@ do
     assert(robot:initialized())
 end
 
+do
+    -- Ensure default IterativeRobotBase lifecycle methods exist and are callable
+    -- when not overridden by the user robot (e.g., disabledPeriodic).
+    local robot = TimedRobot.new(0.02)
+
+    robot:robotInit()
+    robot:driverStationConnected()
+    robot:simulationInit()
+    robot:disabledInit()
+    robot:autonomousInit()
+    robot:teleopInit()
+    robot:testInit()
+
+    robot:robotPeriodic()
+    robot:simulationPeriodic()
+    robot:disabledPeriodic()
+    robot:autonomousPeriodic()
+    robot:teleopPeriodic()
+    robot:testPeriodic()
+
+    robot:disabledExit()
+    robot:autonomousExit()
+    robot:teleopExit()
+    robot:testExit()
+end
+
 hal.shutdown()

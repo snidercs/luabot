@@ -145,13 +145,11 @@ function CommandRobot:testPeriodic()
     -- CommandScheduler.run() in robotPeriodic handles command execution
 end
 
-local function instantiate(timeout)
+function CommandRobot.new(timeout)
     timeout = tonumber(timeout) or 0.02
     local robot = setmetatable({}, CommandRobot)
     TimedRobot.init(robot, timeout)
     return robot
 end
 
-return {
-    new = instantiate
-}
+return CommandRobot
