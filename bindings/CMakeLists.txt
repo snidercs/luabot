@@ -186,7 +186,8 @@ foreach(IPP_DIR ${IPP_DIRS})
     string(REPLACE "/" "_" IPP_NAME ${IPP_DIR})
     # Remove wpi_ prefix if present
     string(REGEX REPLACE "^wpi_" "" IPP_NAME ${IPP_NAME})
-    set(IPP_FILE ${CMAKE_BINARY_DIR}/include/luabot/${IPP_NAME}.ipp)
+    set(IPP_FILE ${CMAKE_BINARY_DIR}/include/luabot/wpi/${IPP_NAME}.ipp)
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/include/luabot/wpi)
     set(IPP_CONTENT "#pragma once\n// Auto-generated include file for ${IPP_DIR}\n\n")
     
     # Find all cpp files under this directory

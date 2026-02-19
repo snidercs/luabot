@@ -93,6 +93,6 @@ int main (int argc, char* argv[]) {
     return luabot_console (argc, argv);
 }
 
-#include <luabot/apriltag.ipp>
-#include <luabot/frc.ipp>
-#include <luabot/math.ipp>
+#include <luabot/wpi/apriltag.ipp>
+#include <luabot/wpi/frc.ipp>
+#include <luabot/wpi/math.ipp>
